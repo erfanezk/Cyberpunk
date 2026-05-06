@@ -73,7 +73,6 @@ export function ContactOverlay({ progress }: OverlayProps) {
             <div
               key={line.id}
               style={{
-                fontFamily: "'Share Tech Mono', monospace",
                 fontSize: 'clamp(0.8rem, 1.2vw, 0.95rem)',
                 lineHeight: 2,
                 color: i === 0 ? 'var(--cyan)' : 'var(--text)',
