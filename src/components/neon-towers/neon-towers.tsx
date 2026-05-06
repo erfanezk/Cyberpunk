@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import type { TowerData } from './neon-towers.types';
 import { generateTowers } from './neon-towers.utils';
 
-const count = 25;
+const count = 18;
 
 export function NeonTowers() {
   const towers = useMemo<TowerData[]>(() => generateTowers(count), []);
