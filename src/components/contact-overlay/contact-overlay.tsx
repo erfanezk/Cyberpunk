@@ -2,35 +2,20 @@ import { useEffect, useMemo, useState } from 'react';
 import { CONTACT } from '@/constants';
 import { SECTION_ZONES } from '@/types';
 import type { OverlayProps } from '@/types';
-import type { TerminalLine } from './contact-overlay.types';
 import { smoothstep } from './contact-overlay.utils';
-import { generateId } from '@/utils';
 import styles from './contact-overlay.module.css';
 
-const TERMINAL_LINES: TerminalLine[] = [
-  { text: '> CONTACT.exe', delay: 0, id: generateId() },
-  { text: '> ──────────────────────────────', delay: 200, id: generateId() },
-  {
-    text: `> email: ${CONTACT.email}`,
-    delay: 400,
-    link: `mailto:${CONTACT.email}`,
-    id: generateId(),
-  },
-  {
-    text: `> github: ${CONTACT.github}`,
-    delay: 600,
-    link: `https://${CONTACT.github}`,
-    id: generateId(),
-  },
-  {
-    text: `> linkedin: ${CONTACT.linkedin}`,
-    delay: 800,
-    link: CONTACT.linkedin,
-    id: generateId(),
-  },
-  { text: '> ──────────────────────────────', delay: 1200, id: generateId() },
+interface ContactLine {
+  label: string;
+  value: string;
+  link?: string;
+  id: string;
+}
 
-  { text: '> _', delay: 1400, id: generateId() },
+const CONTACT_LINES: ContactLine[] = [
+  { label: 'email', value: CONTACT.email, link: `mailto:${CONTACT.email}`, id: 'c1' },
+  { label: 'github', value: CONTACT.github, link: CONTACT.github, id: 'c2' },
+  { label: 'linkedin', value: CONTACT.linkedin, link: CONTACT.linkedin, id: 'c3' },
 ];
 
 export function ContactOverlay({ progress }: OverlayProps) {
@@ -41,12 +26,12 @@ export function ContactOverlay({ progress }: OverlayProps) {
     return fadeInOp * fadeOutOp;
   }, [progress, fadeIn, fadeOut]);
 
-  const [visibleLines, setVisibleLines] = useState<number>(0);
+  const [visibleLines, setVisibleLines] = useState(0);
 
   useEffect(() => {
     if (opacity > 0.5 && visibleLines === 0) {
-      TERMINAL_LINES.forEach((line, i) => {
-        setTimeout(() => setVisibleLines(i + 1), line.delay);
+      CONTACT_LINES.forEach((_, i) => {
+        setTimeout(() => setVisibleLines(i + 1), 300 + i * 200);
       });
     }
     if (opacity < 0.1) {
@@ -58,50 +43,41 @@ export function ContactOverlay({ progress }: OverlayProps) {
 
   return (
     <div className="overlay-layer" style={{ opacity }}>
-      <div
-        className="glass-panel"
-        style={{
-          padding: 'clamp(1.5rem, 3vw, 2.5rem)',
-          maxWidth: '500px',
-          width: '90%',
-          background: 'rgba(5, 5, 15, 0.85)',
-          borderColor: 'rgba(0, 255, 245, 0.3)',
-        }}
-      >
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          {TERMINAL_LINES.slice(0, visibleLines).map((line, i) => (
-            <div
-              key={line.id}
-              style={{
-                fontSize: 'clamp(0.8rem, 1.2vw, 0.95rem)',
-                lineHeight: 2,
-                color: i === 0 ? 'var(--cyan)' : 'var(--text)',
-              }}
-            >
-              {line.link ? (
-                <>
-                  {line.text.split(':')[0]}:{' '}
-                  <a
-                    href={line.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      color: 'var(--cyan)',
-                      textDecoration: 'none',
-                      borderBottom: '1px solid rgba(0,255,245,0.3)',
-                    }}
-                  >
-                    {line.text.split(':').slice(1).join(':')}
+      <div className={styles.wrapper}>
+        <h2 className={styles.title}>CONTACT</h2>
+        <p className={styles.subtitle}>Let's work together</p>
+        <div className={`glass-panel ${styles.card}`}>
+          <div className={styles.cardHeader}>
+            <span className={styles.dot} style={{ background: '#ff5f57' }} />
+            <span className={styles.dot} style={{ background: '#febc2e' }} />
+            <span className={styles.dot} style={{ background: '#28c840' }} />
+            <span style={{ marginLeft: 'auto' }}>terminal</span>
+          </div>
+          <div className={styles.cardBody}>
+            {CONTACT_LINES.slice(0, visibleLines).map((line, i) => (
+              <div
+                key={line.id}
+                className={styles.line}
+                style={{ animationDelay: `${i * 0.1}s` }}
+              >
+                <span className={styles.prompt}>&gt;$</span>
+                <span className={styles.label}>{line.label}:</span>
+                {line.link ? (
+                  <a href={line.link} target="_blank" rel="noopener noreferrer">
+                    {line.value}
                   </a>
-                </>
-              ) : (
-                line.text
-              )}
-              {i === visibleLines - 1 && i === TERMINAL_LINES.length - 1 && (
+                ) : (
+                  <span>{line.value}</span>
+                )}
+              </div>
+            ))}
+            {visibleLines >= CONTACT_LINES.length && (
+              <div className={styles.line} style={{ animationDelay: `${CONTACT_LINES.length * 0.1}s` }}>
+                <span className={styles.prompt}>&gt;$</span>
                 <span className={styles.cursor} />
-              )}
-            </div>
-          ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
