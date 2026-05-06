@@ -1,0 +1,11 @@
+.dataChip {
+  display: inline-block;
+  padding: 4px 12px;
+  margin: 4px;
+  background: rgba(0, 255, 245, 0.08);
+  border: 1px solid rgba(0, 255, 245, 0.25);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  color: var(--cyan);
+  white-space: nowrap;
+}

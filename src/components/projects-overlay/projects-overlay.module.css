@@ -1,0 +1,18 @@
+.glowBtn {
+  display: inline-block;
+  padding: 8px 20px;
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  background: rgba(0, 255, 245, 0.05);
+  font-family: "Share Tech Mono", monospace;
+  font-size: 0.85rem;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.glowBtn:hover {
+  background: rgba(0, 255, 245, 0.15);
+  box-shadow: 0 0 15px rgba(0, 255, 245, 0.3);
+}

@@ -1,0 +1,50 @@
+@keyframes glitch {
+  0% {
+    text-shadow: 2px 0 var(--cyan), -2px 0 var(--magenta);
+    clip-path: inset(0 0 0 0);
+  }
+  10% {
+    text-shadow: -2px 2px var(--cyan), 2px -2px var(--magenta);
+    clip-path: inset(20% 0 40% 0);
+  }
+  20% {
+    text-shadow: 2px -2px var(--cyan), -2px 2px var(--magenta);
+    clip-path: inset(0 0 0 0);
+  }
+  30% {
+    text-shadow: 0 2px var(--cyan), 0 -2px var(--magenta);
+    clip-path: inset(60% 0 10% 0);
+  }
+  40% {
+    text-shadow: -2px 0 var(--cyan), 2px 0 var(--magenta);
+    clip-path: inset(0 0 0 0);
+  }
+  50% {
+    text-shadow: 2px 2px var(--cyan), -2px -2px var(--magenta);
+    clip-path: inset(30% 0 30% 0);
+  }
+  60% {
+    text-shadow: 0 -2px var(--cyan), 0 2px var(--magenta);
+    clip-path: inset(0 0 0 0);
+  }
+  70% {
+    text-shadow: -2px -2px var(--cyan), 2px 2px var(--magenta);
+    clip-path: inset(50% 0 20% 0);
+  }
+  80% {
+    text-shadow: 2px 0 var(--cyan), -2px 0 var(--magenta);
+    clip-path: inset(0 0 0 0);
+  }
+  90% {
+    text-shadow: -2px 2px var(--cyan), 2px -2px var(--magenta);
+    clip-path: inset(10% 0 60% 0);
+  }
+  100% {
+    text-shadow: 2px 0 var(--cyan), -2px 0 var(--magenta);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.glitchText {
+  animation: glitch 3s infinite;
+}
