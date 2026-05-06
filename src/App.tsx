@@ -1,7 +1,7 @@
 import { ScrollControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { useCallback, useRef, useState } from 'react';
-import { AboutOverlay, BackToTop, ContactOverlay, HeroOverlay, MusicPlayer, ProjectsOverlay, Scene } from '@/components';
+import { AboutOverlay, ArticlesOverlay, BackToTop, ContactOverlay, HeroOverlay, MusicPlayer, ProjectsOverlay, Scene } from '@/components';
 import { COLORS } from '@/constants';
 
 export default function App() {
@@ -26,7 +26,7 @@ export default function App() {
             camera={{ fov: 60, near: 0.1, far: 1000, position: [0, 80, 120] }}
             style={{ background: COLORS.background }}
           >
-            <ScrollControls pages={6} damping={0.25}>
+            <ScrollControls pages={7} damping={0.25}>
               <Scene onProgress={handleProgress} scrollToTopRef={scrollToTopRef} />
             </ScrollControls>
           </Canvas>
@@ -35,6 +35,7 @@ export default function App() {
       <HeroOverlay progress={progress} />
       <AboutOverlay progress={progress} />
       <ProjectsOverlay progress={progress} />
+      <ArticlesOverlay progress={progress} />
       <ContactOverlay progress={progress} />
       <MusicPlayer />
       <BackToTop progress={progress} onScrollToTop={() => scrollToTopRef.current()} />

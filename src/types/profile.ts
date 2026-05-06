@@ -4,5 +4,5 @@ export interface Profile {
   tagline: string;
   bio: string;
   skills: string[];
-  photo: string | null;
+  photo: string;
 }

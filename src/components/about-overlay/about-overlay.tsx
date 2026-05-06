@@ -4,7 +4,6 @@ import { SECTION_ZONES } from '@/types';
 import type { OverlayProps } from '@/types';
 import { smoothstep } from './about-overlay.utils';
 import styles from './about-overlay.module.css';
-import profilePhoto from '@/assets/me.jpg';
 
 export function AboutOverlay({ progress }: OverlayProps) {
   const { fadeIn, fadeOut } = SECTION_ZONES.about;
@@ -14,6 +13,7 @@ export function AboutOverlay({ progress }: OverlayProps) {
     return fadeInOp * fadeOutOp;
   }, [progress, fadeIn, fadeOut]);
 
+  
   if (opacity < 0.01) return null;
 
   return (
@@ -28,7 +28,7 @@ export function AboutOverlay({ progress }: OverlayProps) {
       >
         <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', alignItems: 'center' }}>
           <img
-            src={profilePhoto}
+            src={PROFILE.photo}
             alt={PROFILE.name}
             style={{
               width: '120px',
