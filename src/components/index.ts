@@ -1,4 +1,5 @@
 export { AboutOverlay } from './about-overlay';
+export { BackToTop } from './back-to-top';
 export { ContactOverlay } from './contact-overlay';
 export { CyberWorld } from './cyber-world';
 export { DataStreams } from './data-streams';

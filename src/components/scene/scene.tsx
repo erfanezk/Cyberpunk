@@ -2,16 +2,25 @@ import { useScroll } from '@react-three/drei';
 import { CyberWorld } from '@/components/cyber-world';
 import { Effects } from '@/components/effects';
 import { useCameraRig, useScrollProgress } from '@/hooks';
-import { memo } from 'react';
+import { useEffect, memo } from 'react';
 
 interface SceneProps {
   onProgress?: (value: number) => void;
+  scrollToTopRef?: React.MutableRefObject<() => void>;
 }
 
-function Scene({ onProgress }: SceneProps) {
+function Scene({ onProgress, scrollToTopRef }: SceneProps) {
   const scroll = useScroll();
   useCameraRig(scroll);
   useScrollProgress(onProgress);
+
+  useEffect(() => {
+    if (scrollToTopRef) {
+      scrollToTopRef.current = () => {
+        scroll.el?.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+    }
+  }, [scroll, scrollToTopRef]);
 
   return (
     <>

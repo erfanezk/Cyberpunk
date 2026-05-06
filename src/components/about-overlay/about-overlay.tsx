@@ -4,6 +4,7 @@ import { SECTION_ZONES } from '@/types';
 import type { OverlayProps } from '@/types';
 import { smoothstep } from './about-overlay.utils';
 import styles from './about-overlay.module.css';
+import profilePhoto from '@/assets/me.jpg';
 
 export function AboutOverlay({ progress }: OverlayProps) {
   const { fadeIn, fadeOut } = SECTION_ZONES.about;
@@ -26,33 +27,18 @@ export function AboutOverlay({ progress }: OverlayProps) {
         }}
       >
         <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', alignItems: 'center' }}>
-          <div
+          <img
+            src={profilePhoto}
+            alt={PROFILE.name}
             style={{
               width: '120px',
               height: '120px',
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, rgba(0,255,245,0.3), rgba(255,0,255,0.3))',
+              objectFit: 'cover',
               border: '2px solid rgba(0,255,245,0.4)',
               flexShrink: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '2.5rem',
-              color: 'var(--cyan)',
             }}
-          >
-            <svg
-              width="60"
-              height="60"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-            >
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-          </div>
+          />
           <div style={{ flex: 1, minWidth: '200px' }}>
             <h2
               style={{
