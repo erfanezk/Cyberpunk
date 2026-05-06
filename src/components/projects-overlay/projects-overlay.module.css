@@ -1,18 +1,224 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 1000px;
+  padding: 1.5rem;
+}
+
+.title {
+  width: 100%;
+  text-align: center;
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  color: var(--cyan);
+  letter-spacing: 0.2em;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.title::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 2px;
+  background: var(--cyan);
+  margin: 0.75rem auto 0;
+  box-shadow: 0 0 8px var(--cyan);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  width: 100%;
+}
+
+.card {
+  padding: 0;
+  text-align: left;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 255, 245, 0.1);
+}
+
+.card:hover {
+  border-color: rgba(0, 255, 245, 0.4);
+  box-shadow:
+    0 0 25px rgba(0, 255, 245, 0.15),
+    inset 0 0 25px rgba(0, 255, 245, 0.03);
+  transform: translateY(-4px);
+}
+
+.cardImageWrapper {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  overflow: hidden;
+  background: rgba(10, 10, 30, 0.8);
+}
+
+.cardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 1rem;
+  transition: transform 0.4s ease;
+}
+
+.card:hover .cardImage {
+  transform: scale(1.05);
+}
+
+.cardImageOverlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(to top, rgba(10, 10, 30, 0.9), transparent);
+  pointer-events: none;
+}
+
+.cardIndex {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.cardBody {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.cardTitle {
+  font-size: 0.95rem;
+  margin-bottom: 0.35rem;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+.cardDesc {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+  flex: 1;
+}
+
 .glowBtn {
-  display: inline-block;
-  padding: 8px 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 8px 18px;
   border: 1px solid var(--cyan);
   color: var(--cyan);
   background: rgba(0, 255, 245, 0.05);
   font-family: "Share Tech Mono", monospace;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   text-decoration: none;
   border-radius: 4px;
   transition: all 0.3s ease;
   cursor: pointer;
+  align-self: flex-start;
+  letter-spacing: 0.05em;
 }
 
 .glowBtn:hover {
   background: rgba(0, 255, 245, 0.15);
   box-shadow: 0 0 15px rgba(0, 255, 245, 0.3);
+  gap: 0.75rem;
+}
+
+.glowBtn::after {
+  content: '→';
+  transition: transform 0.3s ease;
+}
+
+.glowBtn:hover::after {
+  transform: translateX(3px);
+}
+
+.scrollHint {
+  display: none;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  margin-top: 1rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+@media (max-width: 1024px) {
+  .wrapper {
+    padding: 0.75rem;
+    pointer-events: auto;
+  }
+
+  .title {
+    margin-bottom: 1rem;
+  }
+
+  .grid {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 1rem;
+    padding: 0;
+    scrollbar-width: none;
+  }
+
+  .grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .card {
+    width: 80vw;
+    max-width: 320px;
+    min-width: 260px;
+    scroll-snap-align: center;
+    margin-left: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .card:first-child {
+    margin-left: 0;
+    scroll-snap-align: start;
+  }
+
+  .card:last-child {
+    scroll-snap-align: end;
+  }
+
+  .cardImageWrapper {
+    height: 140px;
+  }
+
+  .cardBody {
+    padding: 1rem;
+  }
+
+  .scrollHint {
+    display: block;
+  }
 }

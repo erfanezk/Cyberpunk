@@ -4,4 +4,5 @@ export interface Project {
   link: string;
   color: string;
   id: string;
+  image: string;
 }
