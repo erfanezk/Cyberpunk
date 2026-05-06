@@ -5,7 +5,7 @@
   width: 100%;
   max-width: 800px;
   padding: 1.5rem;
-  pointer-events: auto;
+
 }
 
 .title {
@@ -44,7 +44,6 @@
   border: 1px solid rgba(0, 255, 245, 0.1);
   text-decoration: none;
   color: inherit;
-  cursor: pointer;
 }
 
 .article:hover {

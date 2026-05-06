@@ -32,12 +32,7 @@ export function ArticlesOverlay({ progress }: OverlayProps) {
 
 function ArticleCard({ article }: { article: Article }) {
   return (
-    <a
-      href={article.link}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={`glass-panel ${styles.article}`}
-    >
+    <div className={`glass-panel ${styles.article}`}>
       <div className={styles.articleHeader}>
         <span className={styles.articleTitle}>{article.title}</span>
         <span className={styles.articleDate}>{article.date}</span>
@@ -51,6 +46,6 @@ function ArticleCard({ article }: { article: Article }) {
         ))}
       </div>
       <span className={styles.articleArrow}>→</span>
-    </a>
+    </div>
   );
 }
