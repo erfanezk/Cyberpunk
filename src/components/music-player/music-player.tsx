@@ -13,13 +13,13 @@ export function MusicPlayer() {
     } else {
       audioRef.current.play();
     }
-    
+
     setIsPlaying(!isPlaying);
   };
 
   return (
     <>
-      <audio ref={audioRef} src={musicFile} loop preload="auto" />
+      <audio ref={audioRef} src={musicFile} autoPlay loop preload="auto" />
       <button
         type="button"
         onClick={toggle}

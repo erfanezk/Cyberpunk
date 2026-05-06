@@ -65,7 +65,7 @@ function TowerSegment({
 function Tower({ tower }: { tower: TowerData }) {
   return (
     <group position={tower.position}>
-      {tower.segments.map((seg, i) => (
+      {tower.segments.map((seg) => (
         <group key={seg.height + seg.localY + seg.phaseOffset} position={[0, seg.localY, 0]}>
           <TowerSegment
             width={tower.width}
