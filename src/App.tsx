@@ -1,7 +1,16 @@
 import { ScrollControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { useCallback, useRef, useState } from 'react';
-import { AboutOverlay, ArticlesOverlay, BackToTop, CinematicEnding, ContactOverlay, HeroOverlay, MusicPlayer, ProjectsOverlay, Scene } from '@/components';
+import {
+  AboutOverlay,
+  ArticlesOverlay,
+  CinematicEnding,
+  ContactOverlay,
+  HeroOverlay,
+  MusicPlayer,
+  ProjectsOverlay,
+  Scene,
+} from '@/components';
 import { COLORS } from '@/constants';
 
 export default function App() {
@@ -39,7 +48,6 @@ export default function App() {
       <ContactOverlay progress={progress} />
       <CinematicEnding progress={progress} />
       <MusicPlayer />
-      <BackToTop progress={progress} onScrollToTop={() => scrollToTopRef.current()} />
     </>
   );
 }

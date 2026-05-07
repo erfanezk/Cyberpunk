@@ -67,7 +67,7 @@ export function GridFloor() {
 
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, -40]}>
-      <planeGeometry args={[350, 350, 1, 1]} />
+      <planeGeometry args={[400, 400, 1, 1]} />
       <shaderMaterial
         ref={matRef}
         vertexShader={gridVertexShader}

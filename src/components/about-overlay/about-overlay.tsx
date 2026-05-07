@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noCommentText: <j> */
 import { useMemo } from 'react';
 import { PROFILE } from '@/constants';
 import { SECTION_ZONES } from '@/types';
