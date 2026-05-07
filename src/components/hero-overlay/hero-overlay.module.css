@@ -1,3 +1,4 @@
+/* ── Glitch animation on name ── */
 @keyframes glitch {
   0% {
     text-shadow: 2px 0 var(--cyan), -2px 0 var(--magenta);
@@ -45,6 +46,233 @@
   }
 }
 
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes expandLine {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes cornerIn {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes blink {
+  0%, 49% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 1;
+  }
+}
+
+/* ── Layout container ── */
+.container {
+  position: relative;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding: clamp(2rem, 5vw, 3.5rem) clamp(2.5rem, 7vw, 5rem);
+  min-width: min(580px, 88vw);
+}
+
+/* ── Corner brackets ── */
+.corner {
+  position: absolute;
+  width: clamp(20px, 3vw, 32px);
+  height: clamp(20px, 3vw, 32px);
+  opacity: 0;
+  animation: cornerIn 0.5s ease forwards;
+  filter: drop-shadow(0 0 5px rgba(0, 255, 245, 0.7));
+}
+
+.cornerTL {
+  top: 0;
+  left: 0;
+  border-top: 2px solid var(--cyan);
+  border-left: 2px solid var(--cyan);
+  animation-delay: 0.05s;
+}
+.cornerTR {
+  top: 0;
+  right: 0;
+  border-top: 2px solid var(--cyan);
+  border-right: 2px solid var(--cyan);
+  animation-delay: 0.1s;
+}
+.cornerBL {
+  bottom: 0;
+  left: 0;
+  border-bottom: 2px solid var(--cyan);
+  border-left: 2px solid var(--cyan);
+  animation-delay: 0.15s;
+}
+.cornerBR {
+  bottom: 0;
+  right: 0;
+  border-bottom: 2px solid var(--cyan);
+  border-right: 2px solid var(--cyan);
+  animation-delay: 0.2s;
+}
+
+/* ── Boot status line ── */
+.bootLine {
+  font-size: clamp(0.65rem, 1.2vw, 0.78rem);
+  color: var(--text-dim);
+  letter-spacing: 0.2em;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+  opacity: 0;
+  animation: fadeSlideDown 0.5s ease forwards;
+  animation-delay: 0.3s;
+}
+
+.bootPrompt {
+  color: var(--cyan);
+}
+
+.bootSep {
+  color: rgba(0, 255, 245, 0.35);
+}
+
+.cursor {
+  display: inline-block;
+  width: 7px;
+  height: 0.85em;
+  background: var(--cyan);
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
+  vertical-align: text-bottom;
+}
+
+/* ── Name block ── */
+.nameBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  opacity: 0;
+  animation: fadeSlideUp 0.6s ease forwards;
+  animation-delay: 0.5s;
+}
+
 .glitchText {
   animation: glitch 3s infinite;
+}
+
+.name {
+  font-size: clamp(2.2rem, 8vw, 5.5rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fff;
+  line-height: 1;
+}
+
+.nameDivider {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--cyan), var(--magenta), transparent);
+  box-shadow: 0 0 10px rgba(0, 255, 245, 0.5);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: expandLine 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation-delay: 0.9s;
+}
+
+/* ── Title ── */
+.title {
+  font-size: clamp(0.85rem, 2.2vw, 1.2rem);
+  color: var(--cyan);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+  opacity: 0;
+  animation: fadeSlideUp 0.5s ease forwards;
+  animation-delay: 1s;
+}
+
+/* ── Tagline ── */
+.tagline {
+  font-size: clamp(0.72rem, 1.3vw, 0.9rem);
+  color: var(--text-dim);
+  max-width: 440px;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  font-style: italic;
+  margin-bottom: 3rem;
+  opacity: 0;
+  animation: fadeSlideUp 0.5s ease forwards;
+  animation-delay: 1.2s;
+}
+
+/* ── Scroll hint ── */
+.scrollHint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  opacity: 0;
+  animation: fadeSlideUp 0.5s ease forwards;
+  animation-delay: 1.6s;
+}
+
+.scrollLabel {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  letter-spacing: 0.25em;
+}
+
+.scrollArrow {
+  font-size: 0.65rem;
+  color: var(--cyan);
+  animation: bounce 1.6s ease-in-out infinite;
+  display: block;
 }

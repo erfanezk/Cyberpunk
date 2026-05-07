@@ -7,5 +7,5 @@ export const COLORS = {
   gridBase: '#1a1a2e',
   ambient: '#0a0a1a',
   text: '#e0e0e0',
-  textDim: '#888899',
+  textDim: '#aab0c4',
 } as const;

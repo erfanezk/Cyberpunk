@@ -19,51 +19,31 @@ export function HeroOverlay({ progress }: OverlayProps) {
   return (
     <SplashWrapper progress={progress} fadeIn={SECTION_ZONES.hero.fadeIn} color="rgba(0,255,245,0.15)">
       <div className="overlay-layer" style={{ opacity }}>
-        <div style={{ textAlign: 'center' }}>
-          <h1
-            className={styles.glitchText}
-            style={{
-              fontSize: 'clamp(2.5rem, 8vw, 6rem)',
-              fontWeight: 700,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: '#fff',
-              marginBottom: '1rem',
-            }}
-          >
-            {PROFILE.name}
-          </h1>
-          <p
-            style={{
-              fontSize: 'clamp(1rem, 2.5vw, 1.5rem)',
-              color: 'var(--cyan)',
-              letterSpacing: '0.3em',
-              textTransform: 'uppercase',
-              marginBottom: '0.5rem',
-            }}
-          >
-            {PROFILE.title}
-          </p>
-          <p
-            style={{
-              fontSize: 'clamp(0.8rem, 1.5vw, 1rem)',
-              color: 'var(--text-dim)',
-              maxWidth: '500px',
-              margin: '0 auto',
-            }}
-          >
-            {PROFILE.tagline}
-          </p>
-          <div
-            style={{
-              marginTop: '3rem',
-              fontSize: '0.75rem',
-              color: 'var(--text-dim)',
-              letterSpacing: '0.2em',
-              animation: 'blink 2s step-end infinite',
-            }}
-          >
-            SCROLL TO EXPLORE
+        <div className={styles.container}>
+          <span className={`${styles.corner} ${styles.cornerTL}`} />
+          <span className={`${styles.corner} ${styles.cornerTR}`} />
+          <span className={`${styles.corner} ${styles.cornerBL}`} />
+          <span className={`${styles.corner} ${styles.cornerBR}`} />
+
+          <div className={styles.bootLine}>
+            <span className={styles.bootPrompt}>&gt;</span>
+            {' '}SYS_ONLINE
+            <span className={styles.bootSep}> // </span>
+            v{new Date().getFullYear()}
+            <span className={styles.cursor} />
+          </div>
+
+          <div className={styles.nameBlock}>
+            <h1 className={`${styles.glitchText} ${styles.name}`}>{PROFILE.name}</h1>
+            <div className={styles.nameDivider} />
+          </div>
+
+          <p className={styles.title}>{PROFILE.title}</p>
+          <p className={styles.tagline}>&ldquo;{PROFILE.tagline}&rdquo;</p>
+
+          <div className={styles.scrollHint}>
+            <span className={styles.scrollLabel}>SCROLL TO EXPLORE</span>
+            <span className={styles.scrollArrow}>&#x25BC;</span>
           </div>
         </div>
       </div>

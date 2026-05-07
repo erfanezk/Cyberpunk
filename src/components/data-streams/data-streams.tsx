@@ -6,7 +6,7 @@ import type { StreamConfig } from './data-streams.types';
 import { generateStreams } from './data-streams.utils';
 
 export function DataStreams() {
-  const streams = useMemo<StreamConfig[]>(() => generateStreams(8), []);
+  const streams = useMemo<StreamConfig[]>(() => generateStreams(16), []);
 
   return (
     <group>

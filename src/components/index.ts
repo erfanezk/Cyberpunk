@@ -1,6 +1,7 @@
 export { AboutOverlay } from './about-overlay';
 export { ArticlesOverlay } from './articles-overlay';
 export { BackToTop } from './back-to-top';
+export { CinematicEnding } from './cinematic-ending';
 export { ContactOverlay } from './contact-overlay';
 export { CyberWorld } from './cyber-world';
 export { DataStreams } from './data-streams';

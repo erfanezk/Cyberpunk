@@ -14,61 +14,85 @@ export function AboutOverlay({ progress }: OverlayProps) {
     return fadeInOp * fadeOutOp;
   }, [progress, fadeIn, fadeOut]);
 
-  
   if (opacity < 0.01) return null;
+
+  const hasSkills = PROFILE.skills.length > 0;
 
   return (
     <SplashWrapper progress={progress} fadeIn={SECTION_ZONES.about.fadeIn} color="rgba(168,85,247,0.15)">
       <div className="overlay-layer" style={{ opacity }}>
-        <div
-          className="glass-panel"
-          style={{
-            padding: 'clamp(1.5rem, 4vw, 3rem)',
-            maxWidth: '700px',
-            width: '90%',
-          }}
-        >
-          <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', alignItems: 'center' }}>
-            <img
-              src={PROFILE.photo}
-              alt={PROFILE.name}
-              style={{
-                width: '120px',
-                height: '120px',
-                borderRadius: '50%',
-                objectFit: 'cover',
-                border: '2px solid rgba(0,255,245,0.4)',
-                flexShrink: 0,
-              }}
-            />
-            <div style={{ flex: 1, minWidth: '200px' }}>
-              <h2
-                style={{
-                  fontSize: 'clamp(1.2rem, 3vw, 1.8rem)',
-                  color: 'var(--cyan)',
-                  marginBottom: '0.75rem',
-                  letterSpacing: '0.1em',
-                }}
-              >
-                ABOUT.exe
-              </h2>
-              <p
-                style={{
-                  fontSize: 'clamp(0.8rem, 1.2vw, 0.95rem)',
-                  lineHeight: 1.7,
-                  color: 'var(--text)',
-                }}
-              >
-                {PROFILE.bio}
-              </p>
-            </div>
-          </div>
-          <div style={{ marginTop: '1.5rem', display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-            {PROFILE.skills.map((skill) => (
-              <span key={skill} className={styles.dataChip}>
-                {skill}
+        <div className={styles.wrapper}>
+          <h2 className={styles.title}>ABOUT</h2>
+
+          <div className={`glass-panel ${styles.card}`}>
+            <div className={styles.cardHeader}>
+              <span className={styles.dot} style={{ background: '#ff5f57' }} />
+              <span className={styles.dot} style={{ background: '#febc2e' }} />
+              <span className={styles.dot} style={{ background: '#28c840' }} />
+              <span className={styles.fileLabel}>identity.sys</span>
+              <span className={styles.statusBadge}>
+                <span className={styles.statusPulse} />
+                ONLINE
               </span>
-            ))}
+            </div>
+
+            <div className={styles.body}>
+              <div className={styles.identity}>
+                <div className={styles.photoFrame}>
+                  <span className={styles.bracket} data-pos="tl" />
+                  <span className={styles.bracket} data-pos="tr" />
+                  <span className={styles.bracket} data-pos="bl" />
+                  <span className={styles.bracket} data-pos="br" />
+                  <img src={PROFILE.photo} alt={PROFILE.name} className={styles.photo} />
+                  <span className={styles.scanline} aria-hidden />
+                </div>
+                <div className={styles.identityMeta}>
+                  <span className={styles.metaLabel}>// USER</span>
+                  <h3 className={styles.name}>{PROFILE.name}</h3>
+                  <span className={styles.role}>{PROFILE.title}</span>
+                </div>
+              </div>
+
+              <div className={styles.divider} aria-hidden />
+
+              <div className={styles.content}>
+                <div className={styles.bioBlock}>
+                  <span className={styles.sectionLabel}>// BIO</span>
+                  <p className={styles.bio}>{PROFILE.bio}</p>
+                  <p className={styles.tagline}>&ldquo;{PROFILE.tagline}&rdquo;</p>
+                </div>
+
+                {hasSkills && (
+                  <div className={styles.skillsBlock}>
+                    <span className={styles.sectionLabel}>// STACK</span>
+                    <div className={styles.skills}>
+                      {PROFILE.skills.map((s) => (
+                        <span key={s} className={styles.chip}>
+                          {s}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className={styles.footer}>
+              <span>
+                <span className={styles.kvKey}>LOC</span>
+                <span className={styles.kvArrow}> &gt; </span>IRAN
+              </span>
+              <span className={styles.sep}>|</span>
+              <span>
+                <span className={styles.kvKey}>TZ</span>
+                <span className={styles.kvArrow}> &gt; </span>UTC+03:30
+              </span>
+              <span className={styles.sep}>|</span>
+              <span>
+                <span className={styles.kvKey}>STATUS</span>
+                <span className={styles.kvArrow}> &gt; </span>AVAILABLE
+              </span>
+            </div>
           </div>
         </div>
       </div>

@@ -24,8 +24,17 @@ function Scene({ onProgress, scrollToTopRef }: SceneProps) {
 
   return (
     <>
-      <fog attach="fog" args={['#0a0a0f', 50, 250]} />
-      <ambientLight intensity={0.1} color="#0a0a1a" />
+      <fog attach="fog" args={['#0a0a0f', 60, 260]} />
+      <ambientLight intensity={0.12} color="#0a0a1a" />
+
+      {/* Neon street-level mood lights — illuminate corridor towers */}
+      <pointLight position={[35, 6, -45]} color="#00fff5" intensity={5} distance={90} />
+      <pointLight position={[-28, 5, -70]} color="#ff00ff" intensity={4} distance={80} />
+      <pointLight position={[65, 8, -5]} color="#0066ff" intensity={4} distance={70} />
+      <pointLight position={[5, 10, -105]} color="#00fff5" intensity={4} distance={85} />
+      <pointLight position={[-45, 18, -25]} color="#ff9900" intensity={3} distance={65} />
+      <pointLight position={[20, 12, 40]} color="#ff00ff" intensity={3} distance={60} />
+
       <CyberWorld scroll={scroll} />
       <Effects scroll={scroll} />
     </>

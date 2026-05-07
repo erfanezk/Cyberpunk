@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import type { TowerData } from './neon-towers.types';
 import { generateTowers } from './neon-towers.utils';
 
-const count = 18;
+const BACKGROUND_COUNT = 10;
 
 function TowerSegment({
   width,
@@ -36,7 +36,6 @@ function TowerSegment({
 
   return (
     <group>
-      {/* Outer shell — translucent, animated pulse */}
       <mesh ref={outerRef}>
         <boxGeometry args={[width, height, width]} />
         <meshStandardMaterial
@@ -44,17 +43,15 @@ function TowerSegment({
           emissive={color}
           emissiveIntensity={0.3}
           transparent
-          opacity={0.2}
+          opacity={0.18}
         />
       </mesh>
 
-      {/* Inner frame — wireframe, constant subtle glow */}
       <mesh>
         <boxGeometry args={[innerWidth, height, innerWidth]} />
         <meshStandardMaterial color={color} wireframe emissive={color} emissiveIntensity={0.1} />
       </mesh>
 
-      {/* Edge lines — constant bright neon */}
       <lineSegments geometry={edgeGeo}>
         <lineBasicMaterial color={color} />
       </lineSegments>
@@ -62,7 +59,42 @@ function TowerSegment({
   );
 }
 
+function AntennaTip({
+  color,
+  phaseOffset,
+}: {
+  color: THREE.Color;
+  phaseOffset: number;
+}) {
+  const meshRef = useRef<THREE.Mesh>(null);
+
+  useFrame(({ clock }) => {
+    if (!meshRef.current) return;
+    const mat = meshRef.current.material as THREE.MeshStandardMaterial;
+    mat.emissiveIntensity = 3 + 2.5 * Math.abs(Math.sin(clock.elapsedTime * 2.2 + phaseOffset));
+  });
+
+  return (
+    <mesh ref={meshRef}>
+      <sphereGeometry args={[0.22, 8, 8]} />
+      <meshStandardMaterial
+        color={color}
+        emissive={color}
+        emissiveIntensity={4}
+        transparent
+        opacity={0.9}
+      />
+    </mesh>
+  );
+}
+
 function Tower({ tower }: { tower: TowerData }) {
+  const topY = useMemo(
+    () => Math.max(...tower.segments.map((s) => s.localY + s.height / 2)),
+    [tower.segments],
+  );
+  const antennaH = 1.5 + tower.width * 0.7;
+
   return (
     <group position={tower.position}>
       {tower.segments.map((seg) => (
@@ -75,12 +107,27 @@ function Tower({ tower }: { tower: TowerData }) {
           />
         </group>
       ))}
+
+      {/* Rooftop antenna */}
+      <group position={[0, topY, 0]}>
+        <mesh position={[0, antennaH / 2, 0]}>
+          <cylinderGeometry args={[0.04, 0.09, antennaH, 4]} />
+          <meshStandardMaterial
+            color={tower.color}
+            emissive={tower.color}
+            emissiveIntensity={1.5}
+          />
+        </mesh>
+        <group position={[0, antennaH, 0]}>
+          <AntennaTip color={tower.color} phaseOffset={tower.segments[0].phaseOffset} />
+        </group>
+      </group>
     </group>
   );
 }
 
 export function NeonTowers() {
-  const towers = useMemo<TowerData[]>(() => generateTowers(count), []);
+  const towers = useMemo<TowerData[]>(() => generateTowers(BACKGROUND_COUNT), []);
 
   return (
     <group>

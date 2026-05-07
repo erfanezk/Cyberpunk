@@ -1,0 +1,63 @@
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 14vh;
+  background: #000;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+  will-change: transform;
+}
+
+.barTop {
+  top: 0;
+  transform: translateY(-100%);
+}
+
+.barBottom {
+  bottom: 0;
+  transform: translateY(100%);
+}
+
+.barLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 255, 245, 0.5) 30%,
+    rgba(0, 255, 245, 0.8) 50%,
+    rgba(0, 255, 245, 0.5) 70%,
+    transparent 100%
+  );
+  box-shadow: 0 0 8px rgba(0, 255, 245, 0.6);
+}
+
+.barTop .barLine {
+  bottom: 0;
+}
+
+.barBottom .barLine {
+  top: 0;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 30%,
+    rgba(0, 0, 0, 0.55) 75%,
+    rgba(0, 0, 0, 0.92) 100%
+  );
+}
+

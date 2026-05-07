@@ -17,13 +17,34 @@ const gridFragmentShader = `
   varying vec2 vUv;
 
   void main() {
-    vec2 grid = abs(fract(vUv * 40.0 - 0.5) - 0.5) / fwidth(vUv * 40.0);
-    float line = min(grid.x, grid.y);
-    float gridLine = 1.0 - min(line, 1.0);
-    float pulse = 0.6 + 0.4 * sin(uTime * 0.5 + length(vUv - 0.5) * 6.0);
-    float fade = 1.0 - smoothstep(0.0, 0.5, length(vUv - 0.5));
-    float alpha = gridLine * pulse * fade * 0.6;
-    gl_FragColor = vec4(uColor * pulse, alpha);
+    // Small grid — street tiles (40×40)
+    vec2 smallUv = vUv * 40.0;
+    vec2 dSmall = abs(fract(smallUv - 0.5) - 0.5) / fwidth(smallUv);
+    float smallLine = 1.0 - min(min(dSmall.x, dSmall.y), 1.0);
+
+    // Large grid — city blocks (8×8)
+    vec2 largeUv = vUv * 8.0;
+    vec2 dLarge = abs(fract(largeUv - 0.5) - 0.5) / fwidth(largeUv);
+    float largeLine = 1.0 - min(min(dLarge.x, dLarge.y), 1.0);
+
+    // Combined: large lines dominate, small are subtle
+    float line = max(smallLine * 0.45, largeLine * 0.95);
+
+    // Outward scan pulse — energy wave radiating from center
+    float dist = length(vUv - 0.5);
+    float scanPulse = 0.5 + 0.5 * sin(uTime * 1.1 - dist * 16.0);
+    float basePulse  = 0.65 + 0.35 * sin(uTime * 0.35);
+    float pulse = mix(basePulse, scanPulse, 0.65);
+
+    // Radial fade
+    float fade = 1.0 - smoothstep(0.05, 0.5, dist);
+
+    float alpha = line * pulse * fade * 0.75;
+
+    // Large lines are brighter, small lines dimmer
+    vec3 color = mix(uColor * 0.7, uColor * 1.6, largeLine);
+
+    gl_FragColor = vec4(color, alpha);
   }
 `;
 
@@ -46,7 +67,7 @@ export function GridFloor() {
 
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, -40]}>
-      <planeGeometry args={[300, 300, 1, 1]} />
+      <planeGeometry args={[350, 350, 1, 1]} />
       <shaderMaterial
         ref={matRef}
         vertexShader={gridVertexShader}
