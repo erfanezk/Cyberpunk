@@ -10,7 +10,7 @@ const STATS = [
   { label: 'FRONTEND', pct: 94, color: '#00fff5' },
   { label: 'BACKEND', pct: 40, color: '#ff00ff' },
   { label: 'DevOps', pct: 45, color: '#ff9900' },
-  { label: 'UX / DESIGN', pct: 76, color: '#00ff88' },
+  { label: 'Automate selution', pct: 76, color: '#00ff88' },
 ];
 
 function AboutOverlay({ progress }: OverlayProps) {

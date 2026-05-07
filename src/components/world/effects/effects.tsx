@@ -9,6 +9,7 @@ import {
 } from '@react-three/postprocessing';
 import { BlendFunction, GlitchMode } from 'postprocessing';
 import { useRef, memo } from 'react';
+import * as THREE from 'three';
 import type { EffectsProps } from './effects.types';
 import { useIsMobile } from '@/hooks';
 import {
@@ -28,9 +29,10 @@ function Effects({ scroll }: EffectsProps) {
     if (!glitchRef.current || !scroll || isMobile) return;
     const currentZone = Math.floor(scroll.offset * 4);
     if (currentZone !== lastZone.current) {
-      glitchRef.current.delay = ENABLED_GLITCH_DELAY;
-      glitchRef.current.duration = GLITCH_DURATION;
-      glitchRef.current.strength = GLITCH_STRENGTH;
+      // Create fresh Vector2 instances — postprocessing mutates .x/.y in-place
+      glitchRef.current.delay = new THREE.Vector2(0, 0);
+      glitchRef.current.duration = new THREE.Vector2(0.2, 0.4);
+      glitchRef.current.strength = new THREE.Vector2(0.2, 0.4);
       lastZone.current = currentZone;
       setTimeout(() => {
         if (glitchRef.current) glitchRef.current.delay = DISABLED_GLITCH;

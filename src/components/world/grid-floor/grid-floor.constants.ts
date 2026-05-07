@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { COLORS } from '@/constants';
 
+// Object.freeze is safe here — Color.r/g/b are read-only properties
 export const GRID_UNIFORMS = Object.freeze({
   uTime: { value: 0 },
   uColor: { value: new THREE.Color(COLORS.cyan) },
