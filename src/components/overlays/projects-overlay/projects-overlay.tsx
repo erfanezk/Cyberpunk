@@ -4,7 +4,7 @@ import { SECTION_ZONES } from '@/types';
 import type { OverlayProps, Project } from '@/types';
 import { smoothstep } from './projects-overlay.utils';
 import styles from './projects-overlay.module.css';
-import SplashWrapper from '@/components/splash-wrapper';
+import SplashWrapper from '@/components/overlays/splash-wrapper';
 
 const PRIORITY = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'];
 const PRIORITY_COL = ['#ff3366', '#ff9900', '#00fff5', '#00ff88'];

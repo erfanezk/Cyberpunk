@@ -4,7 +4,7 @@ import { SECTION_ZONES } from '@/types';
 import type { OverlayProps } from '@/types';
 import { smoothstep } from './contact-overlay.utils';
 import styles from './contact-overlay.module.css';
-import SplashWrapper from '@/components/splash-wrapper';
+import SplashWrapper from '@/components/overlays/splash-wrapper';
 
 interface ContactLine {
   label: string;

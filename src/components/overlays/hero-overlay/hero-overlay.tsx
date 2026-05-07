@@ -4,7 +4,7 @@ import { SECTION_ZONES } from '@/types';
 import type { OverlayProps } from '@/types';
 import { smoothstep } from './hero-overlay.utils';
 import styles from './hero-overlay.module.css';
-import SplashWrapper from '@/components/splash-wrapper';
+import SplashWrapper from '@/components/overlays/splash-wrapper';
 
 function HeroOverlay({ progress }: OverlayProps) {
   const { fadeIn, fadeOut } = SECTION_ZONES.hero;

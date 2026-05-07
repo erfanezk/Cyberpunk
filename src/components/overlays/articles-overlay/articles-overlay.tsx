@@ -5,7 +5,7 @@ import type { OverlayProps } from '@/types';
 import type { Article } from '@/types';
 import { smoothstep } from './articles-overlay.utils';
 import styles from './articles-overlay.module.css';
-import SplashWrapper from '@/components/splash-wrapper';
+import SplashWrapper from '@/components/overlays/splash-wrapper';
 
 const SIGNAL_LEVELS = [5, 4, 5, 3, 4];
 const CLASS_LABELS = ['CLASSIFIED', 'RESTRICTED', 'CONFIDENTIAL', 'CLASSIFIED'];

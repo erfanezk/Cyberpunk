@@ -1,5 +1,5 @@
 import { useEffect, useMemo, memo } from 'react';
-import { WALK_PATH } from '@/components/cyber/cyber.constants';
+import { WALK_PATH } from '@/components/world/cyber/cyber.constants';
 import { game, type ActionName } from '@/game';
 import { SECTION_ZONES } from '@/types';
 import type { OverlayProps } from '@/types';

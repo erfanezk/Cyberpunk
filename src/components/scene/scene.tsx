@@ -1,6 +1,6 @@
 import { useScroll } from '@react-three/drei';
-import CyberWorld from '@/components/cyber-world';
-import Effects from '@/components/effects';
+import CyberWorld from '@/components/world/cyber-world';
+import Effects from '@/components/world/effects';
 import { useCameraRig, useIsMobile, useScrollProgress } from '@/hooks';
 import { useEffect, memo } from 'react';
 
