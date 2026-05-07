@@ -21,4 +21,3 @@ export { Rain } from './rain';
 export { ProjectsOverlay } from './projects-overlay';
 export { SplashWrapper } from './splash-wrapper';
 export { Scene } from './scene';
-export { WorldPanels } from './world-panels';

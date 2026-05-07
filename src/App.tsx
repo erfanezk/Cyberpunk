@@ -2,6 +2,7 @@ import { ScrollControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { Suspense, useCallback, useRef, useState } from 'react';
 import {
+  AboutOverlay,
   CinematicEnding,
   GameHud,
   HeroOverlay,
@@ -47,6 +48,7 @@ export default function App() {
       <GameHud progress={progress} />
       <HeroOverlay progress={progress} />
       <CinematicEnding progress={progress} />
+      <AboutOverlay progress={progress} />
       <MusicPlayer />
     </>
   );

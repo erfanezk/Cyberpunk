@@ -1,7 +1,6 @@
 import { useScroll } from '@react-three/drei';
 import { CyberWorld } from '@/components/cyber-world';
 import { Effects } from '@/components/effects';
-import { WorldPanels } from '@/components/world-panels';
 import { useCameraRig, useIsMobile, useScrollProgress } from '@/hooks';
 import { useEffect, memo } from 'react';
 
@@ -41,7 +40,6 @@ function Scene({ onProgress, scrollToTopRef }: SceneProps) {
       )}
 
       <CyberWorld scroll={scroll} />
-      <WorldPanels />
       <Effects scroll={scroll} />
     </>
   );
