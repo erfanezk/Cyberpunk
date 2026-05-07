@@ -1,3 +1,4 @@
+export { LoadingScreen } from './loading-screen';
 export { AboutOverlay } from './about-overlay';
 export { ArticlesOverlay } from './articles-overlay';
 export { CinematicEnding } from './cinematic-ending';

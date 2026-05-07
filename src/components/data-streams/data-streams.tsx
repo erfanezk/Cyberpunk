@@ -2,11 +2,13 @@ import { useFrame } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { COLORS } from '@/constants';
+import { useIsMobile } from '@/hooks';
 import type { StreamConfig } from './data-streams.types';
 import { generateStreams } from './data-streams.utils';
 
 export function DataStreams() {
-  const streams = useMemo<StreamConfig[]>(() => generateStreams(28), []);
+  const isMobile = useIsMobile();
+  const streams = useMemo<StreamConfig[]>(() => generateStreams(isMobile ? 8 : 28), [isMobile]);
 
   return (
     <group>

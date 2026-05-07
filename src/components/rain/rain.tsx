@@ -1,14 +1,16 @@
 import { useFrame } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
+import { useIsMobile } from '@/hooks';
 
-const COUNT = 4000;
 const SPREAD_X = 220;
 const SPREAD_Z = 320;
 const HEIGHT = 90;
 const Z_OFFSET = -100;
 
 export function Rain() {
+  const isMobile = useIsMobile();
+  const COUNT = isMobile ? 800 : 4000;
   const linesRef = useRef<THREE.LineSegments>(null);
 
   const { positions, speeds, lengths } = useMemo(() => {

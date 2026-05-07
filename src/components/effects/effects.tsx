@@ -11,8 +11,10 @@ import { BlendFunction, GlitchMode } from 'postprocessing';
 import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import type { EffectsProps } from './effects.types';
+import { useIsMobile } from '@/hooks';
 
 export function Effects({ scroll }: EffectsProps) {
+  const isMobile = useIsMobile();
   const glitchRef = useRef<any>(null);
   const lastZone = useRef(0);
 
@@ -22,7 +24,7 @@ export function Effects({ scroll }: EffectsProps) {
   const glitchStrength = useMemo(() => new THREE.Vector2(0.2, 0.4), []);
 
   useFrame(() => {
-    if (!glitchRef.current || !scroll) return;
+    if (!glitchRef.current || !scroll || isMobile) return;
     const t = scroll.offset;
     const currentZone = Math.floor(t * 4);
     if (currentZone !== lastZone.current) {
@@ -37,6 +39,15 @@ export function Effects({ scroll }: EffectsProps) {
       }, 400);
     }
   });
+
+  if (isMobile) {
+    return (
+      <EffectComposer>
+        <Bloom luminanceThreshold={0.3} luminanceSmoothing={0.9} intensity={0.8} />
+        <Vignette offset={0.3} darkness={0.7} />
+      </EffectComposer>
+    );
+  }
 
   return (
     <EffectComposer>

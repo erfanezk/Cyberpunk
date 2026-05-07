@@ -2,11 +2,13 @@ import { useFrame } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { COLORS } from '@/constants';
+import { useIsMobile } from '@/hooks';
 import type { ParticlesProps } from './particles.types';
 
 export function Particles({ scroll }: ParticlesProps) {
+  const isMobile = useIsMobile();
   const pointsRef = useRef<THREE.Points>(null);
-  const count = 1500;
+  const count = isMobile ? 400 : 1500;
 
   const { positions, colors } = useMemo(() => {
     const positions = new Float32Array(count * 3);
@@ -29,7 +31,7 @@ export function Particles({ scroll }: ParticlesProps) {
       colors[i * 3 + 2] = color.b;
     }
     return { positions, colors };
-  }, []);
+  }, [count]);
 
   useFrame((state) => {
     if (!pointsRef.current) return;
