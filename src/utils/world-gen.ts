@@ -472,13 +472,13 @@ function generateWorld() {
   }
 
   const npcInstances: NpcInstance[] = [
-    ...makeCrimeScenes(walkPath, occupied), // 2 × (shooter + victim)
     ...makeStreetFights(walkPath, occupied), // 2 × (puncher + puncher)
     ...makeSocialClusters(walkPath, occupied), // 3 × (3-4 talking/dancing circle)
     ...makeGuardPosts(walkPath, occupied), // 3 armed guards facing path
     ...makeGangPatrols(walkPath, occupied), // 3 × 2-man patrol routes
     ...makeRunners(walkPath, occupied), // 2 solo sprinters/joggers
     ...makeLoners(walkPath, occupied), // 6 solo ambient NPCs
+    ...makeCrimeScenes(walkPath, occupied), // 2 × (shooter + victim)
   ];
 
   return { walkPath, corridorPairs, npcGroups: [] as NpcGroup[], npcInstances };

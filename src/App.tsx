@@ -2,15 +2,11 @@ import { ScrollControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { Suspense, useCallback, useRef, useState } from 'react';
 import {
-  AboutOverlay,
-  ArticlesOverlay,
   CinematicEnding,
-  ContactOverlay,
   GameHud,
   HeroOverlay,
   LoadingScreen,
   MusicPlayer,
-  ProjectsOverlay,
   Scene,
 } from '@/components';
 import { COLORS } from '@/constants';
@@ -50,10 +46,6 @@ export default function App() {
       <LoadingScreen />
       <GameHud progress={progress} />
       <HeroOverlay progress={progress} />
-      <AboutOverlay progress={progress} />
-      <ProjectsOverlay progress={progress} />
-      <ArticlesOverlay progress={progress} />
-      <ContactOverlay progress={progress} />
       <CinematicEnding progress={progress} />
       <MusicPlayer />
     </>
