@@ -1,6 +1,7 @@
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { useIsMobile } from '@/hooks';
 import type { TowerData } from './neon-towers.types';
 import { generateTowers } from './neon-towers.utils';
 
@@ -11,20 +12,21 @@ function TowerSegment({
   height,
   color,
   phaseOffset,
+  isMobile,
 }: {
   width: number;
   height: number;
   color: THREE.Color;
   phaseOffset: number;
+  isMobile: boolean;
 }) {
   const outerRef = useRef<THREE.Mesh>(null);
 
   useFrame(({ clock }) => {
-    if (outerRef.current) {
-      const mat = outerRef.current.material as THREE.MeshStandardMaterial;
-      mat.emissiveIntensity =
-        0.15 + 0.35 * (0.5 + 0.5 * Math.sin(clock.elapsedTime * 2 + phaseOffset));
-    }
+    if (isMobile || !outerRef.current) return;
+    const mat = outerRef.current.material as THREE.MeshStandardMaterial;
+    mat.emissiveIntensity =
+      0.15 + 0.35 * (0.5 + 0.5 * Math.sin(clock.elapsedTime * 2 + phaseOffset));
   });
 
   const edgeGeo = useMemo(() => {
@@ -59,11 +61,19 @@ function TowerSegment({
   );
 }
 
-function AntennaTip({ color, phaseOffset }: { color: THREE.Color; phaseOffset: number }) {
+function AntennaTip({
+  color,
+  phaseOffset,
+  isMobile,
+}: {
+  color: THREE.Color;
+  phaseOffset: number;
+  isMobile: boolean;
+}) {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame(({ clock }) => {
-    if (!meshRef.current) return;
+    if (isMobile || !meshRef.current) return;
     const mat = meshRef.current.material as THREE.MeshStandardMaterial;
     mat.emissiveIntensity = 3 + 2.5 * Math.abs(Math.sin(clock.elapsedTime * 2.2 + phaseOffset));
   });
@@ -82,7 +92,7 @@ function AntennaTip({ color, phaseOffset }: { color: THREE.Color; phaseOffset: n
   );
 }
 
-function Tower({ tower }: { tower: TowerData }) {
+function Tower({ tower, isMobile }: { tower: TowerData; isMobile: boolean }) {
   const topY = useMemo(
     () => Math.max(...tower.segments.map((s) => s.localY + s.height / 2)),
     [tower.segments],
@@ -98,11 +108,11 @@ function Tower({ tower }: { tower: TowerData }) {
             height={seg.height}
             color={tower.color}
             phaseOffset={seg.phaseOffset}
+            isMobile={isMobile}
           />
         </group>
       ))}
 
-      {/* Rooftop antenna */}
       <group position={[0, topY, 0]}>
         <mesh position={[0, antennaH / 2, 0]}>
           <cylinderGeometry args={[0.04, 0.09, antennaH, 4]} />
@@ -113,7 +123,11 @@ function Tower({ tower }: { tower: TowerData }) {
           />
         </mesh>
         <group position={[0, antennaH, 0]}>
-          <AntennaTip color={tower.color} phaseOffset={tower.segments[0].phaseOffset} />
+          <AntennaTip
+            color={tower.color}
+            phaseOffset={tower.segments[0].phaseOffset}
+            isMobile={isMobile}
+          />
         </group>
       </group>
     </group>
@@ -121,12 +135,13 @@ function Tower({ tower }: { tower: TowerData }) {
 }
 
 export function NeonTowers() {
+  const isMobile = useIsMobile();
   const towers = useMemo<TowerData[]>(() => generateTowers(BACKGROUND_COUNT), []);
 
   return (
     <group>
       {towers.map((tower) => (
-        <Tower key={tower.id} tower={tower} />
+        <Tower key={tower.id} tower={tower} isMobile={isMobile} />
       ))}
     </group>
   );
