@@ -7,6 +7,23 @@ import { smoothstep } from './articles-overlay.utils';
 import styles from './articles-overlay.module.css';
 import { SplashWrapper } from '@/components/splash-wrapper';
 
+const SIGNAL_LEVELS = [5, 4, 5, 3, 4];
+const CLASS_LABELS = ['CLASSIFIED', 'RESTRICTED', 'CONFIDENTIAL', 'CLASSIFIED'];
+
+function SignalBars({ level }: { level: number }) {
+  return (
+    <div className={styles.signal} title={`SIGNAL: ${level}/5`}>
+      {[1, 2, 3, 4, 5].map((n) => (
+        <span
+          key={n}
+          className={styles.signalBar}
+          style={{ opacity: n <= level ? 1 : 0.18, height: `${6 + n * 2}px` }}
+        />
+      ))}
+    </div>
+  );
+}
+
 export function ArticlesOverlay({ progress }: OverlayProps) {
   const { fadeIn, fadeOut } = SECTION_ZONES.articles;
   const opacity = useMemo(() => {
@@ -21,34 +38,70 @@ export function ArticlesOverlay({ progress }: OverlayProps) {
     <SplashWrapper progress={progress} fadeIn={SECTION_ZONES.articles.fadeIn} color="rgba(255,200,0,0.15)">
       <div className="overlay-layer" style={{ opacity }}>
         <div className={styles.wrapper}>
-          <h2 className={styles.title}><span className={styles.missionId}>MISSION_03</span> // INTEL_NET</h2>
+
+          <div className={styles.sectionHeader}>
+            <span className={styles.missionTag}>MISSION_03</span>
+            <span className={styles.sectionTitle}>// INTEL_NET</span>
+            <span className={styles.freqTag}>FREQ: 435.6 MHz</span>
+          </div>
+
           <div className={styles.list}>
-            {ARTICLES.map((article) => (
-              <ArticleCard key={article.id} article={article} />
+            {ARTICLES.map((article, i) => (
+              <ArticleCard
+                key={article.id}
+                article={article}
+                index={i}
+                signal={SIGNAL_LEVELS[i % SIGNAL_LEVELS.length]}
+                classification={CLASS_LABELS[i % CLASS_LABELS.length]}
+              />
             ))}
           </div>
+
         </div>
       </div>
     </SplashWrapper>
   );
 }
 
-function ArticleCard({ article }: { article: Article }) {
+function ArticleCard({
+  article,
+  index,
+  signal,
+  classification,
+}: { article: Article; index: number; signal: number; classification: string }) {
+  const packetId = `PKT-${String(index + 1).padStart(3, '0')}`;
+
   return (
-    <div className={`glass-panel ${styles.article}`}>
-      <div className={styles.articleHeader}>
-        <span className={styles.articleTitle}>{article.title}</span>
+    <a
+      href={article.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={styles.article}
+    >
+      <div className={styles.articleCornerTR} />
+
+      <div className={styles.articleTopRow}>
+        <span className={styles.packetId}>{packetId}</span>
+        <span className={styles.classBadge}>[{classification}]</span>
         <span className={styles.articleDate}>{article.date}</span>
+        <SignalBars level={signal} />
       </div>
+
+      <div className={styles.articleHeader}>
+        <span className={styles.interceptLabel}>INTERCEPTED&nbsp;▶</span>
+        <span className={styles.articleTitle}>{article.title}</span>
+      </div>
+
       <p className={styles.articleDesc}>{article.description}</p>
-      <div className={styles.articleTags}>
-        {article.tags.map((tag) => (
-          <span key={tag} className={styles.tag}>
-            {tag}
-          </span>
-        ))}
+
+      <div className={styles.articleBottom}>
+        <div className={styles.articleTags}>
+          {article.tags.map((tag) => (
+            <span key={tag} className={styles.tag}>{tag}</span>
+          ))}
+        </div>
+        <span className={styles.readLink}>READ_REPORT&nbsp;&#x2192;</span>
       </div>
-      <span className={styles.articleArrow}>→</span>
-    </div>
+    </a>
   );
 }

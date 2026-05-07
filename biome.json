@@ -21,6 +21,9 @@
       "a11y": {
         "useMediaCaption": "off",
         "noSvgWithoutTitle": "off"
+      },
+      "suspicious": {
+        "noCommentText": "off"
       }
     }
   },

@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/suspicious/noCommentText: <j> */
 import { useMemo } from 'react';
 import { PROFILE } from '@/constants';
 import { SECTION_ZONES } from '@/types';
@@ -6,6 +5,13 @@ import type { OverlayProps } from '@/types';
 import { smoothstep } from './about-overlay.utils';
 import styles from './about-overlay.module.css';
 import { SplashWrapper } from '@/components/splash-wrapper';
+
+const STATS = [
+  { label: 'FRONTEND', pct: 94, color: '#00fff5' },
+  { label: 'AI', pct: 80, color: '#ff00ff' },
+  { label: '3D / GL', pct: 88, color: '#ff9900' },
+  { label: 'UX / DESIGN', pct: 76, color: '#00ff88' },
+];
 
 export function AboutOverlay({ progress }: OverlayProps) {
   const { fadeIn, fadeOut } = SECTION_ZONES.about;
@@ -17,27 +23,36 @@ export function AboutOverlay({ progress }: OverlayProps) {
 
   if (opacity < 0.01) return null;
 
-  const hasSkills = PROFILE.skills.length > 0;
-
   return (
-    <SplashWrapper progress={progress} fadeIn={SECTION_ZONES.about.fadeIn} color="rgba(168,85,247,0.15)">
+    <SplashWrapper
+      progress={progress}
+      fadeIn={SECTION_ZONES.about.fadeIn}
+      color="rgba(168,85,247,0.15)"
+    >
       <div className="overlay-layer" style={{ opacity }}>
         <div className={styles.wrapper}>
-          <h2 className={styles.title}><span className={styles.missionId}>MISSION_01</span> // IDENTITY_SCAN</h2>
+          <div className={styles.sectionHeader}>
+            <span className={styles.missionTag}>MISSION_01</span>
+            <span className={styles.sectionTitle}>// IDENTITY_SCAN</span>
+            <span className={styles.clearanceTag}>CLEARANCE: LV4</span>
+          </div>
 
-          <div className={`glass-panel ${styles.card}`}>
-            <div className={styles.cardHeader}>
-              <span className={styles.dot} style={{ background: '#ff5f57' }} />
-              <span className={styles.dot} style={{ background: '#febc2e' }} />
-              <span className={styles.dot} style={{ background: '#28c840' }} />
-              <span className={styles.fileLabel}>identity.sys</span>
+          <div className={styles.card}>
+            <div className={styles.cardTopBar}>
+              <div className={styles.macDots}>
+                <span className={styles.dot} style={{ background: '#ff5f57' }} />
+                <span className={styles.dot} style={{ background: '#febc2e' }} />
+                <span className={styles.dot} style={{ background: '#28c840' }} />
+              </div>
+              <span className={styles.fileLabel}>dossier_classified.sys</span>
               <span className={styles.statusBadge}>
                 <span className={styles.statusPulse} />
-                ONLINE
+                ACTIVE
               </span>
             </div>
 
             <div className={styles.body}>
+              {/* Left: photo + identity */}
               <div className={styles.identity}>
                 <div className={styles.photoFrame}>
                   <span className={styles.bracket} data-pos="tl" />
@@ -45,17 +60,25 @@ export function AboutOverlay({ progress }: OverlayProps) {
                   <span className={styles.bracket} data-pos="bl" />
                   <span className={styles.bracket} data-pos="br" />
                   <img src={PROFILE.photo} alt={PROFILE.name} className={styles.photo} />
-                  <span className={styles.scanline} aria-hidden />
+                  <div className={styles.scanBeam} aria-hidden />
+                  <div className={styles.photoScanline} aria-hidden />
+                  <div className={styles.targetRing} aria-hidden />
                 </div>
                 <div className={styles.identityMeta}>
-                  <span className={styles.metaLabel}>// USER</span>
+                  <span className={styles.metaLabel}>// SUBJECT</span>
                   <h3 className={styles.name}>{PROFILE.name}</h3>
                   <span className={styles.role}>{PROFILE.title}</span>
+                  <div className={styles.lvlBadge}>
+                    <span className={styles.lvlLabel}>LVL</span>
+                    <span className={styles.lvlVal}>04</span>
+                    <span className={styles.lvlClass}>ENGINEER</span>
+                  </div>
                 </div>
               </div>
 
-              <div className={styles.divider} aria-hidden />
+              <div className={styles.divider} />
 
+              {/* Right: bio + stats */}
               <div className={styles.content}>
                 <div className={styles.bioBlock}>
                   <span className={styles.sectionLabel}>// BIO</span>
@@ -63,18 +86,23 @@ export function AboutOverlay({ progress }: OverlayProps) {
                   <p className={styles.tagline}>&ldquo;{PROFILE.tagline}&rdquo;</p>
                 </div>
 
-                {hasSkills && (
-                  <div className={styles.skillsBlock}>
-                    <span className={styles.sectionLabel}>// STACK</span>
-                    <div className={styles.skills}>
-                      {PROFILE.skills.map((s) => (
-                        <span key={s} className={styles.chip}>
-                          {s}
-                        </span>
-                      ))}
+                <div className={styles.statsBlock}>
+                  <span className={styles.sectionLabel}>// ATTRIBUTES</span>
+                  {STATS.map((s) => (
+                    <div key={s.label} className={styles.statRow}>
+                      <span className={styles.statLabel}>{s.label}</span>
+                      <div className={styles.statTrack}>
+                        <div
+                          className={styles.statFill}
+                          style={{ '--pct': `${s.pct}%`, '--col': s.color } as React.CSSProperties}
+                        />
+                      </div>
+                      <span className={styles.statVal} style={{ color: s.color }}>
+                        {s.pct}
+                      </span>
                     </div>
-                  </div>
-                )}
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -91,7 +119,8 @@ export function AboutOverlay({ progress }: OverlayProps) {
               <span className={styles.sep}>|</span>
               <span>
                 <span className={styles.kvKey}>STATUS</span>
-                <span className={styles.kvArrow}> &gt; </span>AVAILABLE
+                <span className={styles.kvArrow}> &gt; </span>
+                <span style={{ color: '#28c840' }}>AVAILABLE</span>
               </span>
             </div>
           </div>

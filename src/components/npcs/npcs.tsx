@@ -4,41 +4,22 @@ import { useGLTF } from '@react-three/drei';
 import { clone as skeletonClone } from 'three/examples/jsm/utils/SkeletonUtils.js';
 import * as THREE from 'three';
 import modelUrl from '@/assets/UAL1_Standard.glb?url';
-import { AnimationsName, NPC_INSTANCES } from '@/constants';
+import { NPC_INSTANCES } from '@/constants';
 import type { NpcInstance, NpcPath, Vec3 } from '@/types';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
-function segmentDist(a: readonly [number, number, number], b: readonly [number, number, number]) {
+function segmentDist(a: Vec3, b: Vec3) {
   return Math.sqrt((b[0] - a[0]) ** 2 + (b[2] - a[2]) ** 2);
 }
 
-function crossfade(
-  target: AnimationsName,
-  current: { current: AnimationsName | null },
-  mixer: THREE.AnimationMixer,
-  clips: THREE.AnimationClip[],
-) {
-  if (target === current.current) return;
-  const nextClip = THREE.AnimationClip.findByName(clips, target as string);
-  if (!nextClip) return;
-  const prevClip = current.current
-    ? THREE.AnimationClip.findByName(clips, current.current as string)
-    : null;
-  const next = mixer.clipAction(nextClip);
-  next.reset().setEffectiveWeight(1);
-  if (prevClip) next.crossFadeFrom(mixer.clipAction(prevClip), 0.35, true);
-  next.play();
-  current.current = target;
-}
-
-// ── path follower state ───────────────────────────────────────────────────────
+// ── path follower ─────────────────────────────────────────────────────────────
 
 interface PathState {
   t: number; // monotonically increasing path parameter
 }
 
-// Resolves t → { from, to, segT, backward } for both loop and ping-pong modes.
+// Resolves t → { from, to, segT, backward } for loop and ping-pong modes.
 // loop=true:  t cycles through all n segments (including n-1 → 0 wrap-around).
 // loop=false: t oscillates forward (0..n-1) then backward (n-1..0).
 function getSegment(
@@ -78,7 +59,7 @@ function advancePath(state: PathState, path: NpcPath, delta: number): void {
   if (dist > 0) state.t += (path.speed * delta) / dist;
 }
 
-function samplePath(state: PathState, path: NpcPath): [number, number, number] {
+function samplePath(state: PathState, path: NpcPath): Vec3 {
   const { from, to, segT } = getSegment(state.t, path);
   return [from[0] + (to[0] - from[0]) * segT, 0, from[2] + (to[2] - from[2]) * segT];
 }
@@ -91,9 +72,8 @@ function facingAngle(state: PathState, path: NpcPath): number {
 
 // ── Npc component ─────────────────────────────────────────────────────────────
 
-function Npc({ position, rotationY, behavior, pathOffset }: NpcInstance) {
+function Npc({ position, rotationY, animation, path, pathOffset }: NpcInstance) {
   const groupRef = useRef<THREE.Group>(null);
-  const currentAnim = useRef<AnimationsName | null>(null);
   const pathState = useRef<PathState>({ t: pathOffset });
 
   const { scene: source, animations } = useGLTF(modelUrl);
@@ -101,25 +81,22 @@ function Npc({ position, rotationY, behavior, pathOffset }: NpcInstance) {
   const mixer = useMemo(() => new THREE.AnimationMixer(cloned), [cloned]);
 
   useEffect(() => {
-    const startAnim = behavior.animation;
-    const clip = THREE.AnimationClip.findByName(animations, startAnim as string);
+    const clip = THREE.AnimationClip.findByName(animations, animation as string);
     if (!clip) return;
     mixer.clipAction(clip).setLoop(THREE.LoopRepeat, Infinity).setEffectiveWeight(1).play();
-    currentAnim.current = startAnim;
     return () => {
       mixer.stopAllAction();
     };
-  }, [mixer, animations, behavior.animation]);
+  }, [mixer, animations, animation]);
 
   useFrame((_, delta) => {
     if (!groupRef.current) return;
 
-    if (behavior.kind === 'move') {
-      advancePath(pathState.current, behavior.path, delta);
-      const [px, py, pz] = samplePath(pathState.current, behavior.path);
+    if (path) {
+      advancePath(pathState.current, path, delta);
+      const [px, py, pz] = samplePath(pathState.current, path);
       groupRef.current.position.set(px, py, pz);
-      groupRef.current.rotation.y = facingAngle(pathState.current, behavior.path);
-      crossfade(behavior.animation, currentAnim, mixer, animations);
+      groupRef.current.rotation.y = facingAngle(pathState.current, path);
     }
 
     mixer.update(delta);

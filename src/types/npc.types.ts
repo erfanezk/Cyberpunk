@@ -7,52 +7,22 @@ export interface NpcPath {
   loop: boolean; // true = cycle | false = ping-pong
 }
 
-export type NpcBehavior =
-  | { kind: 'idle'; animation: AnimationsName }
-  | { kind: 'move'; animation: AnimationsName; path: NpcPath }
-  | { kind: 'group'; animation: AnimationsName; groupId: string };
+export type Placement =
+  | { kind: 'point'; position: Vec3; rotationY: number }
+  | { kind: 'circle'; center: Vec3; radius?: number; count: number }
+  | { kind: 'patrol'; path: NpcPath; count?: number };
+
+export interface NpcGroup {
+  id: string;
+  placement: Placement;
+  animation: AnimationsName;
+}
 
 export interface NpcInstance {
   id: string;
   position: Vec3;
   rotationY: number;
+  animation: AnimationsName;
+  path?: NpcPath;
   pathOffset: number;
-  behavior: NpcBehavior;
 }
-
-export type NpcGroup =
-  | {
-      kind: 'talk';
-      id: string;
-      center: Vec3;
-      count: number;
-      radius?: number;
-    }
-  | {
-      kind: 'dance';
-      id: string;
-      center: Vec3;
-      count: number;
-      radius?: number;
-    }
-  | {
-      kind: 'fight';
-      id: string;
-      center: Vec3;
-      count: 2;
-      gap?: number;
-    }
-  | {
-      kind: 'patrol';
-      id: string;
-      count: number;
-      animation: AnimationsName;
-      path: NpcPath;
-    }
-  | {
-      kind: 'solo';
-      id: string;
-      position: Vec3;
-      rotationY: number;
-      animation: AnimationsName;
-    };

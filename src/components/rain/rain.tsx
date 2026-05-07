@@ -2,7 +2,7 @@ import { useFrame } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
-const COUNT = 2500;
+const COUNT = 4000;
 const SPREAD_X = 220;
 const SPREAD_Z = 320;
 const HEIGHT = 90;
@@ -22,14 +22,14 @@ export function Rain() {
       const z = Math.random() * SPREAD_Z + Z_OFFSET;
       const len = 0.6 + Math.random() * 0.8;
 
-      positions[i * 6]     = x;
+      positions[i * 6] = x;
       positions[i * 6 + 1] = y;
       positions[i * 6 + 2] = z;
       positions[i * 6 + 3] = x;
       positions[i * 6 + 4] = y - len;
       positions[i * 6 + 5] = z;
 
-      speeds[i]  = 0.55 + Math.random() * 0.7;
+      speeds[i] = 0.55 + Math.random() * 0.7;
       lengths[i] = len;
     }
 
@@ -48,7 +48,7 @@ export function Rain() {
       if (arr[i * 6 + 4] < -1) {
         const x = (Math.random() - 0.5) * SPREAD_X;
         const z = Math.random() * SPREAD_Z + Z_OFFSET;
-        arr[i * 6]     = x;
+        arr[i * 6] = x;
         arr[i * 6 + 1] = HEIGHT + Math.random() * 20;
         arr[i * 6 + 2] = z;
         arr[i * 6 + 3] = x;

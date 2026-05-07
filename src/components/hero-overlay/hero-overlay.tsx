@@ -24,6 +24,7 @@ export function HeroOverlay({ progress }: OverlayProps) {
           <span className={`${styles.corner} ${styles.cornerTR}`} />
           <span className={`${styles.corner} ${styles.cornerBL}`} />
           <span className={`${styles.corner} ${styles.cornerBR}`} />
+          <div className={styles.scanLine} aria-hidden />
 
           <div className={styles.bootLine}>
             <span className={styles.bootPrompt}>&gt;</span>
@@ -34,7 +35,9 @@ export function HeroOverlay({ progress }: OverlayProps) {
           </div>
 
           <div className={styles.nameBlock}>
-            <h1 className={`${styles.glitchText} ${styles.name}`}>{PROFILE.name}</h1>
+            <h1 className={`${styles.glitchText} ${styles.name}`} data-text={PROFILE.name}>
+              {PROFILE.name}
+            </h1>
             <div className={styles.nameDivider} />
           </div>
 
@@ -43,9 +46,14 @@ export function HeroOverlay({ progress }: OverlayProps) {
 
           <div className={styles.scrollHint}>
             <span className={styles.scrollLabel}>SCROLL TO EXPLORE</span>
-            <span className={styles.scrollArrow}>&#x25BC;</span>
+            <div className={styles.chevrons}>
+              <span className={styles.chev}>&#x25BC;</span>
+              <span className={styles.chev}>&#x25BC;</span>
+              <span className={styles.chev}>&#x25BC;</span>
+            </div>
           </div>
         </div>
+
       </div>
     </SplashWrapper>
   );
