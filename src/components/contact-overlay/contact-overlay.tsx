@@ -14,9 +14,9 @@ interface ContactLine {
 }
 
 const CONTACT_LINES: ContactLine[] = [
-  { label: 'email',    value: CONTACT.email,    link: `mailto:${CONTACT.email}`,  id: 'c1' },
-  { label: 'github',   value: CONTACT.github,   link: CONTACT.github,              id: 'c2' },
-  { label: 'linkedin', value: CONTACT.linkedin, link: CONTACT.linkedin,            id: 'c3' },
+  { label: 'email', value: CONTACT.email, link: `mailto:${CONTACT.email}`, id: 'c1' },
+  { label: 'github', value: CONTACT.github, link: CONTACT.github, id: 'c2' },
+  { label: 'linkedin', value: CONTACT.linkedin, link: CONTACT.linkedin, id: 'c3' },
 ];
 
 function SignalMeter({ bars }: { bars: number }) {
@@ -67,10 +67,13 @@ export function ContactOverlay({ progress }: OverlayProps) {
   if (opacity < 0.01) return null;
 
   return (
-    <SplashWrapper progress={progress} fadeIn={SECTION_ZONES.contact.fadeIn} color="rgba(0,255,150,0.15)">
+    <SplashWrapper
+      progress={progress}
+      fadeIn={SECTION_ZONES.contact.fadeIn}
+      color="rgba(0,255,150,0.15)"
+    >
       <div className="overlay-layer" style={{ opacity }}>
         <div className={styles.wrapper}>
-
           <div className={styles.sectionHeader}>
             <span className={styles.missionTag}>MISSION_04</span>
             <span className={styles.sectionTitle}>// COMM_TOWER</span>
@@ -112,7 +115,12 @@ export function ContactOverlay({ progress }: OverlayProps) {
                   <span className={styles.prompt}>&gt;$</span>
                   <span className={styles.label}>{line.label}:</span>
                   {line.link ? (
-                    <a href={line.link} target="_blank" rel="noopener noreferrer" className={styles.value}>
+                    <a
+                      href={line.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.value}
+                    >
                       {line.value}
                     </a>
                   ) : (
@@ -143,7 +151,6 @@ export function ContactOverlay({ progress }: OverlayProps) {
               </span>
             </div>
           </div>
-
         </div>
       </div>
     </SplashWrapper>

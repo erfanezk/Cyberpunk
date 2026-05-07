@@ -18,7 +18,7 @@ function makeWalkPath(): THREE.CatmullRomCurve3 {
   type Ctrl = { t: number; x: number };
 
   const amp = () => 28 + Math.random() * 22; // 28–50 units per bend
-  const s = Math.random() < 0.5 ? 1 : -1;   // random first-bend direction
+  const s = Math.random() < 0.5 ? 1 : -1; // random first-bend direction
   const jit = () => (Math.random() - 0.5) * 0.06; // tiny t jitter for variety
 
   // Three shape templates — all start/end at x=0
@@ -28,29 +28,29 @@ function makeWalkPath(): THREE.CatmullRomCurve3 {
   if (r < 0.4) {
     // S-curve: peak left then right (or reverse)
     controls = [
-      { t: 0,              x: 0 },
-      { t: 0.28 + jit(),   x:  s * amp() },
-      { t: 0.68 + jit(),   x: -s * amp() },
-      { t: 1,              x: 0 },
+      { t: 0, x: 0 },
+      { t: 0.28 + jit(), x: s * amp() },
+      { t: 0.68 + jit(), x: -s * amp() },
+      { t: 1, x: 0 },
     ];
   } else if (r < 0.72) {
     // C-curve: one big arc, stays on one side
     const a = amp();
     controls = [
-      { t: 0,              x: 0 },
-      { t: 0.2  + jit(),   x: s * a * 0.55 },
-      { t: 0.5  + jit(),   x: s * a },
-      { t: 0.8  + jit(),   x: s * a * 0.55 },
-      { t: 1,              x: 0 },
+      { t: 0, x: 0 },
+      { t: 0.2 + jit(), x: s * a * 0.55 },
+      { t: 0.5 + jit(), x: s * a },
+      { t: 0.8 + jit(), x: s * a * 0.55 },
+      { t: 1, x: 0 },
     ];
   } else {
     // Z-shape: three committed turns
     controls = [
-      { t: 0,              x: 0 },
-      { t: 0.22 + jit(),   x:  s * amp() },
-      { t: 0.5  + jit(),   x: -s * amp() },
-      { t: 0.78 + jit(),   x:  s * amp() * 0.65 },
-      { t: 1,              x: 0 },
+      { t: 0, x: 0 },
+      { t: 0.22 + jit(), x: s * amp() },
+      { t: 0.5 + jit(), x: -s * amp() },
+      { t: 0.78 + jit(), x: s * amp() * 0.65 },
+      { t: 1, x: 0 },
     ];
   }
 
@@ -59,7 +59,8 @@ function makeWalkPath(): THREE.CatmullRomCurve3 {
 
   const xAt = (t: number): number => {
     for (let i = 0; i < controls.length - 1; i++) {
-      const a = controls[i], b = controls[i + 1];
+      const a = controls[i],
+        b = controls[i + 1];
       if (t <= b.t) {
         const lt = (t - a.t) / (b.t - a.t);
         return a.x + (b.x - a.x) * smooth(Math.max(0, Math.min(1, lt)));
@@ -241,20 +242,20 @@ function makeNpcGroups(
       if (isClear(w1x, w1z, NPC_R, occupied) && isClear(w2x, w2z, NPC_R, occupied)) {
         const anim = pick(PATROL_ANIMS);
         const speed =
-          anim === AnimationsName.Sprint_Loop ? 10 + Math.random() * 4
-          : anim === AnimationsName.Jog_Fwd_Loop ? 6 + Math.random() * 3
-          : anim === AnimationsName.Crouch_Fwd_Loop ? 2 + Math.random() * 1.5
-          : 3 + Math.random() * 2; // Walk variants
+          anim === AnimationsName.Sprint_Loop
+            ? 10 + Math.random() * 4
+            : anim === AnimationsName.Jog_Fwd_Loop
+              ? 6 + Math.random() * 3
+              : anim === AnimationsName.Crouch_Fwd_Loop
+                ? 2 + Math.random() * 1.5
+                : 3 + Math.random() * 2; // Walk variants
 
         groups.push({
           id: nextId(),
           placement: {
             kind: 'patrol',
             path: {
-              waypoints: [
-                [w1x, 0, w1z] as Vec3,
-                [w2x, 0, w2z] as Vec3,
-              ],
+              waypoints: [[w1x, 0, w1z] as Vec3, [w2x, 0, w2z] as Vec3],
               speed,
               loop: false,
             },

@@ -8,8 +8,8 @@ import { SplashWrapper } from '@/components/splash-wrapper';
 
 const STATS = [
   { label: 'FRONTEND', pct: 94, color: '#00fff5' },
-  { label: 'AI', pct: 80, color: '#ff00ff' },
-  { label: '3D / GL', pct: 88, color: '#ff9900' },
+  { label: 'BACKEND', pct: 40, color: '#ff00ff' },
+  { label: 'DevOps', pct: 45, color: '#ff9900' },
   { label: 'UX / DESIGN', pct: 76, color: '#00ff88' },
 ];
 

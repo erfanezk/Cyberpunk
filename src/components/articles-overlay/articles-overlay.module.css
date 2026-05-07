@@ -1,15 +1,30 @@
 /* ── Keyframes ────────────────────────────────────────────────────────────── */
 
 @keyframes staticFlicker {
-  0%, 92%, 100% { opacity: 1; }
-  93%            { opacity: 0.6; }
-  95%            { opacity: 1; }
-  97%            { opacity: 0.7; }
+  0%,
+  92%,
+  100% {
+    opacity: 1;
+  }
+  93% {
+    opacity: 0.6;
+  }
+  95% {
+    opacity: 1;
+  }
+  97% {
+    opacity: 0.7;
+  }
 }
 
 @keyframes signalPulse {
-  0%, 100% { box-shadow: 0 0 3px var(--cyan); }
-  50%       { box-shadow: 0 0 8px var(--cyan); }
+  0%,
+  100% {
+    box-shadow: 0 0 3px var(--cyan);
+  }
+  50% {
+    box-shadow: 0 0 8px var(--cyan);
+  }
 }
 
 /* ── Wrapper ──────────────────────────────────────────────────────────────── */
@@ -82,12 +97,17 @@
   text-decoration: none;
   color: inherit;
   overflow: hidden;
-  transition: border-color 0.28s ease, box-shadow 0.28s ease, transform 0.28s ease;
+  transition:
+    border-color 0.28s ease,
+    box-shadow 0.28s ease,
+    transform 0.28s ease;
 }
 
 .article:hover {
   border-color: rgba(0, 255, 245, 0.45);
-  box-shadow: 0 0 24px rgba(0, 255, 245, 0.1), 4px 0 0 var(--cyan);
+  box-shadow:
+    0 0 24px rgba(0, 255, 245, 0.1),
+    4px 0 0 var(--cyan);
   transform: translateX(4px);
 }
 
@@ -225,7 +245,9 @@
 /* ── Responsive ───────────────────────────────────────────────────────────── */
 
 @media (max-width: 1024px) {
-  .wrapper { padding: 0.75rem; }
+  .wrapper {
+    padding: 0.75rem;
+  }
 
   .list {
     overflow-x: auto;
@@ -238,7 +260,9 @@
     scrollbar-width: none;
   }
 
-  .list::-webkit-scrollbar { display: none; }
+  .list::-webkit-scrollbar {
+    display: none;
+  }
 
   .article {
     min-width: 280px;

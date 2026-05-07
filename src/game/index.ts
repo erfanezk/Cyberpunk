@@ -1,1 +1,1 @@
-export { game } from './game';
+export { game, type ActionName } from './game';

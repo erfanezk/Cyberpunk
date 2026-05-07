@@ -20,10 +20,13 @@ export function ProjectsOverlay({ progress }: OverlayProps) {
   if (opacity < 0.01) return null;
 
   return (
-    <SplashWrapper progress={progress} fadeIn={SECTION_ZONES.projects.fadeIn} color="rgba(255,0,128,0.15)">
+    <SplashWrapper
+      progress={progress}
+      fadeIn={SECTION_ZONES.projects.fadeIn}
+      color="rgba(255,0,128,0.15)"
+    >
       <div className="overlay-layer" style={{ opacity }}>
         <div className={styles.wrapper}>
-
           <div className={styles.sectionHeader}>
             <span className={styles.missionTag}>MISSION_02</span>
             <span className={styles.sectionTitle}>// ARCHIVE_VAULT</span>
@@ -58,7 +61,10 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           <span className={styles.cardIndex} style={{ color: project.color }}>
             {String(index + 1).padStart(2, '0')}
           </span>
-          <span className={styles.priorityBadge} style={{ color: priCol, borderColor: `${priCol}55` }}>
+          <span
+            className={styles.priorityBadge}
+            style={{ color: priCol, borderColor: `${priCol}55` }}
+          >
             &#9650;&nbsp;{pri}
           </span>
         </div>
@@ -76,7 +82,10 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
 
         <div className={styles.cardFooter}>
           <span className={styles.statusBadge}>
-            <span className={styles.statusDot} style={{ background: '#28c840', boxShadow: '0 0 4px #28c840' }} />
+            <span
+              className={styles.statusDot}
+              style={{ background: '#28c840', boxShadow: '0 0 4px #28c840' }}
+            />
             DEPLOYED
           </span>
           <a

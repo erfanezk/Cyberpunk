@@ -39,7 +39,13 @@ function Drone({ radius, height, speed, phase, color, zCenter }: DroneConfig) {
       {/* glow core */}
       <mesh>
         <sphereGeometry args={[0.55, 8, 8]} />
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={10} transparent opacity={0.85} />
+        <meshStandardMaterial
+          color={color}
+          emissive={color}
+          emissiveIntensity={10}
+          transparent
+          opacity={0.85}
+        />
       </mesh>
       <pointLight ref={lightRef} color={color} intensity={8} distance={45} decay={2} />
     </group>
@@ -53,7 +59,7 @@ export function FlyingVehicles() {
         id: `drone-${i}`,
         radius: 28 + (i % 5) * 16,
         height: 18 + i * 5,
-        speed: 0.28 + i * 0.04,   // radians/sec — visible orbital speed
+        speed: 0.28 + i * 0.04, // radians/sec — visible orbital speed
         phase: (i / 10) * Math.PI * 2,
         color: NEON[i % NEON.length],
         zCenter: -60 - (i % 4) * 28,

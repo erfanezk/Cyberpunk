@@ -1,1 +1,1 @@
-export interface MusicPlayerProps {}
+export type MusicPlayerProps = {};

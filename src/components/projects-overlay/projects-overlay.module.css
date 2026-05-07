@@ -1,13 +1,25 @@
 /* ── Keyframes ────────────────────────────────────────────────────────────── */
 
 @keyframes pulse {
-  0%, 100% { opacity: 0.4; }
-  50%       { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 @keyframes statusPulse {
-  0%, 100% { opacity: 0.6; transform: scale(0.9); }
-  50%       { opacity: 1;   transform: scale(1.2); }
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
 }
 
 /* ── Wrapper ──────────────────────────────────────────────────────────────── */
@@ -75,12 +87,17 @@
   /* cut top-right corner */
   clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
   overflow: hidden;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
 }
 
 .card:hover {
   border-color: rgba(0, 255, 245, 0.45);
-  box-shadow: 0 0 30px rgba(0, 255, 245, 0.12), inset 0 0 20px rgba(0, 255, 245, 0.04);
+  box-shadow:
+    0 0 30px rgba(0, 255, 245, 0.12),
+    inset 0 0 20px rgba(0, 255, 245, 0.04);
   transform: translateY(-4px);
 }
 
@@ -246,7 +263,9 @@
   text-decoration: none;
   letter-spacing: 0.08em;
   clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
-  transition: background 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    background 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .accessBtn:hover {
@@ -268,7 +287,10 @@
 /* ── Responsive ───────────────────────────────────────────────────────────── */
 
 @media (max-width: 1024px) {
-  .wrapper { padding: 0.75rem; pointer-events: auto; }
+  .wrapper {
+    padding: 0.75rem;
+    pointer-events: auto;
+  }
 
   .grid {
     display: flex;
@@ -281,7 +303,9 @@
     scrollbar-width: none;
   }
 
-  .grid::-webkit-scrollbar { display: none; }
+  .grid::-webkit-scrollbar {
+    display: none;
+  }
 
   .card {
     width: 80vw;
@@ -291,5 +315,7 @@
     flex-shrink: 0;
   }
 
-  .scrollHint { display: block; }
+  .scrollHint {
+    display: block;
+  }
 }

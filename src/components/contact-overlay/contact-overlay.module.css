@@ -1,23 +1,46 @@
 /* ── Keyframes ────────────────────────────────────────────────────────────── */
 
 @keyframes blink {
-  0%, 50%  { opacity: 1; }
-  51%, 100% { opacity: 0; }
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes typeIn {
-  from { opacity: 0; transform: translateX(-10px); }
-  to   { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes meterRise {
-  from { transform: scaleY(0); }
-  to   { transform: scaleY(1); }
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
 }
 
 @keyframes uplinkPulse {
-  0%, 100% { box-shadow: 0 0 4px #28c840; }
-  50%       { box-shadow: 0 0 12px #28c840, 0 0 24px rgba(40, 200, 64, 0.3); }
+  0%,
+  100% {
+    box-shadow: 0 0 4px #28c840;
+  }
+  50% {
+    box-shadow:
+      0 0 12px #28c840,
+      0 0 24px rgba(40, 200, 64, 0.3);
+  }
 }
 
 /* ── Wrapper ──────────────────────────────────────────────────────────────── */
@@ -113,7 +136,9 @@
   display: block;
   transform-origin: bottom;
   animation: meterRise 0.3s ease forwards;
-  transition: opacity 0.4s ease, box-shadow 0.4s ease;
+  transition:
+    opacity 0.4s ease,
+    box-shadow 0.4s ease;
 }
 
 /* ── Card ─────────────────────────────────────────────────────────────────── */
@@ -124,7 +149,14 @@
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(0, 255, 245, 0.2);
-  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  clip-path: polygon(
+    0 0,
+    calc(100% - 16px) 0,
+    100% 16px,
+    100% 100%,
+    16px 100%,
+    0 calc(100% - 16px)
+  );
   overflow: hidden;
 }
 
@@ -140,9 +172,19 @@
   background: rgba(0, 255, 245, 0.03);
 }
 
-.macDots { display: flex; gap: 5px; }
-.dot { width: 8px; height: 8px; border-radius: 50%; }
-.fileLabel { margin-left: 0.4rem; flex: 1; }
+.macDots {
+  display: flex;
+  gap: 5px;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.fileLabel {
+  margin-left: 0.4rem;
+  flex: 1;
+}
 
 .encLabel {
   color: #ff9900;
@@ -171,7 +213,9 @@
   margin-bottom: 0.1rem;
 }
 
-.initText { color: var(--text-dim); }
+.initText {
+  color: var(--text-dim);
+}
 
 .line {
   display: flex;
@@ -231,6 +275,14 @@
   background: rgba(0, 255, 245, 0.02);
 }
 
-.footerKey   { color: var(--magenta); }
-.footerSep   { color: rgba(0, 255, 245, 0.2); }
-.footerStat  { display: inline-flex; align-items: center; gap: 0.3rem; }
+.footerKey {
+  color: var(--magenta);
+}
+.footerSep {
+  color: rgba(0, 255, 245, 0.2);
+}
+.footerStat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}

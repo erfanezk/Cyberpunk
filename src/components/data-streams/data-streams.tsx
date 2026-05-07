@@ -45,10 +45,7 @@ function DataStream({ position, height, count }: StreamConfig) {
   return (
     <points ref={pointsRef} position={position}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[positions, 3]}
-        />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial
         size={0.12}

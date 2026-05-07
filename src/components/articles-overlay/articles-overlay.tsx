@@ -35,10 +35,13 @@ export function ArticlesOverlay({ progress }: OverlayProps) {
   if (opacity < 0.01) return null;
 
   return (
-    <SplashWrapper progress={progress} fadeIn={SECTION_ZONES.articles.fadeIn} color="rgba(255,200,0,0.15)">
+    <SplashWrapper
+      progress={progress}
+      fadeIn={SECTION_ZONES.articles.fadeIn}
+      color="rgba(255,200,0,0.15)"
+    >
       <div className="overlay-layer" style={{ opacity }}>
         <div className={styles.wrapper}>
-
           <div className={styles.sectionHeader}>
             <span className={styles.missionTag}>MISSION_03</span>
             <span className={styles.sectionTitle}>// INTEL_NET</span>
@@ -56,7 +59,6 @@ export function ArticlesOverlay({ progress }: OverlayProps) {
               />
             ))}
           </div>
-
         </div>
       </div>
     </SplashWrapper>
@@ -68,16 +70,16 @@ function ArticleCard({
   index,
   signal,
   classification,
-}: { article: Article; index: number; signal: number; classification: string }) {
+}: {
+  article: Article;
+  index: number;
+  signal: number;
+  classification: string;
+}) {
   const packetId = `PKT-${String(index + 1).padStart(3, '0')}`;
 
   return (
-    <a
-      href={article.link}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={styles.article}
-    >
+    <a href={article.link} target="_blank" rel="noopener noreferrer" className={styles.article}>
       <div className={styles.articleCornerTR} />
 
       <div className={styles.articleTopRow}>
@@ -97,7 +99,9 @@ function ArticleCard({
       <div className={styles.articleBottom}>
         <div className={styles.articleTags}>
           {article.tags.map((tag) => (
-            <span key={tag} className={styles.tag}>{tag}</span>
+            <span key={tag} className={styles.tag}>
+              {tag}
+            </span>
           ))}
         </div>
         <span className={styles.readLink}>READ_REPORT&nbsp;&#x2192;</span>

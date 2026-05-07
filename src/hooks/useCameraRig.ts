@@ -3,19 +3,19 @@ import { useRef } from 'react';
 import * as THREE from 'three';
 import { game } from '@/game';
 
-const BEHIND       = 12;
-const CAM_HEIGHT   = 6;
+const BEHIND = 12;
+const CAM_HEIGHT = 6;
 const CHEST_HEIGHT = 2.5;
-const CAM_FOV      = 72;
+const CAM_FOV = 72;
 
 const _targetPos = new THREE.Vector3();
-const _lookAt    = new THREE.Vector3();
+const _lookAt = new THREE.Vector3();
 
 export function useCameraRig(_scroll: { offset: number }) {
-  const smoothPos   = useRef(new THREE.Vector3(0, CAM_HEIGHT, BEHIND));
-  const smoothLook  = useRef(new THREE.Vector3(0, CHEST_HEIGHT, 0));
+  const smoothPos = useRef(new THREE.Vector3(0, CAM_HEIGHT, BEHIND));
+  const smoothLook = useRef(new THREE.Vector3(0, CHEST_HEIGHT, 0));
   const initialized = useRef(false);
-  const fovSet      = useRef(false);
+  const fovSet = useRef(false);
 
   useFrame((state) => {
     const camera = state.camera as THREE.PerspectiveCamera;

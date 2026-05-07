@@ -17,7 +17,11 @@ export function HeroOverlay({ progress }: OverlayProps) {
   if (opacity < 0.01) return null;
 
   return (
-    <SplashWrapper progress={progress} fadeIn={SECTION_ZONES.hero.fadeIn} color="rgba(0,255,245,0.15)">
+    <SplashWrapper
+      progress={progress}
+      fadeIn={SECTION_ZONES.hero.fadeIn}
+      color="rgba(0,255,245,0.15)"
+    >
       <div className="overlay-layer" style={{ opacity }}>
         <div className={styles.container}>
           <span className={`${styles.corner} ${styles.cornerTL}`} />
@@ -27,10 +31,8 @@ export function HeroOverlay({ progress }: OverlayProps) {
           <div className={styles.scanLine} aria-hidden />
 
           <div className={styles.bootLine}>
-            <span className={styles.bootPrompt}>&gt;</span>
-            {' '}SYS_ONLINE
-            <span className={styles.bootSep}> // </span>
-            v{new Date().getFullYear()}
+            <span className={styles.bootPrompt}>&gt;</span> SYS_ONLINE
+            <span className={styles.bootSep}> // </span>v{new Date().getFullYear()}
             <span className={styles.cursor} />
           </div>
 
@@ -53,7 +55,6 @@ export function HeroOverlay({ progress }: OverlayProps) {
             </div>
           </div>
         </div>
-
       </div>
     </SplashWrapper>
   );

@@ -59,13 +59,7 @@ function TowerSegment({
   );
 }
 
-function AntennaTip({
-  color,
-  phaseOffset,
-}: {
-  color: THREE.Color;
-  phaseOffset: number;
-}) {
+function AntennaTip({ color, phaseOffset }: { color: THREE.Color; phaseOffset: number }) {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame(({ clock }) => {

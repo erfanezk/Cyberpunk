@@ -1,56 +1,161 @@
 /* ── Keyframes ────────────────────────────────────────────────────────────── */
 
 @keyframes glitch {
-  0%   { text-shadow: 2px 0 var(--cyan), -2px 0 var(--magenta); clip-path: inset(0 0 0 0); }
-  8%   { text-shadow: -3px 2px var(--cyan), 3px -2px var(--magenta); clip-path: inset(15% 0 50% 0); transform: translate(-2px, 0); }
-  16%  { text-shadow: 2px -2px var(--cyan), -2px 2px var(--magenta); clip-path: inset(0 0 0 0); transform: translate(0, 0); }
-  24%  { text-shadow: 0 2px var(--cyan), 0 -2px var(--magenta); clip-path: inset(65% 0 8% 0); transform: translate(3px, 0); }
-  32%  { text-shadow: -2px 0 var(--cyan), 2px 0 var(--magenta); clip-path: inset(0 0 0 0); transform: translate(0, 0); }
-  50%  { text-shadow: 2px 2px var(--cyan), -2px -2px var(--magenta); clip-path: inset(30% 0 30% 0); transform: translate(-1px, 0); }
-  68%  { text-shadow: 0 -2px var(--cyan), 0 2px var(--magenta); clip-path: inset(0 0 0 0); transform: translate(0, 0); }
-  76%  { text-shadow: -3px -2px var(--cyan), 3px 2px var(--magenta); clip-path: inset(45% 0 22% 0); transform: translate(2px, 0); }
-  100% { text-shadow: 2px 0 var(--cyan), -2px 0 var(--magenta); clip-path: inset(0 0 0 0); transform: translate(0, 0); }
+  0% {
+    text-shadow:
+      2px 0 var(--cyan),
+      -2px 0 var(--magenta);
+    clip-path: inset(0 0 0 0);
+  }
+  8% {
+    text-shadow:
+      -3px 2px var(--cyan),
+      3px -2px var(--magenta);
+    clip-path: inset(15% 0 50% 0);
+    transform: translate(-2px, 0);
+  }
+  16% {
+    text-shadow:
+      2px -2px var(--cyan),
+      -2px 2px var(--magenta);
+    clip-path: inset(0 0 0 0);
+    transform: translate(0, 0);
+  }
+  24% {
+    text-shadow:
+      0 2px var(--cyan),
+      0 -2px var(--magenta);
+    clip-path: inset(65% 0 8% 0);
+    transform: translate(3px, 0);
+  }
+  32% {
+    text-shadow:
+      -2px 0 var(--cyan),
+      2px 0 var(--magenta);
+    clip-path: inset(0 0 0 0);
+    transform: translate(0, 0);
+  }
+  50% {
+    text-shadow:
+      2px 2px var(--cyan),
+      -2px -2px var(--magenta);
+    clip-path: inset(30% 0 30% 0);
+    transform: translate(-1px, 0);
+  }
+  68% {
+    text-shadow:
+      0 -2px var(--cyan),
+      0 2px var(--magenta);
+    clip-path: inset(0 0 0 0);
+    transform: translate(0, 0);
+  }
+  76% {
+    text-shadow:
+      -3px -2px var(--cyan),
+      3px 2px var(--magenta);
+    clip-path: inset(45% 0 22% 0);
+    transform: translate(2px, 0);
+  }
+  100% {
+    text-shadow:
+      2px 0 var(--cyan),
+      -2px 0 var(--magenta);
+    clip-path: inset(0 0 0 0);
+    transform: translate(0, 0);
+  }
 }
 
 @keyframes fadeSlideUp {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeSlideDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes expandLine {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(1); }
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
 }
 
 @keyframes cornerIn {
-  from { opacity: 0; transform: scale(0.7); }
-  to   { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes scanSweep {
-  0%   { top: -4px; opacity: 1; }
-  92%  { opacity: 0.6; }
-  100% { top: 100%; opacity: 0; }
+  0% {
+    top: -4px;
+    opacity: 1;
+  }
+  92% {
+    opacity: 0.6;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
 }
 
 @keyframes pulseGlow {
-  0%, 100% { opacity: 0.5; transform: scale(0.9); box-shadow: 0 0 4px var(--cyan); }
-  50%       { opacity: 1;   transform: scale(1.2); box-shadow: 0 0 10px var(--cyan); }
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(0.9);
+    box-shadow: 0 0 4px var(--cyan);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+    box-shadow: 0 0 10px var(--cyan);
+  }
 }
 
 @keyframes chevPulse {
-  0%, 100% { opacity: 0.15; transform: translateY(0); }
-  50%       { opacity: 1;    transform: translateY(5px); }
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(5px);
+  }
 }
 
 /* ── Container ────────────────────────────────────────────────────────────── */
@@ -73,7 +178,14 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(to right, transparent 0%, rgba(0, 255, 245, 0.6) 30%, rgba(0, 255, 245, 0.9) 50%, rgba(0, 255, 245, 0.6) 70%, transparent 100%);
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 255, 245, 0.6) 30%,
+    rgba(0, 255, 245, 0.9) 50%,
+    rgba(0, 255, 245, 0.6) 70%,
+    transparent 100%
+  );
   box-shadow: 0 0 12px rgba(0, 255, 245, 0.5);
   animation: scanSweep 5s linear infinite;
   pointer-events: none;
@@ -92,28 +204,32 @@
 }
 
 .cornerTL {
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   border-top: 2px solid var(--cyan);
   border-left: 2px solid var(--cyan);
   animation-delay: 0.05s;
   box-shadow: -2px -2px 8px rgba(0, 255, 245, 0.4);
 }
 .cornerTR {
-  top: 0; right: 0;
+  top: 0;
+  right: 0;
   border-top: 2px solid var(--cyan);
   border-right: 2px solid var(--cyan);
   animation-delay: 0.1s;
   box-shadow: 2px -2px 8px rgba(0, 255, 245, 0.4);
 }
 .cornerBL {
-  bottom: 0; left: 0;
+  bottom: 0;
+  left: 0;
   border-bottom: 2px solid var(--cyan);
   border-left: 2px solid var(--cyan);
   animation-delay: 0.15s;
   box-shadow: -2px 2px 8px rgba(0, 255, 245, 0.4);
 }
 .cornerBR {
-  bottom: 0; right: 0;
+  bottom: 0;
+  right: 0;
   border-bottom: 2px solid var(--cyan);
   border-right: 2px solid var(--cyan);
   animation-delay: 0.2s;
@@ -121,10 +237,42 @@
 }
 
 /* Extend lines from corners */
-.cornerTL::before { content: ''; position: absolute; top: -2px; left: calc(100% + 2px); width: 50px; height: 2px; background: linear-gradient(to right, var(--cyan), transparent); }
-.cornerTL::after  { content: ''; position: absolute; top: calc(100% + 2px); left: -2px; width: 2px; height: 50px; background: linear-gradient(to bottom, var(--cyan), transparent); }
-.cornerTR::before { content: ''; position: absolute; top: -2px; right: calc(100% + 2px); width: 50px; height: 2px; background: linear-gradient(to left, var(--cyan), transparent); }
-.cornerBR::before { content: ''; position: absolute; bottom: -2px; right: calc(100% + 2px); width: 50px; height: 2px; background: linear-gradient(to left, var(--cyan), transparent); }
+.cornerTL::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: calc(100% + 2px);
+  width: 50px;
+  height: 2px;
+  background: linear-gradient(to right, var(--cyan), transparent);
+}
+.cornerTL::after {
+  content: "";
+  position: absolute;
+  top: calc(100% + 2px);
+  left: -2px;
+  width: 2px;
+  height: 50px;
+  background: linear-gradient(to bottom, var(--cyan), transparent);
+}
+.cornerTR::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  right: calc(100% + 2px);
+  width: 50px;
+  height: 2px;
+  background: linear-gradient(to left, var(--cyan), transparent);
+}
+.cornerBR::before {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  right: calc(100% + 2px);
+  width: 50px;
+  height: 2px;
+  background: linear-gradient(to left, var(--cyan), transparent);
+}
 
 /* ── Boot line ────────────────────────────────────────────────────────────── */
 
@@ -140,8 +288,12 @@
   animation: fadeSlideDown 0.5s ease forwards 0.3s;
 }
 
-.bootPrompt { color: var(--cyan); }
-.bootSep { color: rgba(0, 255, 245, 0.3); }
+.bootPrompt {
+  color: var(--cyan);
+}
+.bootSep {
+  color: rgba(0, 255, 245, 0.3);
+}
 
 .cursor {
   display: inline-block;
@@ -178,7 +330,9 @@
   text-transform: uppercase;
   color: #fff;
   line-height: 1;
-  text-shadow: 0 0 30px rgba(0, 255, 245, 0.3), 0 0 60px rgba(0, 255, 245, 0.1);
+  text-shadow:
+    0 0 30px rgba(0, 255, 245, 0.3),
+    0 0 60px rgba(0, 255, 245, 0.1);
 }
 
 .nameDivider {
@@ -245,6 +399,12 @@
   display: block;
 }
 
-.chev:nth-child(1) { animation: chevPulse 1.4s ease-in-out 0s infinite; }
-.chev:nth-child(2) { animation: chevPulse 1.4s ease-in-out 0.18s infinite; }
-.chev:nth-child(3) { animation: chevPulse 1.4s ease-in-out 0.36s infinite; }
+.chev:nth-child(1) {
+  animation: chevPulse 1.4s ease-in-out 0s infinite;
+}
+.chev:nth-child(2) {
+  animation: chevPulse 1.4s ease-in-out 0.18s infinite;
+}
+.chev:nth-child(3) {
+  animation: chevPulse 1.4s ease-in-out 0.36s infinite;
+}
