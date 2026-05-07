@@ -14,6 +14,7 @@ export { HeroOverlay } from './hero-overlay';
 export { HolographicBillboards } from './holographic-billboards';
 export { MusicPlayer } from './music-player';
 export { NeonTowers } from './neon-towers';
+export { NPCs } from './npcs';
 export { Particles } from './particles';
 export { Rain } from './rain';
 export { ProjectsOverlay } from './projects-overlay';

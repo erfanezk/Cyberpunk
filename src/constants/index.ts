@@ -1,6 +1,8 @@
-export { COLORS } from './colors';
-export { PROFILE } from './profile';
-export { PROJECTS } from './projects';
-export { ARTICLES } from './articles';
-export { CONTACT } from './contact';
-export { CAMERA_PATH_POINTS, SECTION_ANCHORS } from './camera';
+export { COLORS } from './colors.constants';
+export { PROFILE } from './profile.constants';
+export { PROJECTS } from './projects.constants';
+export { ARTICLES } from './articles.constants';
+export { CONTACT } from './contact.constants';
+export { CAMERA_PATH_POINTS, SECTION_ANCHORS } from './camera.constants';
+export { AnimationsName } from './animations.constants';
+export { CORRIDOR_PAIRS, NPC_INSTANCES, NPC_GROUPS, resolveNpcGroups } from './world.constants';

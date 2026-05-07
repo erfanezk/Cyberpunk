@@ -4,6 +4,7 @@ import { FlyingVehicles } from '@/components/flying-vehicles';
 import { GridFloor } from '@/components/grid-floor';
 import { HolographicBillboards } from '@/components/holographic-billboards';
 import { NeonTowers } from '@/components/neon-towers';
+import { NPCs } from '@/components/npcs';
 import { Particles } from '@/components/particles';
 import { Rain } from '@/components/rain';
 import type { CyberWorldProps } from './cyber-world.types';
@@ -21,6 +22,7 @@ export function CyberWorld({ scroll }: CyberWorldProps) {
       <HolographicBillboards />
       <Rain />
       <FlyingVehicles />
+      <NPCs />
     </>
   );
 }
