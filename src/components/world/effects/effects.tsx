@@ -9,7 +9,6 @@ import {
 } from '@react-three/postprocessing';
 import { BlendFunction, GlitchMode } from 'postprocessing';
 import { useRef, memo } from 'react';
-import * as THREE from 'three';
 import type { EffectsProps } from './effects.types';
 import { useIsMobile } from '@/hooks';
 import {
