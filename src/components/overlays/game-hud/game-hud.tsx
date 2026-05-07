@@ -28,7 +28,7 @@ function GameHud({ progress }: OverlayProps) {
           game.trigger('sit');
           break;
         case 'KeyB':
-          game.trigger('leanBack');
+          game.trigger('roll');
           break;
       }
     };

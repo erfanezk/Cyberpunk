@@ -11,10 +11,30 @@ interface SceneProps {
 }
 
 const OPTIONAL_LIGHTS = [
-  { position: [65, 8, -5] as [number, number, number], color: '#0066ff', intensity: 4, distance: 70 },
-  { position: [5, 10, -105] as [number, number, number], color: '#00fff5', intensity: 4, distance: 85 },
-  { position: [-45, 18, -25] as [number, number, number], color: '#ff9900', intensity: 3, distance: 65 },
-  { position: [20, 12, 40] as [number, number, number], color: '#ff00ff', intensity: 3, distance: 60 },
+  {
+    position: [65, 8, -5] as [number, number, number],
+    color: '#0066ff',
+    intensity: 4,
+    distance: 70,
+  },
+  {
+    position: [5, 10, -105] as [number, number, number],
+    color: '#00fff5',
+    intensity: 4,
+    distance: 85,
+  },
+  {
+    position: [-45, 18, -25] as [number, number, number],
+    color: '#ff9900',
+    intensity: 3,
+    distance: 65,
+  },
+  {
+    position: [20, 12, 40] as [number, number, number],
+    color: '#ff00ff',
+    intensity: 3,
+    distance: 60,
+  },
 ];
 
 function Scene({ onProgress, scrollToTopRef }: SceneProps) {

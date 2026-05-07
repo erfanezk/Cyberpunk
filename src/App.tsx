@@ -31,7 +31,11 @@ export default function App() {
         <div className="canvas-wrapper">
           <Canvas
             dpr={[WORLD_CONFIG.dprMin, WORLD_CONFIG.dprMax]}
-            gl={{ antialias: WORLD_CONFIG.antialias, alpha: false, powerPreference: 'high-performance' }}
+            gl={{
+              antialias: WORLD_CONFIG.antialias,
+              alpha: false,
+              powerPreference: 'high-performance',
+            }}
             camera={{ fov: 60, near: 0.1, far: 1000, position: [0, 80, 180] }}
             style={{ background: COLORS.background }}
           >

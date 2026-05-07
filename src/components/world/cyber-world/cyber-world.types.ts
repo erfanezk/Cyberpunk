@@ -1,3 +1,3 @@
 export interface CyberWorldProps {
-  scroll: { offset: number };
+  scroll: { offset: number; el: HTMLElement | null };
 }

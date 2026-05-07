@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-export type ActionName = 'jump' | 'punch' | 'sit' | 'leanBack';
+export type ActionName = 'jump' | 'punch' | 'sit' | 'roll';
 
 type ActionListener = (action: ActionName) => void;
 

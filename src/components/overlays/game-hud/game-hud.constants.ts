@@ -5,7 +5,7 @@ export const ACTIONS = Object.freeze([
   { id: 'jump' as ActionName, label: 'JUMP', key: 'SPC' },
   { id: 'punch' as ActionName, label: 'PUNCH', key: 'F' },
   { id: 'sit' as ActionName, label: 'SIT', key: 'C' },
-  { id: 'leanBack' as ActionName, label: 'LEAN', key: 'B' },
+  { id: 'roll' as ActionName, label: 'ROLL', key: 'B' },
 ]);
 
 export const DISTRICTS = Object.freeze([
