@@ -96,3 +96,15 @@ body,
   );
   pointer-events: none;
 }
+
+/* Scroll splash burst animation */
+@keyframes colorBurst {
+  0% {
+    opacity: 0.5;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2);
+  }
+}

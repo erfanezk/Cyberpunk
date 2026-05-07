@@ -5,6 +5,7 @@ import type { OverlayProps } from '@/types';
 import type { Article } from '@/types';
 import { smoothstep } from './articles-overlay.utils';
 import styles from './articles-overlay.module.css';
+import { SplashWrapper } from '@/components/splash-wrapper';
 
 export function ArticlesOverlay({ progress }: OverlayProps) {
   const { fadeIn, fadeOut } = SECTION_ZONES.articles;
@@ -17,16 +18,18 @@ export function ArticlesOverlay({ progress }: OverlayProps) {
   if (opacity < 0.01) return null;
 
   return (
-    <div className="overlay-layer" style={{ opacity }}>
-      <div className={styles.wrapper}>
-        <h2 className={styles.title}>ARTICLES</h2>
-        <div className={styles.list}>
-          {ARTICLES.map((article) => (
-            <ArticleCard key={article.id} article={article} />
-          ))}
+    <SplashWrapper progress={progress} fadeIn={SECTION_ZONES.articles.fadeIn} color="rgba(255,200,0,0.15)">
+      <div className="overlay-layer" style={{ opacity }}>
+        <div className={styles.wrapper}>
+          <h2 className={styles.title}>ARTICLES</h2>
+          <div className={styles.list}>
+            {ARTICLES.map((article) => (
+              <ArticleCard key={article.id} article={article} />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </SplashWrapper>
   );
 }
 

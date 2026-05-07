@@ -13,4 +13,5 @@ export { MusicPlayer } from './music-player';
 export { NeonTowers } from './neon-towers';
 export { Particles } from './particles';
 export { ProjectsOverlay } from './projects-overlay';
+export { SplashWrapper } from './splash-wrapper';
 export { Scene } from './scene';

@@ -4,6 +4,7 @@ import { SECTION_ZONES } from '@/types';
 import type { OverlayProps, Project } from '@/types';
 import { smoothstep } from './projects-overlay.utils';
 import styles from './projects-overlay.module.css';
+import { SplashWrapper } from '@/components/splash-wrapper';
 
 export function ProjectsOverlay({ progress }: OverlayProps) {
   const { fadeIn, fadeOut } = SECTION_ZONES.projects;
@@ -16,17 +17,19 @@ export function ProjectsOverlay({ progress }: OverlayProps) {
   if (opacity < 0.01) return null;
 
   return (
-    <div className="overlay-layer" style={{ opacity }}>
-      <div className={styles.wrapper}>
-        <h2 className={styles.title}>PROJECTS</h2>
-        <div className={styles.grid}>
-          {PROJECTS.map((project, i) => (
-            <ProjectCard key={project.id} project={project} index={i} />
-          ))}
+    <SplashWrapper progress={progress} fadeIn={SECTION_ZONES.projects.fadeIn} color="rgba(255,0,128,0.15)">
+      <div className="overlay-layer" style={{ opacity }}>
+        <div className={styles.wrapper}>
+          <h2 className={styles.title}>PROJECTS</h2>
+          <div className={styles.grid}>
+            {PROJECTS.map((project, i) => (
+              <ProjectCard key={project.id} project={project} index={i} />
+            ))}
+          </div>
+          <span className={styles.scrollHint}>&#8592; SWIPE TO EXPLORE &#8594;</span>
         </div>
-        <span className={styles.scrollHint}>&#8592; SWIPE TO EXPLORE &#8594;</span>
       </div>
-    </div>
+    </SplashWrapper>
   );
 }
 

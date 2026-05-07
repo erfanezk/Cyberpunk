@@ -1,0 +1,80 @@
+.container {
+  position: relative;
+}
+
+.splash {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.sphere {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 35%,
+    rgba(255, 255, 255, 0.9),
+    var(--splash-color) 40%,
+    transparent 70%
+  );
+  box-shadow:
+    0 0 60px 20px var(--splash-color),
+    0 0 120px 60px var(--splash-color),
+    inset 0 0 40px 10px rgba(0, 0, 0, 0.3);
+  animation: sphereSplash 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.sphereInner {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 40% 30%,
+    rgba(255, 255, 255, 0.6),
+    transparent 60%
+  );
+  animation: sphereSplash 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.ring {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 1px solid var(--splash-color);
+  animation: ringExpand 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes sphereSplash {
+  0% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes ringExpand {
+  0% {
+    transform: scale(0);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
