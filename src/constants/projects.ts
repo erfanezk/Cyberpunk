@@ -3,7 +3,7 @@ import { generateId } from '@/utils';
 import snappImg from '@/assets/Snapp.svg';
 import moneyroImg from '@/assets/Moneyro.webp';
 import reportPlusImg from '@/assets/reportplus.png';
-import meroojImg from '@/assets/merooj.png';
+import meroojImg from '@/assets/Merooj.svg';
 
 export const PROJECTS: Project[] = [
   {
