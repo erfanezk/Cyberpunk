@@ -1,1 +1,1 @@
-export { DataStreams } from './data-streams';
+export { default } from './data-streams';

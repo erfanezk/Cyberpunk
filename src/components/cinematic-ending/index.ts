@@ -1,1 +1,1 @@
-export { CinematicEnding } from './cinematic-ending';
+export { default } from './cinematic-ending';

@@ -1,1 +1,1 @@
-export { FloatingShapes } from './floating-shapes';
+export { default } from './floating-shapes';

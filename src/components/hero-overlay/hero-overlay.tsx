@@ -1,12 +1,12 @@
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import { PROFILE } from '@/constants';
 import { SECTION_ZONES } from '@/types';
 import type { OverlayProps } from '@/types';
 import { smoothstep } from './hero-overlay.utils';
 import styles from './hero-overlay.module.css';
-import { SplashWrapper } from '@/components/splash-wrapper';
+import SplashWrapper from '@/components/splash-wrapper';
 
-export function HeroOverlay({ progress }: OverlayProps) {
+function HeroOverlay({ progress }: OverlayProps) {
   const { fadeIn, fadeOut } = SECTION_ZONES.hero;
   const opacity = useMemo(() => {
     const fadeInOp = smoothstep(fadeIn, fadeIn + 0.05, progress);
@@ -59,3 +59,5 @@ export function HeroOverlay({ progress }: OverlayProps) {
     </SplashWrapper>
   );
 }
+
+export default memo(HeroOverlay);

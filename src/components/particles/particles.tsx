@@ -1,10 +1,10 @@
 import { useFrame } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, memo } from 'react';
 import * as THREE from 'three';
 import { COLORS } from '@/constants';
 import { useIsMobile } from '@/hooks';
 
-export function Particles() {
+function Particles() {
   const isMobile = useIsMobile();
   const pointsRef = useRef<THREE.Points>(null);
   const count = isMobile ? 400 : 1500;
@@ -68,3 +68,5 @@ export function Particles() {
     </points>
   );
 }
+
+export default memo(Particles);

@@ -1,1 +1,1 @@
-export { SplashWrapper } from './splash-wrapper';
+export { default } from './splash-wrapper';

@@ -1,1 +1,1 @@
-export { Particles } from './particles';
+export { default } from './particles';

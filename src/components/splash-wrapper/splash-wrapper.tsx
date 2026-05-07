@@ -1,3 +1,6 @@
+import { memo } from 'react';
+import type { FC } from 'react';
+
 interface SplashWrapperProps {
   progress: number;
   fadeIn: number;
@@ -5,6 +8,8 @@ interface SplashWrapperProps {
   children: React.ReactNode;
 }
 
-export function SplashWrapper({ children }: SplashWrapperProps) {
+const SplashWrapper: FC<SplashWrapperProps> = ({ children }) => {
   return <>{children}</>;
-}
+};
+
+export default memo(SplashWrapper);

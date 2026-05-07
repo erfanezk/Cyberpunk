@@ -1,5 +1,5 @@
 import { useFrame } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
+import { memo, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { COLORS } from '@/constants';
 
@@ -48,7 +48,7 @@ const gridFragmentShader = `
   }
 `;
 
-export function GridFloor() {
+const GridFloor = memo(() => {
   const matRef = useRef<THREE.ShaderMaterial>(null);
 
   const uniforms = useMemo(
@@ -79,4 +79,6 @@ export function GridFloor() {
       />
     </mesh>
   );
-}
+});
+
+export default memo(GridFloor);

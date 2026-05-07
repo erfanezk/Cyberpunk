@@ -1,5 +1,5 @@
 import { useFrame } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, memo } from 'react';
 import * as THREE from 'three';
 import { useIsMobile } from '@/hooks';
 
@@ -8,7 +8,7 @@ const SPREAD_Z = 320;
 const HEIGHT = 90;
 const Z_OFFSET = -100;
 
-export function Rain() {
+function Rain() {
   const isMobile = useIsMobile();
   const COUNT = isMobile ? 800 : 4000;
   const linesRef = useRef<THREE.LineSegments>(null);
@@ -77,3 +77,5 @@ export function Rain() {
     </lineSegments>
   );
 }
+
+export default memo(Rain);

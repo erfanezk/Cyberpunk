@@ -1,1 +1,1 @@
-export { FlyingVehicles } from './flying-vehicles';
+export { default } from './flying-vehicles';

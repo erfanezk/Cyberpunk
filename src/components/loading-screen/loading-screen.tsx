@@ -1,7 +1,7 @@
 import { useProgress } from '@react-three/drei';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 
-export function LoadingScreen() {
+function LoadingScreen() {
   const { progress, active } = useProgress();
   const [visible, setVisible] = useState(true);
   const [opacity, setOpacity] = useState(1);
@@ -83,3 +83,5 @@ export function LoadingScreen() {
     </div>
   );
 }
+
+export default memo(LoadingScreen);

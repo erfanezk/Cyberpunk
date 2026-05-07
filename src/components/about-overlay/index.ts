@@ -1,1 +1,1 @@
-export { AboutOverlay } from './about-overlay';
+export { default } from './about-overlay';

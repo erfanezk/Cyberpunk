@@ -1,8 +1,8 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, memo } from 'react';
 import musicFile from '@/assets/1-02 Extraction Action.mp3';
 import styles from './music-player.module.css';
 
-export function MusicPlayer() {
+function MusicPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -56,3 +56,5 @@ export function MusicPlayer() {
     </>
   );
 }
+
+export default memo(MusicPlayer);

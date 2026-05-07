@@ -1,11 +1,11 @@
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import { ARTICLES } from '@/constants';
 import { SECTION_ZONES } from '@/types';
 import type { OverlayProps } from '@/types';
 import type { Article } from '@/types';
 import { smoothstep } from './articles-overlay.utils';
 import styles from './articles-overlay.module.css';
-import { SplashWrapper } from '@/components/splash-wrapper';
+import SplashWrapper from '@/components/splash-wrapper';
 
 const SIGNAL_LEVELS = [5, 4, 5, 3, 4];
 const CLASS_LABELS = ['CLASSIFIED', 'RESTRICTED', 'CONFIDENTIAL', 'CLASSIFIED'];
@@ -24,7 +24,7 @@ function SignalBars({ level }: { level: number }) {
   );
 }
 
-export function ArticlesOverlay({ progress }: OverlayProps) {
+function ArticlesOverlay({ progress }: OverlayProps) {
   const { fadeIn, fadeOut } = SECTION_ZONES.articles;
   const opacity = useMemo(() => {
     const fadeInOp = smoothstep(fadeIn, fadeIn + 0.06, progress);
@@ -109,3 +109,5 @@ function ArticleCard({
     </a>
   );
 }
+
+export default memo(ArticlesOverlay);

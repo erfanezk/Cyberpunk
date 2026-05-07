@@ -1,1 +1,1 @@
-export { Cyber } from './cyber';
+export { default } from './cyber';

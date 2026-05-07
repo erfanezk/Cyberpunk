@@ -1,1 +1,1 @@
-export { ProjectsOverlay } from './projects-overlay';
+export { default } from './projects-overlay';

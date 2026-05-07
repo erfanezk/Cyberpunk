@@ -1,1 +1,1 @@
-export { HolographicBillboards } from './holographic-billboards';
+export { default } from './holographic-billboards';

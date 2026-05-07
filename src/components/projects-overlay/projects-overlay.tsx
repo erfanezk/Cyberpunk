@@ -1,15 +1,15 @@
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import { PROJECTS } from '@/constants';
 import { SECTION_ZONES } from '@/types';
 import type { OverlayProps, Project } from '@/types';
 import { smoothstep } from './projects-overlay.utils';
 import styles from './projects-overlay.module.css';
-import { SplashWrapper } from '@/components/splash-wrapper';
+import SplashWrapper from '@/components/splash-wrapper';
 
 const PRIORITY = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'];
 const PRIORITY_COL = ['#ff3366', '#ff9900', '#00fff5', '#00ff88'];
 
-export function ProjectsOverlay({ progress }: OverlayProps) {
+function ProjectsOverlay({ progress }: OverlayProps) {
   const { fadeIn, fadeOut } = SECTION_ZONES.projects;
   const opacity = useMemo(() => {
     const fadeInOp = smoothstep(fadeIn, fadeIn + 0.06, progress);
@@ -102,3 +102,5 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
     </div>
   );
 }
+
+export default memo(ProjectsOverlay);

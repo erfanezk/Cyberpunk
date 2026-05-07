@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import { PROFILE } from '@/constants';
 import type { OverlayProps } from '@/types';
 import styles from './cinematic-ending.module.css';
@@ -15,7 +15,7 @@ const STATS = [
   { label: 'STATUS', value: 'ACCOMPLISHED', accent: true },
 ];
 
-export function CinematicEnding({ progress }: OverlayProps) {
+function CinematicEnding({ progress }: OverlayProps) {
   const bars = useMemo(() => smoothstep(0.85, 0.95, progress), [progress]);
   const vignette = useMemo(() => smoothstep(0.86, 0.99, progress), [progress]);
   const textReveal = useMemo(() => smoothstep(0.93, 1.0, progress), [progress]);
@@ -43,10 +43,7 @@ export function CinematicEnding({ progress }: OverlayProps) {
       {textReveal > 0.01 && (
         <div className={styles.content} style={{ opacity: textReveal }}>
           <div className={styles.glitchWrap}>
-            <h1
-              className={styles.gameOver}
-              data-text="GAME OVER"
-            >
+            <h1 className={styles.gameOver} data-text="GAME OVER">
               GAME OVER
             </h1>
           </div>
@@ -75,3 +72,5 @@ export function CinematicEnding({ progress }: OverlayProps) {
     </div>
   );
 }
+
+export default memo(CinematicEnding);

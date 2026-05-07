@@ -1,1 +1,1 @@
-export { ArticlesOverlay } from './articles-overlay';
+export { default } from './articles-overlay';

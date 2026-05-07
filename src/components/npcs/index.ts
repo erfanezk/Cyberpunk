@@ -1,1 +1,1 @@
-export { NPCs } from './npcs';
+export { default } from './npcs';

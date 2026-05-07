@@ -1,11 +1,11 @@
 import { useFrame } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, memo } from 'react';
 import * as THREE from 'three';
 import { useIsMobile } from '@/hooks';
 import type { ShapeConfig } from './floating-shapes.types';
 import { generateShapes } from './floating-shapes.utils';
 
-export function FloatingShapes() {
+function FloatingShapes() {
   const isMobile = useIsMobile();
   const shapes = useMemo<ShapeConfig[]>(() => generateShapes(isMobile ? 3 : 12), [isMobile]);
 
@@ -59,3 +59,5 @@ function FloatingShape({ position, scale, rotationSpeed, geometry, color }: Shap
     </mesh>
   );
 }
+
+export default memo(FloatingShapes);

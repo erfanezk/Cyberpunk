@@ -1,1 +1,1 @@
-export { NeonTowers } from './neon-towers';
+export { default } from './neon-towers';

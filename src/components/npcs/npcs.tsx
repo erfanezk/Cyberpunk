@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, memo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import { clone as skeletonClone } from 'three/examples/jsm/utils/SkeletonUtils.js';
@@ -102,7 +102,15 @@ function playStep(
   }
 }
 
-function Npc({ position, rotationY, animation, path, pathOffset, loopOnce, sequence }: NpcInstance) {
+function Npc({
+  position,
+  rotationY,
+  animation,
+  path,
+  pathOffset,
+  loopOnce,
+  sequence,
+}: NpcInstance) {
   const groupRef = useRef<THREE.Group>(null);
   const pathState = useRef<PathState>({ t: pathOffset });
   const stepRef = useRef(0);
@@ -143,7 +151,9 @@ function Npc({ position, rotationY, animation, path, pathOffset, loopOnce, seque
       action.setLoop(THREE.LoopRepeat, Infinity);
     }
     action.setEffectiveWeight(1).play();
-    return () => { mixer.stopAllAction(); };
+    return () => {
+      mixer.stopAllAction();
+    };
   }, [mixer, clips, animation, loopOnce, sequence]);
 
   useFrame((_, delta) => {
@@ -166,7 +176,7 @@ function Npc({ position, rotationY, animation, path, pathOffset, loopOnce, seque
   );
 }
 
-export function NPCs() {
+function NPCs() {
   return (
     <group>
       {NPC_INSTANCES.map((def) => (
@@ -175,3 +185,5 @@ export function NPCs() {
     </group>
   );
 }
+
+export default memo(NPCs);

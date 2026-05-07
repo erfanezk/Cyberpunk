@@ -1,1 +1,1 @@
-export { ContactOverlay } from './contact-overlay';
+export { default } from './contact-overlay';

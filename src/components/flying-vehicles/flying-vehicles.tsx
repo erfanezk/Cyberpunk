@@ -1,5 +1,5 @@
 import { useFrame } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, memo } from 'react';
 import type * as THREE from 'three';
 import { COLORS } from '@/constants';
 import { useIsMobile } from '@/hooks';
@@ -80,3 +80,5 @@ export function FlyingVehicles() {
     </group>
   );
 }
+
+export default memo(FlyingVehicles);

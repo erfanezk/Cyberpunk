@@ -1,1 +1,1 @@
-export { GridFloor } from './grid-floor';
+export { default } from './grid-floor';

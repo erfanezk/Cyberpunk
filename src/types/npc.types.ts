@@ -21,7 +21,7 @@ export interface NpcGroup {
 export interface AnimStep {
   animation: AnimationsName;
   loopOnce?: boolean; // play once then advance; omit = loop until holdMs
-  holdMs?: number;    // for looping steps: advance after this many ms
+  holdMs?: number; // for looping steps: advance after this many ms
 }
 
 export interface NpcInstance {

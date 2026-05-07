@@ -1,12 +1,12 @@
 import { useFrame } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, memo } from 'react';
 import * as THREE from 'three';
 import { COLORS } from '@/constants';
 import { useIsMobile } from '@/hooks';
 import type { StreamConfig } from './data-streams.types';
 import { generateStreams } from './data-streams.utils';
 
-export function DataStreams() {
+function DataStreams() {
   const isMobile = useIsMobile();
   const streams = useMemo<StreamConfig[]>(() => generateStreams(isMobile ? 8 : 28), [isMobile]);
 
@@ -61,3 +61,5 @@ function DataStream({ position, height, count }: StreamConfig) {
     </points>
   );
 }
+
+export default memo(DataStreams);

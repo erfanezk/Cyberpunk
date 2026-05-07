@@ -1,1 +1,1 @@
-export { Rain } from './rain';
+export { default } from './rain';

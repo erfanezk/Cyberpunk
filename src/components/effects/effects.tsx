@@ -8,12 +8,12 @@ import {
   Vignette,
 } from '@react-three/postprocessing';
 import { BlendFunction, GlitchMode } from 'postprocessing';
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, memo } from 'react';
 import * as THREE from 'three';
 import type { EffectsProps } from './effects.types';
 import { useIsMobile } from '@/hooks';
 
-export function Effects({ scroll }: EffectsProps) {
+function Effects({ scroll }: EffectsProps) {
   const isMobile = useIsMobile();
   const glitchRef = useRef<any>(null);
   const lastZone = useRef(0);
@@ -66,3 +66,5 @@ export function Effects({ scroll }: EffectsProps) {
     </EffectComposer>
   );
 }
+
+export default memo(Effects);

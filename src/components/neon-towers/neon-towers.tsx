@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { memo, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useIsMobile } from '@/hooks';
@@ -134,7 +134,7 @@ function Tower({ tower, isMobile }: { tower: TowerData; isMobile: boolean }) {
   );
 }
 
-export function NeonTowers() {
+const NeonTowers = memo(() => {
   const isMobile = useIsMobile();
   const towers = useMemo<TowerData[]>(() => generateTowers(BACKGROUND_COUNT), []);
 
@@ -145,4 +145,6 @@ export function NeonTowers() {
       ))}
     </group>
   );
-}
+});
+
+export default memo(NeonTowers);

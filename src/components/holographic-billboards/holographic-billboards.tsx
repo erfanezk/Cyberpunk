@@ -1,5 +1,5 @@
 import { useFrame } from '@react-three/fiber';
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, memo } from 'react';
 import * as THREE from 'three';
 import { useIsMobile } from '@/hooks';
 import type { BillboardConfig } from './holographic-billboards.types';
@@ -32,7 +32,7 @@ const noiseFragmentShader = `
   }
 `;
 
-export function HolographicBillboards() {
+function HolographicBillboards() {
   const isMobile = useIsMobile();
   const billboards = useMemo<BillboardConfig[]>(() => generateBillboards(5), []);
 
@@ -46,6 +46,8 @@ export function HolographicBillboards() {
     </group>
   );
 }
+
+export default memo(HolographicBillboards);
 
 function HolographicBillboard({ position, rotation, size, color }: BillboardConfig) {
   const matRef = useRef<THREE.ShaderMaterial>(null);

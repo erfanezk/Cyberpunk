@@ -1,10 +1,10 @@
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import { PROFILE } from '@/constants';
 import { SECTION_ZONES } from '@/types';
 import type { OverlayProps } from '@/types';
 import { smoothstep } from './about-overlay.utils';
 import styles from './about-overlay.module.css';
-import { SplashWrapper } from '@/components/splash-wrapper';
+import SplashWrapper from '@/components/splash-wrapper';
 
 const STATS = [
   { label: 'FRONTEND', pct: 94, color: '#00fff5' },
@@ -13,7 +13,7 @@ const STATS = [
   { label: 'UX / DESIGN', pct: 76, color: '#00ff88' },
 ];
 
-export function AboutOverlay({ progress }: OverlayProps) {
+function AboutOverlay({ progress }: OverlayProps) {
   const { fadeIn, fadeOut } = SECTION_ZONES.about;
   const opacity = useMemo(() => {
     const fadeInOp = smoothstep(fadeIn, fadeIn + 0.06, progress);
@@ -129,3 +129,5 @@ export function AboutOverlay({ progress }: OverlayProps) {
     </SplashWrapper>
   );
 }
+
+export default memo(AboutOverlay);

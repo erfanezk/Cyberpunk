@@ -1,6 +1,6 @@
 import { useAnimations, useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, memo } from 'react';
 import * as THREE from 'three';
 import modelUrl from '@/assets/UAL1_Standard.glb?url';
 import { game, type ActionName } from '@/game';
@@ -12,7 +12,7 @@ useGLTF.preload(modelUrl);
 
 type JumpState = { phase: JumpPhase; y: number; vy: number };
 
-export function Cyber({ scroll }: CyberProps) {
+function Cyber({ scroll }: CyberProps) {
   const groupRef = useRef<THREE.Group>(null);
   const { scene, animations } = useGLTF(modelUrl);
   const { actions, mixer } = useAnimations(animations, scene);
@@ -137,3 +137,5 @@ export function Cyber({ scroll }: CyberProps) {
     </>
   );
 }
+
+export default memo(Cyber);

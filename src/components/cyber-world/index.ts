@@ -1,1 +1,1 @@
-export { CyberWorld } from './cyber-world';
+export { default } from './cyber-world';

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, memo } from 'react';
 import { WALK_PATH } from '@/components/cyber/cyber.constants';
 import { game, type ActionName } from '@/game';
 import { SECTION_ZONES } from '@/types';
@@ -120,3 +120,5 @@ export function GameHud({ progress }: OverlayProps) {
     </div>
   );
 }
+
+export default memo(GameHud);
