@@ -1,10 +1,8 @@
 import { useFrame } from '@react-three/fiber';
-import { useMemo, useRef, memo } from 'react';
+import { useRef, memo } from 'react';
 import type * as THREE from 'three';
-import { COLORS } from '@/constants';
 import { useIsMobile } from '@/hooks';
-
-const NEON = [COLORS.cyan, COLORS.magenta, COLORS.electricBlue, COLORS.amber];
+import { DRONE_COUNT_DESKTOP, DRONE_COUNT_MOBILE, NEON_COLORS } from './flying-vehicles.constants';
 
 interface DroneConfig {
   id: string;
@@ -54,23 +52,22 @@ function Drone({ radius, height, speed, phase, color, zCenter }: DroneConfig) {
   );
 }
 
-export function FlyingVehicles() {
+function FlyingVehicles() {
   const isMobile = useIsMobile();
-  const droneCount = isMobile ? 4 : 10;
+  const droneCount = isMobile ? DRONE_COUNT_MOBILE : DRONE_COUNT_DESKTOP;
 
-  const drones = useMemo<DroneConfig[]>(
-    () =>
-      Array.from({ length: droneCount }, (_, i) => ({
-        id: `drone-${i}`,
-        radius: 28 + (i % 5) * 16,
-        height: 18 + i * 5,
-        speed: 0.28 + i * 0.04,
-        phase: (i / droneCount) * Math.PI * 2,
-        color: NEON[i % NEON.length],
-        zCenter: -60 - (i % 4) * 28,
-      })),
-    [droneCount],
-  );
+  const drones: DroneConfig[] = [];
+  for (let i = 0; i < droneCount; i++) {
+    drones.push({
+      id: `drone-${i}`,
+      radius: 28 + (i % 5) * 16,
+      height: 18 + i * 5,
+      speed: 0.28 + i * 0.04,
+      phase: (i / droneCount) * Math.PI * 2,
+      color: NEON_COLORS[i % NEON_COLORS.length],
+      zCenter: -60 - (i % 4) * 28,
+    });
+  }
 
   return (
     <group>

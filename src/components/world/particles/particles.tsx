@@ -1,51 +1,46 @@
 import { useFrame } from '@react-three/fiber';
 import { useMemo, useRef, memo } from 'react';
 import * as THREE from 'three';
-import { COLORS } from '@/constants';
 import { useIsMobile } from '@/hooks';
+import { NEON_COLORS } from './particles.constants';
 
 function Particles() {
   const isMobile = useIsMobile();
-  const pointsRef = useRef<THREE.Points>(null);
   const count = isMobile ? 400 : 1500;
+  const pointsRef = useRef<THREE.Points>(null);
 
-  const { positions, colors } = useMemo(() => {
-    const positions = new Float32Array(count * 3);
-    const colors = new Float32Array(count * 3);
-    const neonColors = [
-      new THREE.Color(COLORS.cyan),
-      new THREE.Color(COLORS.magenta),
-      new THREE.Color(COLORS.electricBlue),
-      new THREE.Color('#ffffff'),
-    ];
-
+  const positions = useMemo(() => {
+    const arr = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 200;
-      positions[i * 3 + 1] = Math.random() * 100;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 200 - 40;
-
-      const color = neonColors[Math.floor(Math.random() * neonColors.length)];
-      colors[i * 3] = color.r;
-      colors[i * 3 + 1] = color.g;
-      colors[i * 3 + 2] = color.b;
+      arr[i * 3] = (Math.random() - 0.5) * 200;
+      arr[i * 3 + 1] = Math.random() * 100;
+      arr[i * 3 + 2] = (Math.random() - 0.5) * 200 - 40;
     }
-    return { positions, colors };
+    return arr;
+  }, [count]);
+
+  const colors = useMemo(() => {
+    const arr = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      const c = NEON_COLORS[i % NEON_COLORS.length];
+      arr[i * 3] = c.r;
+      arr[i * 3 + 1] = c.g;
+      arr[i * 3 + 2] = c.b;
+    }
+    return arr;
   }, [count]);
 
   useFrame((state) => {
     if (!pointsRef.current) return;
-    const time = state.clock.elapsedTime;
     const posAttr = pointsRef.current.geometry.attributes.position as THREE.BufferAttribute;
     const arr = posAttr.array as Float32Array;
-    const drift = Math.sin(time * 0.3) * 0.003;
+    const drift = Math.sin(state.clock.elapsedTime * 0.3) * 0.003;
 
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
       arr[i3 + 1] += 0.005;
       arr[i3] += drift;
-      if (arr[i3 + 1] > 100) {
-        arr[i3 + 1] = 0;
-      }
+      if (arr[i3 + 1] > 100) arr[i3 + 1] = 0;
     }
     posAttr.needsUpdate = true;
   });
