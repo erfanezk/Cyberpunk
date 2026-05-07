@@ -7,10 +7,10 @@ import styles from './about-overlay.module.css';
 import SplashWrapper from '@/components/overlays/splash-wrapper';
 
 const STATS = [
-  { label: 'FRONTEND', pct: 94, color: '#00fff5' },
-  { label: 'BACKEND', pct: 40, color: '#ff00ff' },
-  { label: 'DevOps', pct: 45, color: '#ff9900' },
-  { label: 'Automate selution', pct: 76, color: '#00ff88' },
+  { label: 'PROBLEM SOLVING', pct: 92, color: '#00fff5' },
+  { label: 'COMMUNICATION', pct: 78, color: '#ff00ff' },
+  { label: 'ADAPTABILITY', pct: 85, color: '#ff9900' },
+  { label: 'ATTENTION TO DETAIL', pct: 88, color: '#00ff88' },
 ];
 
 function AboutOverlay({ progress }: OverlayProps) {
