@@ -16,7 +16,7 @@ export function CyberWorld({ scroll }: CyberWorldProps) {
       <Cyber scroll={scroll} />
       <GridFloor />
       <NeonTowers />
-      <Particles scroll={scroll} />
+      <Particles />
       <FloatingShapes />
       <DataStreams />
       <HolographicBillboards />

@@ -3,9 +3,8 @@ import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { COLORS } from '@/constants';
 import { useIsMobile } from '@/hooks';
-import type { ParticlesProps } from './particles.types';
 
-export function Particles({ scroll }: ParticlesProps) {
+export function Particles() {
   const isMobile = useIsMobile();
   const pointsRef = useRef<THREE.Points>(null);
   const count = isMobile ? 400 : 1500;

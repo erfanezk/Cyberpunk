@@ -1,3 +1,74 @@
+/* ── Keyframes ── */
+
+@keyframes glitchText {
+  0% {
+    text-shadow:
+      3px 0 #ff0040,
+      -3px 0 #00fff5;
+    clip-path: inset(0 0 0 0);
+    transform: translate(0);
+  }
+  7% {
+    clip-path: inset(12% 0 60% 0);
+    transform: translate(-4px, 0);
+    text-shadow:
+      -4px 0 #ff0040,
+      4px 0 #00fff5;
+  }
+  14% {
+    clip-path: inset(0 0 0 0);
+    transform: translate(0);
+  }
+  21% {
+    clip-path: inset(55% 0 10% 0);
+    transform: translate(3px, 0);
+    text-shadow:
+      4px 0 #ff0040,
+      -4px 0 #00fff5;
+  }
+  28% {
+    clip-path: inset(0 0 0 0);
+    transform: translate(0);
+    text-shadow:
+      3px 0 #ff0040,
+      -3px 0 #00fff5;
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    transform: translate(0);
+    text-shadow:
+      3px 0 #ff0040,
+      -3px 0 #00fff5;
+  }
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes expandLine {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+@keyframes flicker {
+  0%   { opacity: 1; }
+  4%   { opacity: 0.8; }
+  8%   { opacity: 1; }
+  70%  { opacity: 1; }
+  73%  { opacity: 0.85; }
+  75%  { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+/* ── Root ── */
+
 .root {
   position: fixed;
   inset: 0;
@@ -6,13 +77,15 @@
   overflow: hidden;
 }
 
+/* ── Cinematic bars ── */
+
 .bar {
   position: absolute;
   left: 0;
   right: 0;
   height: 14vh;
   background: #000;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.9);
   will-change: transform;
 }
 
@@ -34,29 +107,169 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(0, 255, 245, 0.5) 30%,
-    rgba(0, 255, 245, 0.8) 50%,
-    rgba(0, 255, 245, 0.5) 70%,
+    rgba(255, 0, 64, 0.5) 30%,
+    rgba(255, 0, 64, 0.9) 50%,
+    rgba(255, 0, 64, 0.5) 70%,
     transparent 100%
   );
-  box-shadow: 0 0 8px rgba(0, 255, 245, 0.6);
+  box-shadow: 0 0 10px rgba(255, 0, 64, 0.7);
 }
 
-.barTop .barLine {
-  bottom: 0;
-}
+.barTop .barLine { bottom: 0; }
+.barBottom .barLine { top: 0; }
 
-.barBottom .barLine {
-  top: 0;
-}
+/* ── Vignette ── */
 
 .vignette {
   position: absolute;
   inset: 0;
   background: radial-gradient(
     ellipse at center,
-    transparent 30%,
-    rgba(0, 0, 0, 0.55) 75%,
-    rgba(0, 0, 0, 0.92) 100%
+    transparent 20%,
+    rgba(0, 0, 0, 0.6) 65%,
+    rgba(0, 0, 0, 0.97) 100%
   );
+}
+
+/* ── CRT scanlines ── */
+
+.scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.35) 2px,
+    rgba(0, 0, 0, 0.35) 4px
+  );
+  pointer-events: none;
+}
+
+/* ── Content container ── */
+
+.content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  animation: flicker 4s ease-in-out infinite;
+}
+
+/* ── GAME OVER text ── */
+
+.glitchWrap {
+  position: relative;
+}
+
+.gameOver {
+  font-size: clamp(3rem, 10vw, 7rem);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #ff0040;
+  text-shadow:
+    3px 0 #ff0040,
+    -3px 0 #00fff5,
+    0 0 40px rgba(255, 0, 64, 0.5),
+    0 0 80px rgba(255, 0, 64, 0.2);
+  animation: glitchText 3.5s infinite;
+  line-height: 1;
+}
+
+/* ── Separator ── */
+
+.separator {
+  width: clamp(180px, 40vw, 320px);
+  height: 1px;
+  background: linear-gradient(to right, transparent, #ff0040, #00fff5, transparent);
+  box-shadow: 0 0 10px rgba(255, 0, 64, 0.5);
+  transform: scaleX(0);
+  animation: expandLine 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards 0.1s;
+}
+
+/* ── Subtitle ── */
+
+.subtitle {
+  font-size: clamp(0.6rem, 1.5vw, 0.8rem);
+  color: rgba(255, 0, 64, 0.7);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  animation: fadeUp 0.5s ease forwards 0.2s;
+  opacity: 0;
+}
+
+/* ── Stats block ── */
+
+.statsBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: clamp(220px, 35vw, 360px);
+  padding: 1rem 1.5rem;
+  border: 1px solid rgba(255, 0, 64, 0.25);
+  background: rgba(0, 0, 0, 0.6);
+  animation: fadeUp 0.5s ease forwards 0.35s;
+  opacity: 0;
+}
+
+.statRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: clamp(0.6rem, 1.2vw, 0.72rem);
+  letter-spacing: 0.14em;
+}
+
+.statLabel {
+  color: rgba(200, 200, 220, 0.5);
+  min-width: 9ch;
+  flex-shrink: 0;
+}
+
+.statDots {
+  flex: 1;
+  border-bottom: 1px dotted rgba(255, 0, 64, 0.2);
+  margin-bottom: 2px;
+}
+
+.statValue {
+  color: #e0e0e0;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.statAccent {
+  color: #00ff88;
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+}
+
+/* ── Replay prompt ── */
+
+.replay {
+  animation: fadeUp 0.5s ease forwards 0.55s;
+  opacity: 0;
+}
+
+.replayText {
+  font-size: clamp(0.55rem, 1.2vw, 0.68rem);
+  color: rgba(0, 255, 245, 0.6);
+  letter-spacing: 0.28em;
+  animation: blink 1.4s step-end infinite;
+}
+
+/* ── Mobile ── */
+
+@media (max-width: 768px) {
+  .statsBlock {
+    padding: 0.75rem 1rem;
+    min-width: min(280px, 85vw);
+  }
+
+  .content {
+    gap: 0.9rem;
+  }
 }

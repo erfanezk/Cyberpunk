@@ -18,11 +18,19 @@ export interface NpcGroup {
   animation: AnimationsName;
 }
 
+export interface AnimStep {
+  animation: AnimationsName;
+  loopOnce?: boolean; // play once then advance; omit = loop until holdMs
+  holdMs?: number;    // for looping steps: advance after this many ms
+}
+
 export interface NpcInstance {
   id: string;
   position: Vec3;
   rotationY: number;
   animation: AnimationsName;
+  sequence?: AnimStep[]; // if present, plays steps in order ignoring animation/loopOnce
   path?: NpcPath;
   pathOffset: number;
+  loopOnce?: boolean;
 }

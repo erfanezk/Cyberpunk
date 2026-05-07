@@ -6,4 +6,4 @@ export type { ContactInfo } from './contact.types';
 export { SECTION_ZONES } from './sections.types';
 export type { Zone } from './sections.types';
 export type { Vec3 } from './world.types';
-export type { NpcPath, Placement, NpcGroup, NpcInstance } from './npc.types';
+export type { NpcPath, Placement, NpcGroup, NpcInstance, AnimStep } from './npc.types';

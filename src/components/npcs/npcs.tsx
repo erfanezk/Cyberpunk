@@ -5,7 +5,7 @@ import { clone as skeletonClone } from 'three/examples/jsm/utils/SkeletonUtils.j
 import * as THREE from 'three';
 import modelUrl from '@/assets/UAL1_Standard.glb?url';
 import { NPC_INSTANCES } from '@/constants';
-import type { NpcInstance, NpcPath, Vec3 } from '@/types';
+import type { AnimStep, NpcInstance, NpcPath, Vec3 } from '@/types';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -72,22 +72,79 @@ function facingAngle(state: PathState, path: NpcPath): number {
 
 // ── Npc component ─────────────────────────────────────────────────────────────
 
-function Npc({ position, rotationY, animation, path, pathOffset }: NpcInstance) {
+function playStep(
+  idx: number,
+  sequence: AnimStep[],
+  clips: THREE.AnimationClip[],
+  mixer: THREE.AnimationMixer,
+  stepRef: React.MutableRefObject<number>,
+  advanceRef: React.MutableRefObject<(i: number) => void>,
+) {
+  if (idx >= sequence.length) return;
+  const step = sequence[idx];
+  const clip = THREE.AnimationClip.findByName(clips, step.animation as string);
+  if (!clip) return;
+
+  mixer.stopAllAction();
+  const action = mixer.clipAction(clip);
+  action.reset();
+  if (step.loopOnce) {
+    action.setLoop(THREE.LoopOnce, 1);
+    action.clampWhenFinished = true;
+  } else {
+    action.setLoop(THREE.LoopRepeat, Infinity);
+  }
+  action.setEffectiveWeight(1).play();
+  stepRef.current = idx;
+
+  if (step.holdMs !== undefined && idx < sequence.length - 1) {
+    setTimeout(() => advanceRef.current(idx + 1), step.holdMs);
+  }
+}
+
+function Npc({ position, rotationY, animation, path, pathOffset, loopOnce, sequence }: NpcInstance) {
   const groupRef = useRef<THREE.Group>(null);
   const pathState = useRef<PathState>({ t: pathOffset });
+  const stepRef = useRef(0);
+  const advanceRef = useRef<(i: number) => void>(() => {});
 
-  const { scene: source, animations } = useGLTF(modelUrl);
+  const { scene: source, animations: clips } = useGLTF(modelUrl);
   const cloned = useMemo(() => skeletonClone(source), [source]);
   const mixer = useMemo(() => new THREE.AnimationMixer(cloned), [cloned]);
 
   useEffect(() => {
-    const clip = THREE.AnimationClip.findByName(animations, animation as string);
+    if (sequence && sequence.length > 0) {
+      advanceRef.current = (idx: number) =>
+        playStep(idx, sequence, clips, mixer, stepRef, advanceRef);
+
+      advanceRef.current(0);
+
+      const onFinished = () => {
+        const next = stepRef.current + 1;
+        if (next < sequence.length && sequence[stepRef.current]?.loopOnce) {
+          advanceRef.current(next);
+        }
+      };
+      mixer.addEventListener('finished', onFinished);
+      return () => {
+        mixer.removeEventListener('finished', onFinished);
+        mixer.stopAllAction();
+      };
+    }
+
+    // single-animation fallback
+    const clip = THREE.AnimationClip.findByName(clips, animation as string);
     if (!clip) return;
-    mixer.clipAction(clip).setLoop(THREE.LoopRepeat, Infinity).setEffectiveWeight(1).play();
-    return () => {
-      mixer.stopAllAction();
-    };
-  }, [mixer, animations, animation]);
+    const action = mixer.clipAction(clip);
+    if (loopOnce) {
+      action.setLoop(THREE.LoopOnce, 1);
+      action.clampWhenFinished = true;
+    } else {
+      action.setLoop(THREE.LoopRepeat, Infinity);
+    }
+    action.setEffectiveWeight(1).play();
+    return () => { mixer.stopAllAction(); };
+  }, [mixer, clips, animation, loopOnce, sequence]);
 
   useFrame((_, delta) => {
     if (!groupRef.current) return;

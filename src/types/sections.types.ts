@@ -8,5 +8,5 @@ export const SECTION_ZONES: Record<string, Zone> = {
   about: { fadeIn: 0.17, fadeOut: 0.34 },
   projects: { fadeIn: 0.34, fadeOut: 0.52 },
   articles: { fadeIn: 0.52, fadeOut: 0.72 },
-  contact: { fadeIn: 0.72, fadeOut: 1 },
+  contact: { fadeIn: 0.72, fadeOut: 0.84 },
 };

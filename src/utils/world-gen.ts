@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { AnimationsName } from '@/constants/animations.constants';
-import type { Vec3, NpcGroup, NpcInstance } from '@/types';
+import type { AnimStep, Vec3, NpcGroup, NpcInstance, NpcPath } from '@/types';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Procedural world layout — runs once at module load.
@@ -119,46 +119,15 @@ function isClear(x: number, z: number, r: number, occupied: Circ[]): boolean {
   return occupied.every((o) => dist2d(x, z, o.x, o.z) > o.r + r);
 }
 
-// ── NPC animation pools ───────────────────────────────────────────────────────
-
-const POINT_ANIMS: AnimationsName[] = [
-  AnimationsName.Idle_Talking_Loop,
-  AnimationsName.Fixing_Kneeling,
-  AnimationsName.Idle_Torch_Loop,
-  AnimationsName.Sword_Idle,
-  AnimationsName.Push_Loop,
-  AnimationsName.Crouch_Idle_Loop,
-  AnimationsName.Spell_Simple_Idle_Loop,
-  AnimationsName.Sitting_Idle_Loop,
-  AnimationsName.Sitting_Talking_Loop,
-  AnimationsName.Pistol_Aim_Neutral,
-  AnimationsName.Pistol_Aim_Down,
-  AnimationsName.Pistol_Idle_Loop,
-  AnimationsName.Pistol_Reload,
-  AnimationsName.Punch_Jab,
-  AnimationsName.Punch_Cross,
-  AnimationsName.Idle_Loop,
-];
-
-const PATROL_ANIMS: AnimationsName[] = [
-  AnimationsName.Walk_Formal_Loop,
-  AnimationsName.Walk_Loop,
-  AnimationsName.Crouch_Fwd_Loop,
-  AnimationsName.Jog_Fwd_Loop,
-  AnimationsName.Sprint_Loop,
-];
-
-const CIRCLE_ANIMS: AnimationsName[] = [
-  AnimationsName.Idle_Talking_Loop,
-  AnimationsName.Dance_Loop,
-  AnimationsName.Sitting_Talking_Loop,
-];
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-// ── Candidate placement ───────────────────────────────────────────────────────
+function faceTo(fx: number, fz: number, tx: number, tz: number): number {
+  return Math.atan2(tx - fx, tz - fz);
+}
 
 const PERP_MIN = 8;
 const PERP_MAX = 28;
@@ -177,10 +146,8 @@ function tryCandidate(
     const perp = new THREE.Vector3(tan.z, 0, -tan.x);
     const side = Math.random() < 0.5 ? 1 : -1;
     const d = PERP_MIN + Math.random() * (PERP_MAX - PERP_MIN);
-
     const x = pt.x + perp.x * d * side;
     const z = pt.z + perp.z * d * side;
-
     if (isClear(x, z, r, occupied)) {
       return { x, z, rotY: Math.atan2(pt.x - x, pt.z - z) };
     }
@@ -188,45 +155,171 @@ function tryCandidate(
   return null;
 }
 
-// ── NPC groups ────────────────────────────────────────────────────────────────
+let _uid = 0;
+const nid = (tag: string) => `${tag}-${_uid++}`;
 
-function makeNpcGroups(
-  path: THREE.CatmullRomCurve3,
-  corridorPairs: Array<[Vec3, Vec3]>,
-): NpcGroup[] {
-  const groups: NpcGroup[] = [];
-  const occupied: Circ[] = [];
-  let uid = 0;
-  const nextId = () => `gen-${uid++}`;
+// ── Scene: Crime (shooter + dying victim) ─────────────────────────────────────
 
-  for (const [l, r] of corridorPairs) {
-    occupied.push({ x: l[0], z: l[2], r: TOWER_R });
-    occupied.push({ x: r[0], z: r[2], r: TOWER_R });
-  }
+function makeCrimeScenes(path: THREE.CatmullRomCurve3, occupied: Circ[]): NpcInstance[] {
+  const out: NpcInstance[] = [];
 
-  // circle groups
-  for (let i = 0; i < 3; i++) {
-    const circR = 3 + Math.random() * 2;
-    const count = 3 + Math.floor(Math.random() * 2);
-    const c = tryCandidate(path, occupied, circR + NPC_R);
+  for (let i = 0; i < 4; i++) {
+    const c = tryCandidate(path, occupied, NPC_R + 4);
     if (!c) continue;
 
-    groups.push({
-      id: nextId(),
-      placement: { kind: 'circle', center: [c.x, 0, c.z] as Vec3, count, radius: circR },
-      animation: pick(CIRCLE_ANIMS),
+    const angle = Math.random() * Math.PI * 2;
+    const sx = c.x + Math.cos(angle) * (3 + Math.random());
+    const sz = c.z + Math.sin(angle) * (3 + Math.random());
+    const shooterRotY = faceTo(sx, sz, c.x, c.z);
+    const victimRotY = shooterRotY + Math.PI + (Math.random() - 0.5) * 0.4;
+
+    out.push({
+      id: nid('crime-victim'),
+      position: [c.x, 0, c.z] as Vec3,
+      rotationY: victimRotY,
+      animation: AnimationsName.Spell_Simple_Idle_Loop,
+      sequence: [
+        { animation: AnimationsName.Spell_Simple_Idle_Loop, holdMs: 4000 },
+        { animation: AnimationsName.Death01, loopOnce: true },
+      ],
+      pathOffset: 0,
     });
-    occupied.push({ x: c.x, z: c.z, r: circR + NPC_R + 2 });
+
+    out.push({
+      id: nid('crime-shooter'),
+      position: [sx, 0, sz] as Vec3,
+      rotationY: shooterRotY,
+      animation: AnimationsName.Pistol_Idle_Loop,
+      sequence: [
+        { animation: AnimationsName.Pistol_Idle_Loop, holdMs: 2000 },
+        { animation: AnimationsName.Pistol_Shoot, loopOnce: true },
+        { animation: AnimationsName.Pistol_Reload, loopOnce: true },
+        { animation: AnimationsName.Pistol_Shoot, loopOnce: true },
+        { animation: AnimationsName.Pistol_Aim_Down },
+      ],
+      pathOffset: 0,
+    });
+
+    occupied.push({ x: c.x, z: c.z, r: NPC_R });
+    occupied.push({ x: sx, z: sz, r: NPC_R });
   }
 
-  // patrol groups
-  for (let i = 0; i < 5; i++) {
+  return out;
+}
+
+// ── Scene: Street fight (two NPCs slugging each other) ────────────────────────
+
+function makeStreetFights(path: THREE.CatmullRomCurve3, occupied: Circ[]): NpcInstance[] {
+  const out: NpcInstance[] = [];
+
+  for (let i = 0; i < 2; i++) {
+    const c = tryCandidate(path, occupied, NPC_R + 3);
+    if (!c) continue;
+
+    const angle = Math.random() * Math.PI * 2;
+    const gap = 1.8;
+    const ax = c.x + Math.cos(angle) * gap;
+    const az = c.z + Math.sin(angle) * gap;
+    const bx = c.x - Math.cos(angle) * gap;
+    const bz = c.z - Math.sin(angle) * gap;
+
+    out.push({
+      id: nid('fight-a'),
+      position: [ax, 0, az] as Vec3,
+      rotationY: faceTo(ax, az, bx, bz),
+      animation: AnimationsName.Punch_Jab,
+      pathOffset: 0,
+    });
+    out.push({
+      id: nid('fight-b'),
+      position: [bx, 0, bz] as Vec3,
+      rotationY: faceTo(bx, bz, ax, az),
+      animation: AnimationsName.Punch_Cross,
+      pathOffset: 0,
+    });
+
+    occupied.push({ x: c.x, z: c.z, r: NPC_R + 3 });
+  }
+
+  return out;
+}
+
+// ── Scene: Social cluster (talking / dancing circle) ─────────────────────────
+
+function makeSocialClusters(path: THREE.CatmullRomCurve3, occupied: Circ[]): NpcInstance[] {
+  const out: NpcInstance[] = [];
+  const TALK_ANIMS = [
+    AnimationsName.Idle_Talking_Loop,
+    AnimationsName.Sitting_Talking_Loop,
+    AnimationsName.Dance_Loop,
+    AnimationsName.Sitting_Idle_Loop,
+  ];
+
+  for (let i = 0; i < 3; i++) {
+    const c = tryCandidate(path, occupied, NPC_R + 5);
+    if (!c) continue;
+
+    const count = 3 + Math.floor(Math.random() * 2); // 3-4 NPCs
+    const radius = 2.5 + Math.random() * 1.5;
+
+    for (let j = 0; j < count; j++) {
+      const angle = (j / count) * Math.PI * 2;
+      const px = c.x + Math.cos(angle) * radius;
+      const pz = c.z + Math.sin(angle) * radius;
+      out.push({
+        id: nid('social'),
+        position: [px, 0, pz] as Vec3,
+        rotationY: faceTo(px, pz, c.x, c.z), // face center
+        animation: pick(TALK_ANIMS),
+        pathOffset: 0,
+      });
+    }
+
+    occupied.push({ x: c.x, z: c.z, r: radius + NPC_R + 1 });
+  }
+
+  return out;
+}
+
+// ── Scene: Guard post (armed NPCs watching the street) ───────────────────────
+
+function makeGuardPosts(path: THREE.CatmullRomCurve3, occupied: Circ[]): NpcInstance[] {
+  const out: NpcInstance[] = [];
+  const GUARD_ANIMS = [
+    AnimationsName.Pistol_Idle_Loop,
+    AnimationsName.Pistol_Reload,
+    AnimationsName.Crouch_Idle_Loop,
+  ];
+
+  for (let i = 0; i < 3; i++) {
+    const c = tryCandidate(path, occupied, NPC_R);
+    if (!c) continue;
+
+    // Guard faces inward toward path (c.rotY already points at path)
+    out.push({
+      id: nid('guard'),
+      position: [c.x, 0, c.z] as Vec3,
+      rotationY: c.rotY,
+      animation: pick(GUARD_ANIMS),
+      pathOffset: 0,
+    });
+
+    occupied.push({ x: c.x, z: c.z, r: NPC_R });
+  }
+
+  return out;
+}
+
+// ── Scene: Gang patrol (2-3 NPCs walking the same route) ─────────────────────
+
+function makeGangPatrols(path: THREE.CatmullRomCurve3, occupied: Circ[]): NpcInstance[] {
+  const out: NpcInstance[] = [];
+
+  for (let i = 0; i < 3; i++) {
     let placed = false;
     for (let a = 0; a < 30 && !placed; a++) {
       const t1 = 0.02 + Math.random() * 0.86;
-      const span = 0.05 + Math.random() * 0.1;
-      const t2 = Math.min(0.98, t1 + span);
-
+      const t2 = Math.min(0.98, t1 + 0.06 + Math.random() * 0.1);
       const p1 = path.getPointAt(t1);
       const p2 = path.getPointAt(t2);
       const tan = path.getTangentAt(t1).normalize();
@@ -239,118 +332,156 @@ function makeNpcGroups(
       const w2x = p2.x + perp.x * d * side;
       const w2z = p2.z + perp.z * d * side;
 
-      if (isClear(w1x, w1z, NPC_R, occupied) && isClear(w2x, w2z, NPC_R, occupied)) {
-        const anim = pick(PATROL_ANIMS);
-        const speed =
-          anim === AnimationsName.Sprint_Loop
-            ? 10 + Math.random() * 4
-            : anim === AnimationsName.Jog_Fwd_Loop
-              ? 6 + Math.random() * 3
-              : anim === AnimationsName.Crouch_Fwd_Loop
-                ? 2 + Math.random() * 1.5
-                : 3 + Math.random() * 2; // Walk variants
+      if (!isClear(w1x, w1z, NPC_R, occupied) || !isClear(w2x, w2z, NPC_R, occupied)) continue;
 
-        groups.push({
-          id: nextId(),
-          placement: {
-            kind: 'patrol',
-            path: {
-              waypoints: [[w1x, 0, w1z] as Vec3, [w2x, 0, w2z] as Vec3],
-              speed,
-              loop: false,
-            },
-          },
-          animation: anim,
+      // 2 gang members walk the same route, staggered
+      const gangAnim =
+        Math.random() < 0.5 ? AnimationsName.Walk_Loop : AnimationsName.Walk_Formal_Loop;
+      const speed = 3 + Math.random() * 2;
+      const npcPath: NpcPath = {
+        waypoints: [[w1x, 0, w1z] as Vec3, [w2x, 0, w2z] as Vec3],
+        speed,
+        loop: false,
+      };
+
+      for (let m = 0; m < 2; m++) {
+        out.push({
+          id: nid('gang'),
+          position: npcPath.waypoints[0],
+          rotationY: 0,
+          animation: gangAnim,
+          path: npcPath,
+          pathOffset: m * 0.5,
         });
-        occupied.push({ x: w1x, z: w1z, r: NPC_R });
-        occupied.push({ x: w2x, z: w2z, r: NPC_R });
-        placed = true;
       }
+
+      occupied.push({ x: w1x, z: w1z, r: NPC_R });
+      occupied.push({ x: w2x, z: w2z, r: NPC_R });
+      placed = true;
     }
   }
 
-  // point NPCs
-  for (let i = 0; i < 14; i++) {
+  return out;
+}
+
+// ── Scene: Runner groups (2-3 NPCs sprinting / jogging together) ─────────────
+
+function makeRunners(path: THREE.CatmullRomCurve3, occupied: Circ[]): NpcInstance[] {
+  const out: NpcInstance[] = [];
+
+  for (let i = 0; i < 2; i++) {
+    let placed = false;
+    for (let a = 0; a < 30 && !placed; a++) {
+      const t1 = 0.02 + Math.random() * 0.8;
+      const t2 = Math.min(0.98, t1 + 0.15 + Math.random() * 0.1);
+      const p1 = path.getPointAt(t1);
+      const p2 = path.getPointAt(t2);
+      const tan = path.getTangentAt(t1).normalize();
+      const perp = new THREE.Vector3(tan.z, 0, -tan.x);
+      const side = Math.random() < 0.5 ? 1 : -1;
+      const d = PERP_MIN + Math.random() * (PERP_MAX - PERP_MIN);
+
+      const w1x = p1.x + perp.x * d * side;
+      const w1z = p1.z + perp.z * d * side;
+      const w2x = p2.x + perp.x * d * side;
+      const w2z = p2.z + perp.z * d * side;
+
+      if (!isClear(w1x, w1z, NPC_R * 2, occupied) || !isClear(w2x, w2z, NPC_R * 2, occupied))
+        continue;
+
+      const anim = Math.random() < 0.5 ? AnimationsName.Sprint_Loop : AnimationsName.Jog_Fwd_Loop;
+      const speed =
+        anim === AnimationsName.Sprint_Loop ? 10 + Math.random() * 4 : 6 + Math.random() * 3;
+
+      const groupSize = 2 + Math.floor(Math.random() * 2); // 2 or 3
+      for (let m = 0; m < groupSize; m++) {
+        // Spread runners slightly side-by-side (perpendicular) so they don't stack
+        const spread = (m - (groupSize - 1) / 2) * 1.8;
+        const sx = w1x + perp.x * spread;
+        const sz = w1z + perp.z * spread;
+        const ex = w2x + perp.x * spread;
+        const ez = w2z + perp.z * spread;
+
+        const npcPath: NpcPath = {
+          waypoints: [[sx, 0, sz] as Vec3, [ex, 0, ez] as Vec3],
+          speed,
+          loop: false,
+        };
+
+        out.push({
+          id: nid('runner'),
+          position: npcPath.waypoints[0],
+          rotationY: 0,
+          animation: anim,
+          path: npcPath,
+          pathOffset: m * 0.15,
+        });
+      }
+
+      occupied.push({ x: w1x, z: w1z, r: NPC_R * 2 });
+      occupied.push({ x: w2x, z: w2z, r: NPC_R * 2 });
+      placed = true;
+    }
+  }
+
+  return out;
+}
+
+// ── Scene: Loners (single NPCs doing something interesting) ──────────────────
+
+function makeLoners(path: THREE.CatmullRomCurve3, occupied: Circ[]): NpcInstance[] {
+  const out: NpcInstance[] = [];
+  const LONER_ANIMS = [
+    AnimationsName.Sitting_Idle_Loop,
+    AnimationsName.Spell_Simple_Idle_Loop,
+    AnimationsName.Push_Loop,
+    AnimationsName.Idle_Loop,
+    AnimationsName.Crouch_Idle_Loop,
+  ];
+
+  for (let i = 0; i < 6; i++) {
     const c = tryCandidate(path, occupied, NPC_R);
     if (!c) continue;
-
-    groups.push({
-      id: nextId(),
-      placement: { kind: 'point', position: [c.x, 0, c.z] as Vec3, rotationY: c.rotY },
-      animation: pick(POINT_ANIMS),
+    out.push({
+      id: nid('loner'),
+      position: [c.x, 0, c.z] as Vec3,
+      rotationY: c.rotY,
+      animation: pick(LONER_ANIMS),
+      pathOffset: 0,
     });
     occupied.push({ x: c.x, z: c.z, r: NPC_R });
   }
 
-  return groups;
+  return out;
 }
 
-// ── resolveNpcGroups ──────────────────────────────────────────────────────────
+// ── World assembly ────────────────────────────────────────────────────────────
 
-function faceInward(cx: number, cz: number, px: number, pz: number): number {
-  return Math.atan2(cx - px, cz - pz);
+export function resolveNpcGroups(_groups: NpcGroup[]): NpcInstance[] {
+  return [];
 }
-
-export function resolveNpcGroups(groups: NpcGroup[]): NpcInstance[] {
-  const instances: NpcInstance[] = [];
-
-  for (const { id, placement, animation } of groups) {
-    switch (placement.kind) {
-      case 'point':
-        instances.push({
-          id,
-          position: placement.position,
-          rotationY: placement.rotationY,
-          animation,
-          pathOffset: 0,
-        });
-        break;
-
-      case 'circle': {
-        const { center, count, radius = 3 } = placement;
-        for (let i = 0; i < count; i++) {
-          const angle = (i / count) * Math.PI * 2;
-          const px = center[0] + Math.cos(angle) * radius;
-          const pz = center[2] + Math.sin(angle) * radius;
-          instances.push({
-            id: `${id}-${i}`,
-            position: [px, 0, pz] as Vec3,
-            rotationY: faceInward(center[0], center[2], px, pz),
-            animation,
-            pathOffset: 0,
-          });
-        }
-        break;
-      }
-
-      case 'patrol': {
-        const { path, count = 1 } = placement;
-        for (let i = 0; i < count; i++) {
-          instances.push({
-            id: count > 1 ? `${id}-${i}` : id,
-            position: path.waypoints[0],
-            rotationY: 0,
-            animation,
-            path,
-            pathOffset: count > 1 ? i / count : 0,
-          });
-        }
-        break;
-      }
-    }
-  }
-
-  return instances;
-}
-
-// ── Single world generation call ──────────────────────────────────────────────
 
 function generateWorld() {
   const walkPath = makeWalkPath();
   const corridorPairs = makeCorridorPairs(walkPath);
-  const npcGroups = makeNpcGroups(walkPath, corridorPairs);
-  const npcInstances = resolveNpcGroups(npcGroups);
-  return { walkPath, corridorPairs, npcGroups, npcInstances };
+
+  const occupied: Circ[] = [];
+  for (const [l, r] of corridorPairs) {
+    occupied.push({ x: l[0], z: l[2], r: TOWER_R });
+    occupied.push({ x: r[0], z: r[2], r: TOWER_R });
+  }
+
+  const npcInstances: NpcInstance[] = [
+    ...makeCrimeScenes(walkPath, occupied), // 2 × (shooter + victim)
+    ...makeStreetFights(walkPath, occupied), // 2 × (puncher + puncher)
+    ...makeSocialClusters(walkPath, occupied), // 3 × (3-4 talking/dancing circle)
+    ...makeGuardPosts(walkPath, occupied), // 3 armed guards facing path
+    ...makeGangPatrols(walkPath, occupied), // 3 × 2-man patrol routes
+    ...makeRunners(walkPath, occupied), // 2 solo sprinters/joggers
+    ...makeLoners(walkPath, occupied), // 6 solo ambient NPCs
+  ];
+
+  return { walkPath, corridorPairs, npcGroups: [] as NpcGroup[], npcInstances };
 }
 
 const _world = generateWorld();
