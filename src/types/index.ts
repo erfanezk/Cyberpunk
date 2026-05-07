@@ -7,3 +7,4 @@ export { SECTION_ZONES } from './sections.types';
 export type { Zone } from './sections.types';
 export type { Vec3 } from './world.types';
 export type { NpcPath, Placement, NpcGroup, NpcInstance, AnimStep } from './npc.types';
+export type { QualityTier, WorldConfig } from './world-config.types';

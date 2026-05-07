@@ -2,13 +2,12 @@ import { useFrame } from '@react-three/fiber';
 import { useMemo, useRef, memo } from 'react';
 import * as THREE from 'three';
 import { COLORS } from '@/constants';
-import { useIsMobile } from '@/hooks';
+import { WORLD_CONFIG } from '@/game';
 import type { StreamConfig } from './data-streams.types';
 import { generateStreams } from './data-streams.utils';
 
 function DataStreams() {
-  const isMobile = useIsMobile();
-  const streams = useMemo<StreamConfig[]>(() => generateStreams(isMobile ? 8 : 28), [isMobile]);
+  const streams = useMemo<StreamConfig[]>(() => generateStreams(WORLD_CONFIG.dataStreamCount), []);
 
   return (
     <group>

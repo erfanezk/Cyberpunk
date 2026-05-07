@@ -1,7 +1,7 @@
 import { useFrame } from '@react-three/fiber';
 import { useRef, memo } from 'react';
 import * as THREE from 'three';
-import { useIsMobile } from '@/hooks';
+import { WORLD_CONFIG } from '@/game';
 import type { BillboardConfig } from './holographic-billboards.types';
 import { generateBillboards } from './holographic-billboards.utils';
 import {
@@ -11,10 +11,9 @@ import {
 } from './holographic-billboards.constants';
 
 function HolographicBillboards() {
-  const isMobile = useIsMobile();
-  const billboards = generateBillboards(5);
+  const billboards = generateBillboards(WORLD_CONFIG.billboardCount);
 
-  if (isMobile) return null;
+  if (billboards.length === 0) return null;
 
   return (
     <group>

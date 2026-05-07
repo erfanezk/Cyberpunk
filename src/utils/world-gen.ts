@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { AnimationsName } from '@/constants/animations.constants';
 import type { AnimStep, Vec3, NpcGroup, NpcInstance, NpcPath } from '@/types';
+import { WORLD_CONFIG } from '@/game';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Procedural world layout — runs once at module load.
@@ -461,6 +462,11 @@ export function resolveNpcGroups(_groups: NpcGroup[]): NpcInstance[] {
   return [];
 }
 
+function scaleArr<T>(arr: T[]): T[] {
+  const n = Math.max(1, Math.round(arr.length * WORLD_CONFIG.npcScale));
+  return arr.slice(0, n);
+}
+
 function generateWorld() {
   const walkPath = makeWalkPath();
   const corridorPairs = makeCorridorPairs(walkPath);
@@ -472,13 +478,13 @@ function generateWorld() {
   }
 
   const npcInstances: NpcInstance[] = [
-    ...makeStreetFights(walkPath, occupied), // 2 × (puncher + puncher)
-    ...makeSocialClusters(walkPath, occupied), // 3 × (3-4 talking/dancing circle)
-    ...makeGuardPosts(walkPath, occupied), // 3 armed guards facing path
-    ...makeGangPatrols(walkPath, occupied), // 3 × 2-man patrol routes
-    ...makeRunners(walkPath, occupied), // 2 solo sprinters/joggers
-    ...makeLoners(walkPath, occupied), // 6 solo ambient NPCs
-    ...makeCrimeScenes(walkPath, occupied), // 2 × (shooter + victim)
+    ...scaleArr(makeStreetFights(walkPath, occupied)), // 2 × (puncher + puncher)
+    ...scaleArr(makeSocialClusters(walkPath, occupied)), // 3 × (3-4 talking/dancing circle)
+    ...scaleArr(makeGuardPosts(walkPath, occupied)), // 3 armed guards facing path
+    ...scaleArr(makeGangPatrols(walkPath, occupied)), // 3 × 2-man patrol routes
+    ...scaleArr(makeRunners(walkPath, occupied)), // 2 solo sprinters/joggers
+    ...scaleArr(makeLoners(walkPath, occupied)), // 6 solo ambient NPCs
+    ...scaleArr(makeCrimeScenes(walkPath, occupied)), // 2 × (shooter + victim)
   ];
 
   return { walkPath, corridorPairs, npcGroups: [] as NpcGroup[], npcInstances };

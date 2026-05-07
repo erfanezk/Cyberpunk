@@ -1,29 +1,27 @@
 import { memo, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { useIsMobile } from '@/hooks';
+import { WORLD_CONFIG } from '@/game';
 import type { TowerData } from './neon-towers.types';
 import { generateTowers } from './neon-towers.utils';
-
-const BACKGROUND_COUNT = 10;
 
 function TowerSegment({
   width,
   height,
   color,
   phaseOffset,
-  isMobile,
+  skipAnimation,
 }: {
   width: number;
   height: number;
   color: THREE.Color;
   phaseOffset: number;
-  isMobile: boolean;
+  skipAnimation: boolean;
 }) {
   const outerRef = useRef<THREE.Mesh>(null);
 
   useFrame(({ clock }) => {
-    if (isMobile || !outerRef.current) return;
+    if (skipAnimation || !outerRef.current) return;
     const mat = outerRef.current.material as THREE.MeshStandardMaterial;
     mat.emissiveIntensity =
       0.15 + 0.35 * (0.5 + 0.5 * Math.sin(clock.elapsedTime * 2 + phaseOffset));
@@ -64,16 +62,16 @@ function TowerSegment({
 function AntennaTip({
   color,
   phaseOffset,
-  isMobile,
+  skipAnimation,
 }: {
   color: THREE.Color;
   phaseOffset: number;
-  isMobile: boolean;
+  skipAnimation: boolean;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame(({ clock }) => {
-    if (isMobile || !meshRef.current) return;
+    if (skipAnimation || !meshRef.current) return;
     const mat = meshRef.current.material as THREE.MeshStandardMaterial;
     mat.emissiveIntensity = 3 + 2.5 * Math.abs(Math.sin(clock.elapsedTime * 2.2 + phaseOffset));
   });
@@ -92,7 +90,7 @@ function AntennaTip({
   );
 }
 
-function Tower({ tower, isMobile }: { tower: TowerData; isMobile: boolean }) {
+function Tower({ tower, skipAnimation }: { tower: TowerData; skipAnimation: boolean }) {
   const topY = useMemo(
     () => Math.max(...tower.segments.map((s) => s.localY + s.height / 2)),
     [tower.segments],
@@ -108,7 +106,7 @@ function Tower({ tower, isMobile }: { tower: TowerData; isMobile: boolean }) {
             height={seg.height}
             color={tower.color}
             phaseOffset={seg.phaseOffset}
-            isMobile={isMobile}
+            skipAnimation={skipAnimation}
           />
         </group>
       ))}
@@ -126,7 +124,7 @@ function Tower({ tower, isMobile }: { tower: TowerData; isMobile: boolean }) {
           <AntennaTip
             color={tower.color}
             phaseOffset={tower.segments[0].phaseOffset}
-            isMobile={isMobile}
+            skipAnimation={skipAnimation}
           />
         </group>
       </group>
@@ -135,13 +133,13 @@ function Tower({ tower, isMobile }: { tower: TowerData; isMobile: boolean }) {
 }
 
 const NeonTowers = memo(() => {
-  const isMobile = useIsMobile();
-  const towers = useMemo<TowerData[]>(() => generateTowers(BACKGROUND_COUNT), []);
+  const skipAnimation = WORLD_CONFIG.tier === 'low';
+  const towers = useMemo<TowerData[]>(() => generateTowers(WORLD_CONFIG.neonTowerCount), []);
 
   return (
     <group>
       {towers.map((tower) => (
-        <Tower key={tower.id} tower={tower} isMobile={isMobile} />
+        <Tower key={tower.id} tower={tower} skipAnimation={skipAnimation} />
       ))}
     </group>
   );

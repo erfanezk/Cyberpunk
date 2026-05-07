@@ -7,11 +7,11 @@ import {
   Noise,
   Vignette,
 } from '@react-three/postprocessing';
-import { BlendFunction, GlitchMode } from 'postprocessing';
-import { useRef, memo } from 'react';
+import { BlendFunction, GlitchMode, type GlitchEffect } from 'postprocessing';
+import { useRef, memo, type ReactElement } from 'react';
 import * as THREE from 'three';
 import type { EffectsProps } from './effects.types';
-import { useIsMobile } from '@/hooks';
+import { WORLD_CONFIG } from '@/game';
 import {
   CHROMATIC_OFFSET,
   DISABLED_GLITCH,
@@ -20,12 +20,11 @@ import {
 } from './effects.constants';
 
 function Effects({ scroll }: EffectsProps) {
-  const isMobile = useIsMobile();
-  const glitchRef = useRef<any>(null);
+  const glitchRef = useRef<GlitchEffect>(null);
   const lastZone = useRef(0);
 
   useFrame(() => {
-    if (!glitchRef.current || !scroll || isMobile) return;
+    if (!glitchRef.current || !scroll || !WORLD_CONFIG.glitch) return;
     const currentZone = Math.floor(scroll.offset * 4);
     if (currentZone !== lastZone.current) {
       // Create fresh Vector2 instances — postprocessing mutates .x/.y in-place
@@ -39,31 +38,47 @@ function Effects({ scroll }: EffectsProps) {
     }
   });
 
-  if (isMobile) {
-    return (
-      <EffectComposer>
-        <Bloom luminanceThreshold={0.3} luminanceSmoothing={0.9} intensity={0.8} />
-        <Vignette offset={0.3} darkness={0.7} />
-      </EffectComposer>
+  const effects: ReactElement[] = [
+    <Bloom
+      key="bloom"
+      luminanceThreshold={WORLD_CONFIG.bloomLuminanceThreshold}
+      luminanceSmoothing={0.9}
+      intensity={WORLD_CONFIG.bloomIntensity}
+      {...(WORLD_CONFIG.bloomMipmapBlur ? { mipmapBlur: true } : {})}
+    />,
+  ];
+
+  if (WORLD_CONFIG.chromaticAberration) {
+    effects.push(
+      <ChromaticAberration
+        key="ca"
+        offset={CHROMATIC_OFFSET}
+        blendFunction={BlendFunction.NORMAL}
+      />,
     );
   }
 
-  return (
-    <EffectComposer>
-      <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.9} intensity={1.5} mipmapBlur />
-      <ChromaticAberration offset={CHROMATIC_OFFSET} blendFunction={BlendFunction.NORMAL} />
-      <Noise opacity={0.05} blendFunction={BlendFunction.OVERLAY} />
-      <Vignette offset={0.3} darkness={0.7} />
+  if (WORLD_CONFIG.noiseOverlay) {
+    effects.push(<Noise key="noise" opacity={0.05} blendFunction={BlendFunction.OVERLAY} />);
+  }
+
+  effects.push(<Vignette key="vignette" offset={0.3} darkness={0.7} />);
+
+  if (WORLD_CONFIG.glitch) {
+    effects.push(
       <Glitch
+        key="glitch"
         ref={glitchRef}
         delay={DISABLED_GLITCH}
         duration={GLITCH_DURATION}
         strength={GLITCH_STRENGTH}
         mode={GlitchMode.SPORADIC}
         active
-      />
-    </EffectComposer>
-  );
+      />,
+    );
+  }
+
+  return <EffectComposer>{effects}</EffectComposer>;
 }
 
 export default memo(Effects);

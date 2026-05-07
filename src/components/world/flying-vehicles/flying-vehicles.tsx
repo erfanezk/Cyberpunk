@@ -1,8 +1,8 @@
 import { useFrame } from '@react-three/fiber';
 import { useRef, memo } from 'react';
 import type * as THREE from 'three';
-import { useIsMobile } from '@/hooks';
-import { DRONE_COUNT_DESKTOP, DRONE_COUNT_MOBILE, NEON_COLORS } from './flying-vehicles.constants';
+import { WORLD_CONFIG } from '@/game';
+import { NEON_COLORS } from './flying-vehicles.constants';
 
 interface DroneConfig {
   id: string;
@@ -15,7 +15,6 @@ interface DroneConfig {
 }
 
 function Drone({ radius, height, speed, phase, color, zCenter }: DroneConfig) {
-  const isMobile = useIsMobile();
   const groupRef = useRef<THREE.Group>(null);
   const lightRef = useRef<THREE.PointLight>(null);
 
@@ -45,7 +44,7 @@ function Drone({ radius, height, speed, phase, color, zCenter }: DroneConfig) {
           opacity={0.85}
         />
       </mesh>
-      {!isMobile && (
+      {WORLD_CONFIG.droneLights && (
         <pointLight ref={lightRef} color={color} intensity={8} distance={45} decay={2} />
       )}
     </group>
@@ -53,8 +52,7 @@ function Drone({ radius, height, speed, phase, color, zCenter }: DroneConfig) {
 }
 
 function FlyingVehicles() {
-  const isMobile = useIsMobile();
-  const droneCount = isMobile ? DRONE_COUNT_MOBILE : DRONE_COUNT_DESKTOP;
+  const droneCount = WORLD_CONFIG.droneCount;
 
   const drones: DroneConfig[] = [];
   for (let i = 0; i < droneCount; i++) {

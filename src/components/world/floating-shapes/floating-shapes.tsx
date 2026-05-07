@@ -1,13 +1,12 @@
 import { useFrame } from '@react-three/fiber';
 import { useMemo, useRef, memo } from 'react';
 import * as THREE from 'three';
-import { useIsMobile } from '@/hooks';
+import { WORLD_CONFIG } from '@/game';
 import type { ShapeConfig } from './floating-shapes.types';
 import { generateShapes } from './floating-shapes.utils';
 
 function FloatingShapes() {
-  const isMobile = useIsMobile();
-  const shapes = useMemo<ShapeConfig[]>(() => generateShapes(isMobile ? 3 : 12), [isMobile]);
+  const shapes = useMemo<ShapeConfig[]>(() => generateShapes(WORLD_CONFIG.floatingShapeCount), []);
 
   return (
     <group>

@@ -1,12 +1,11 @@
 import { useFrame } from '@react-three/fiber';
 import { useMemo, useRef, memo } from 'react';
 import * as THREE from 'three';
-import { useIsMobile } from '@/hooks';
+import { WORLD_CONFIG } from '@/game';
 import { NEON_COLORS } from './particles.constants';
 
 function Particles() {
-  const isMobile = useIsMobile();
-  const count = isMobile ? 400 : 1500;
+  const count = WORLD_CONFIG.particleCount;
   const pointsRef = useRef<THREE.Points>(null);
 
   const positions = useMemo(() => {

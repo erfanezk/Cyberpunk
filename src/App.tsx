@@ -11,10 +11,9 @@ import {
   Scene,
 } from '@/components';
 import { COLORS } from '@/constants';
-import { useIsMobile } from '@/hooks';
+import { WORLD_CONFIG } from '@/game';
 
 export default function App() {
-  const isMobile = useIsMobile();
   const [progress, setProgress] = useState(0);
   const progressRef = useRef(0);
   const scrollToTopRef = useRef<() => void>(() => {});
@@ -31,8 +30,8 @@ export default function App() {
       <div className="scroll-container" style={{ height: '100vh' }}>
         <div className="canvas-wrapper">
           <Canvas
-            dpr={isMobile ? [0.75, 1] : [1, 1.5]}
-            gl={{ antialias: !isMobile, alpha: false, powerPreference: 'high-performance' }}
+            dpr={[WORLD_CONFIG.dprMin, WORLD_CONFIG.dprMax]}
+            gl={{ antialias: WORLD_CONFIG.antialias, alpha: false, powerPreference: 'high-performance' }}
             camera={{ fov: 60, near: 0.1, far: 1000, position: [0, 80, 180] }}
             style={{ background: COLORS.background }}
           >
