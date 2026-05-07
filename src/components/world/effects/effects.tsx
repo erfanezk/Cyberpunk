@@ -15,7 +15,6 @@ import { useIsMobile } from '@/hooks';
 import {
   CHROMATIC_OFFSET,
   DISABLED_GLITCH,
-  ENABLED_GLITCH_DELAY,
   GLITCH_DURATION,
   GLITCH_STRENGTH,
 } from './effects.constants';

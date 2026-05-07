@@ -36,7 +36,7 @@ function Rain() {
     }
 
     return { positions, speeds, lengths };
-  }, []);
+  }, [COUNT]);
 
   useFrame(() => {
     if (!linesRef.current) return;

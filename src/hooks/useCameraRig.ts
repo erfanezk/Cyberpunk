@@ -3,8 +3,8 @@ import { useRef } from 'react';
 import * as THREE from 'three';
 import { game } from '@/game';
 
-const BEHIND = 12;
-const CAM_HEIGHT = 6;
+const BEHIND = 6;
+const CAM_HEIGHT = 5;
 const CHEST_HEIGHT = 2.5;
 const CAM_FOV = 72;
 
