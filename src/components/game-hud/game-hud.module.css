@@ -1,0 +1,125 @@
+@keyframes hudIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scanPulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.9; }
+}
+
+.hud {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 20;
+  font-family: 'Courier New', monospace;
+  animation: hudIn 1s ease forwards;
+}
+
+/* ── Screen corners ── */
+.corner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  opacity: 0.45;
+  animation: scanPulse 3s ease-in-out infinite;
+}
+.tl { top: 1rem; left: 1rem;  border-top: 1px solid var(--cyan); border-left: 1px solid var(--cyan); }
+.tr { top: 1rem; right: 1rem; border-top: 1px solid var(--cyan); border-right: 1px solid var(--cyan); }
+.bl { bottom: 1rem; left: 1rem;  border-bottom: 1px solid var(--cyan); border-left: 1px solid var(--cyan); }
+.br { bottom: 1rem; right: 1rem; border-bottom: 1px solid var(--cyan); border-right: 1px solid var(--cyan); }
+
+/* ── Shared label ── */
+.label {
+  font-size: 0.52rem;
+  color: rgba(0, 255, 245, 0.45);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  display: block;
+}
+
+/* ── Top-left: coordinates ── */
+.coords {
+  position: absolute;
+  top: 1.4rem;
+  left: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.coordValue {
+  font-size: 0.75rem;
+  color: var(--cyan);
+  letter-spacing: 0.12em;
+  text-shadow: 0 0 10px rgba(0, 255, 245, 0.5);
+  white-space: pre;
+}
+
+.sep {
+  color: rgba(0, 255, 245, 0.4);
+}
+
+/* ── Top-right: district ── */
+.district {
+  position: absolute;
+  top: 1.4rem;
+  right: 2.5rem;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.districtName {
+  font-size: 0.75rem;
+  color: var(--magenta);
+  letter-spacing: 0.14em;
+  text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+  animation: scanPulse 2.4s ease-in-out infinite;
+}
+
+/* ── Bottom: traverse bar ── */
+.traverse {
+  position: absolute;
+  bottom: 1.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-width: min(420px, 80vw);
+}
+
+.track {
+  flex: 1;
+  height: 2px;
+  background: rgba(0, 255, 245, 0.12);
+  position: relative;
+  overflow: visible;
+}
+
+.fill {
+  height: 100%;
+  background: linear-gradient(to right, var(--cyan), var(--magenta));
+  box-shadow: 0 0 8px var(--cyan);
+  transition: width 0.15s linear;
+}
+
+.mark {
+  position: absolute;
+  top: -4px;
+  width: 1px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translateX(-50%);
+}
+
+.pct {
+  font-size: 0.6rem;
+  color: var(--cyan);
+  letter-spacing: 0.1em;
+  min-width: 3.5ch;
+  text-align: right;
+}

@@ -20,7 +20,7 @@ export function ProjectsOverlay({ progress }: OverlayProps) {
     <SplashWrapper progress={progress} fadeIn={SECTION_ZONES.projects.fadeIn} color="rgba(255,0,128,0.15)">
       <div className="overlay-layer" style={{ opacity }}>
         <div className={styles.wrapper}>
-          <h2 className={styles.title}>PROJECTS</h2>
+          <h2 className={styles.title}><span className={styles.missionId}>MISSION_02</span> // ARCHIVE_VAULT</h2>
           <div className={styles.grid}>
             {PROJECTS.map((project, i) => (
               <ProjectCard key={project.id} project={project} index={i} />

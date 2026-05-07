@@ -6,6 +6,7 @@ import {
   ArticlesOverlay,
   CinematicEnding,
   ContactOverlay,
+  GameHud,
   HeroOverlay,
   MusicPlayer,
   ProjectsOverlay,
@@ -41,6 +42,7 @@ export default function App() {
           </Canvas>
         </div>
       </div>
+      <GameHud progress={progress} />
       <HeroOverlay progress={progress} />
       <AboutOverlay progress={progress} />
       <ProjectsOverlay progress={progress} />

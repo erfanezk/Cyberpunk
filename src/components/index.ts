@@ -6,6 +6,7 @@ export { Cyber } from './cyber';
 export { CyberWorld } from './cyber-world';
 export { DataStreams } from './data-streams';
 export { Effects } from './effects';
+export { GameHud } from './game-hud';
 export { FloatingShapes } from './floating-shapes';
 export { FlyingVehicles } from './flying-vehicles';
 export { GridFloor } from './grid-floor';

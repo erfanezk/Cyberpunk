@@ -23,7 +23,7 @@ export function AboutOverlay({ progress }: OverlayProps) {
     <SplashWrapper progress={progress} fadeIn={SECTION_ZONES.about.fadeIn} color="rgba(168,85,247,0.15)">
       <div className="overlay-layer" style={{ opacity }}>
         <div className={styles.wrapper}>
-          <h2 className={styles.title}>ABOUT</h2>
+          <h2 className={styles.title}><span className={styles.missionId}>MISSION_01</span> // IDENTITY_SCAN</h2>
 
           <div className={`glass-panel ${styles.card}`}>
             <div className={styles.cardHeader}>

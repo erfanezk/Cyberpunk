@@ -46,8 +46,8 @@ export function ContactOverlay({ progress }: OverlayProps) {
     <SplashWrapper progress={progress} fadeIn={SECTION_ZONES.contact.fadeIn} color="rgba(0,255,150,0.15)">
       <div className="overlay-layer" style={{ opacity }}>
         <div className={styles.wrapper}>
-          <h2 className={styles.title}>CONTACT</h2>
-          <p className={styles.subtitle}>Let's work together</p>
+          <h2 className={styles.title}><span className={styles.missionId}>MISSION_04</span> // COMM_TOWER</h2>
+          <p className={styles.subtitle}>ESTABLISH_CONNECTION // TRANSMIT</p>
           <div className={`glass-panel ${styles.card}`}>
             <div className={styles.cardHeader}>
               <span className={styles.dot} style={{ background: '#ff5f57' }} />

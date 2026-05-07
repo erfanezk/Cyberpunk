@@ -21,7 +21,7 @@ export function ArticlesOverlay({ progress }: OverlayProps) {
     <SplashWrapper progress={progress} fadeIn={SECTION_ZONES.articles.fadeIn} color="rgba(255,200,0,0.15)">
       <div className="overlay-layer" style={{ opacity }}>
         <div className={styles.wrapper}>
-          <h2 className={styles.title}>ARTICLES</h2>
+          <h2 className={styles.title}><span className={styles.missionId}>MISSION_03</span> // INTEL_NET</h2>
           <div className={styles.list}>
             {ARTICLES.map((article) => (
               <ArticleCard key={article.id} article={article} />

@@ -122,3 +122,4 @@
     transform: translateX(0);
   }
 }
+.missionId { color: var(--magenta); font-size: 0.65em; letter-spacing: 0.2em; opacity: 0.85; }
