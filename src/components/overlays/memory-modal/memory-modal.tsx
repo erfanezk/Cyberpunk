@@ -105,15 +105,17 @@ function MemoryModal() {
 
   useEffect(() => {
     return memory.subscribe((id) => {
-      setHiding(false);
-      setActive(id);
-      if (memory.isAllUnlocked()) {
-        // auto-dismiss so GameComplete can appear without overlap
-        setTimeout(() => {
-          setHiding(true);
-          setTimeout(() => setActive(null), 500);
-        }, 2200);
-      }
+      const isAll = memory.isAllUnlocked();
+      setTimeout(() => {
+        setHiding(false);
+        setActive(id);
+        if (isAll) {
+          setTimeout(() => {
+            setHiding(true);
+            setTimeout(() => setActive(null), 500);
+          }, 2200);
+        }
+      }, 900);
     });
   }, []);
 

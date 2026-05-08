@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, memo } from 'react';
+import { useEffect, useMemo, useRef, useState, memo, useCallback } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import { clone as skeletonClone } from 'three/examples/jsm/utils/SkeletonUtils.js';
@@ -115,8 +115,8 @@ function Npc({
   sequence,
 }: NpcInstance) {
   const fragmentInfo = MEMORY_FRAGMENT_MAP[id];
-  const [glowing, setGlowing] = useState(
-    fragmentInfo ? !memory.isUnlocked(fragmentInfo.fragment) : false,
+  const [dead, setDead] = useState(
+    fragmentInfo ? memory.isUnlocked(fragmentInfo.fragment) : false,
   );
   const groupRef = useRef<THREE.Group>(null);
   const pathState = useRef<PathState>({ t: pathOffset });
@@ -126,6 +126,17 @@ function Npc({
   const { scene: source, animations: clips } = useGLTF(modelUrl);
   const cloned = useMemo(() => skeletonClone(source), [source]);
   const mixer = useMemo(() => new THREE.AnimationMixer(cloned), [cloned]);
+
+  const playDeath = useCallback(() => {
+    const clip = THREE.AnimationClip.findByName(clips, 'Death01');
+    if (!clip) return;
+    mixer.stopAllAction();
+    const action = mixer.clipAction(clip);
+    action.reset();
+    action.setLoop(THREE.LoopOnce, 1);
+    action.clampWhenFinished = true;
+    action.setEffectiveWeight(1).play();
+  }, [mixer, clips]);
 
   useEffect(() => {
     if (sequence && sequence.length > 0) {
@@ -164,9 +175,13 @@ function Npc({
   }, [mixer, clips, animation, loopOnce, sequence]);
 
   useEffect(() => {
+    if (dead) playDeath();
+  }, [dead, playDeath]);
+
+  useEffect(() => {
     if (!fragmentInfo) return;
     return memory.subscribe((unlocked) => {
-      if (unlocked === fragmentInfo.fragment) setGlowing(false);
+      if (unlocked === fragmentInfo.fragment) setDead(true);
     });
   }, [fragmentInfo]);
 
@@ -187,7 +202,7 @@ function Npc({
     <group ref={groupRef} position={position} rotation={[0, rotationY, 0]} scale={3}>
       <primitive object={cloned} />
       {fragmentInfo && (
-        <pointLight color={fragmentInfo.color} intensity={glowing ? 12 : 0} distance={20} decay={1.5} />
+        <pointLight color={fragmentInfo.color} intensity={dead ? 0 : 12} distance={20} decay={1.5} />
       )}
     </group>
   );

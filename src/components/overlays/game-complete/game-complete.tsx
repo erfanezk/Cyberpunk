@@ -19,7 +19,7 @@ function GameComplete() {
     return memory.subscribe(() => {
       if (memory.isAllUnlocked()) {
         // brief delay so the last MemoryModal shows first
-        setTimeout(() => setVisible(true), 3000);
+        setTimeout(() => setVisible(true), 4000);
       }
     });
   }, []);
