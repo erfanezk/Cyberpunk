@@ -456,6 +456,30 @@ function makeLoners(path: THREE.CatmullRomCurve3, occupied: Circ[]): NpcInstance
   return out;
 }
 
+// ── Memory carrier NPCs (5 fixed-ID NPCs along the walk path) ─────────────────
+
+const MEMORY_T = [0.15, 0.33, 0.50, 0.67, 0.85] as const;
+const MEMORY_FRAG_NAMES = ['bio', 'skills', 'projects', 'articles', 'contact'] as const;
+
+function makeMemoryNpcs(path: THREE.CatmullRomCurve3): NpcInstance[] {
+  return MEMORY_FRAG_NAMES.map((frag, i) => {
+    const t = MEMORY_T[i];
+    const pt = path.getPointAt(t);
+    const tan = path.getTangentAt(t).normalize();
+    const perp = new THREE.Vector3(tan.z, 0, -tan.x);
+    const side = i % 2 === 0 ? 1 : -1;
+    const x = +(pt.x + perp.x * 6 * side).toFixed(1);
+    const z = +(pt.z + perp.z * 6 * side).toFixed(1);
+    return {
+      id: `memory-${frag}`,
+      position: [x, 0, z] as Vec3,
+      rotationY: Math.atan2(pt.x - x, pt.z - z),
+      animation: AnimationsName.Idle_Loop,
+      pathOffset: 0,
+    };
+  });
+}
+
 // ── World assembly ────────────────────────────────────────────────────────────
 
 export function resolveNpcGroups(_groups: NpcGroup[]): NpcInstance[] {
@@ -478,6 +502,7 @@ function generateWorld() {
   }
 
   const npcInstances: NpcInstance[] = [
+    ...makeMemoryNpcs(walkPath),
     ...scaleArr(makeStreetFights(walkPath, occupied)), // 2 × (puncher + puncher)
     ...scaleArr(makeSocialClusters(walkPath, occupied)), // 3 × (3-4 talking/dancing circle)
     ...scaleArr(makeGuardPosts(walkPath, occupied)), // 3 armed guards facing path
