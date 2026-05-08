@@ -18,9 +18,43 @@
 
 ## What This Is
 
-Not a portfolio page. A **scroll-driven semi-open world** — a fully procedurally generated cyberpunk city that rebuilds itself on every page load. Live NPCs with autonomous pathfinding and scripted scene choreography, a playable character on a parametric spline with physics-based jump simulation, custom GLSL shaders, and a cinematic post-processing pipeline. All of it running at **60fps inside a React app**, with zero game engine dependencies.
+Not a portfolio page. A **scroll-driven semi-open world** with an embedded game loop — a fully procedurally generated cyberpunk city that rebuilds itself on every page load. The visitor plays as an investigator dispatched to recover a corrupted operative's fragmented identity. Five memory-carrier NPCs are scattered across the sector. Punch them. Watch them fall. Recover the data.
+
+Live NPCs with autonomous pathfinding and scripted scene choreography, a playable character on a parametric spline with physics-based jump simulation, custom GLSL shaders, and a cinematic post-processing pipeline. All of it running at **60fps inside a React app**, with zero game engine dependencies.
 
 No Unity. No Unreal. No canvas 2D. Pure **Three.js + WebGL + math**.
+
+---
+
+## Game Loop
+
+The portfolio content is gated behind an in-world retrieval mechanic:
+
+```
+START SCREEN — Mission briefing
+  "An operative's identity is fragmented across the sector"
+  Three locked objectives: IDENTITY_FILE.dat / PROJECT_VAULT.exe / INTEL_FEED.log
+
+        ↓  ACCEPT MISSION
+
+TRAVERSE THE WORLD
+  Scroll to move through the cyberpunk sector
+  5 glowing memory-carrier NPCs placed along the walk path
+
+        ↓  PUNCH (F key) memory NPCs in range
+
+FRAGMENT RECOVERED
+  NPC plays Death01 animation and collapses
+  Point light extinguishes (intensity → 0, no shader recompile)
+  900ms delay → MemoryModal surfaces the recovered data
+  HUD memory tracker updates (5 colored dots, N/5 count)
+
+        ↓  RECOVER ALL 5 FRAGMENTS
+
+MISSION COMPLETE
+  Last modal auto-dismisses
+  GameComplete overlay fades in — operative identity fully restored
+```
 
 ---
 
@@ -40,10 +74,74 @@ Module load
          │
          └──► generateWorld()   →  walk path (random topology) +
                                     corridor tower pairs +
+                                    memory NPC placements (path-perpendicular) +
                                     NPC scene instances (collision-checked)
 ```
 
 One scalar drives the entire runtime. The city layout is decided once at module load — deterministic per session, unique across refreshes.
+
+---
+
+## Memory Fragment System
+
+Five memory-carrier NPCs are placed at fixed parametric positions along the walk path (`t = 0.15, 0.33, 0.5, 0.67, 0.85`). Each is offset perpendicularly from the path spine, alternating sides:
+
+```ts
+const perp = new THREE.Vector3(tan.z, 0, -tan.x);  // XZ perpendicular
+const side = i % 2 === 0 ? 1 : -1;
+// placed MEMORY_NPC_PATH_OFFSET units off the path, facing inward
+```
+
+Each carrier holds one fragment:
+
+| NPC ID | Fragment | Light Color |
+|---|---|---|
+| `memory-bio` | Identity & background | `#00fff5` cyan |
+| `memory-skills` | Skill tree | `#ff00ff` magenta |
+| `memory-projects` | Project vault | `#0066ff` blue |
+| `memory-articles` | Intel feed | `#ff9900` orange |
+| `memory-contact` | Uplink node | `#28c840` green |
+
+### Hit Detection
+
+On every punch input, the controller scans `MEMORY_NPCS` using pre-allocated scratch vectors — no allocations in the hot path:
+
+```ts
+const _toNpc    = new THREE.Vector2();
+const _forward2 = new THREE.Vector2();
+const PUNCH_HIT_RANGE_SQ = 36;  // 6 units squared
+
+for (const npc of MEMORY_NPCS) {
+  const dx = nx - px, dz = nz - pz;
+  if (dx*dx + dz*dz > PUNCH_HIT_RANGE_SQ) continue;
+  _toNpc.set(dx, dz).normalize();
+  if (_forward2.dot(_toNpc) > 0.5) {   // within ~60° forward arc
+    memory.unlock(info.fragment);
+    break;
+  }
+}
+```
+
+### Death Animation — No Shader Recompile
+
+When `memory.unlock` fires, the NPC's `dead` state flips. A dedicated `useEffect([dead])` immediately calls `mixer.stopAllAction()` and plays `Death01` as `LoopOnce / clampWhenFinished` — the NPC collapses and holds the final pose.
+
+The point light is **never removed from the scene graph** — only its `intensity` is zeroed. Removing a light changes `NUM_POINT_LIGHTS`, forcing synchronous GLSL recompile across all lit meshes. Zeroing intensity updates a float uniform in ~0μs.
+
+### Memory Singleton
+
+`src/game/memory.ts` — a minimal pub/sub singleton tracking unlock state:
+
+```ts
+class Memory {
+  unlock(id: FragmentId): void       // idempotent, fires listeners once
+  isUnlocked(id: FragmentId): boolean
+  isAllUnlocked(): boolean           // gates GameComplete
+  subscribe(fn): () => void          // returns unsubscribe
+}
+```
+
+No React state on the singleton. Subscribers (NPC, MemoryModal, GameHud, GameComplete) react independently via `useState` triggered from the subscription callbacks.
 
 ---
 
@@ -103,7 +201,7 @@ Scene generators run in priority order — fights and crimes first (largest excl
 
 ---
 
-## NPC System — Autonomous Agents, Seven Scene Archetypes
+## NPC System — Autonomous Agents, Eight Scene Archetypes
 
 Every NPC is driven by the same loop: `advancePath → samplePath → mixer.update`. But what makes the crowd feel alive is the scene choreography layer on top.
 
@@ -160,10 +258,11 @@ The sequencer chains steps via `setTimeout` and `mixer.addEventListener('finishe
 
 ### Scene Archetypes
 
-Seven distinct scene types are scattered throughout the world:
+Eight distinct scene types are scattered throughout the world:
 
 | Scene | Agents | Behavior |
 |---|---|---|
+| **Memory carrier** | 1 glowing NPC | Idles at path-perpendicular position. Collapses (`Death01`) on punch hit. Drops a data fragment. |
 | **Crime scene** | Shooter + Victim | Victim idles → dies on timer. Shooter aims → fires twice → reloads → aims down. |
 | **Street fight** | 2 combatants | Facing each other, exchanging `Punch_Jab` / `Punch_Cross` in a loop. |
 | **Social cluster** | 3–4 NPCs | Circle facing inward. Random mix of talking, dancing, sitting. |
@@ -182,8 +281,8 @@ The player isn't just visual. The HUD exposes four actions triggered by keyboard
 |---|---|
 | `Space` | Jump |
 | `F` | Punch |
-| `C` | Sit / Stand |
-| `B` | Lean Back |
+| `C` | Crouch / Stand |
+| `R` | Roll |
 
 ### Jump Physics — Euler Integration
 
@@ -222,23 +321,7 @@ const onFinished = (event) => {
 };
 ```
 
-Scroll locomotion (`Idle_Loop ↔ Jog_Fwd_Loop`) is gated on both `actionLock` and `sitting` state so inputs don't interrupt mid-animation.
-
-### Rotation Controller — No Gimbal Lock
-
-Character heading computed from spline tangent and applied with a proportional controller each frame:
-
-```ts
-WALK_PATH.getTangentAt(t, _tan).normalize();
-const targetY = Math.atan2(_tan.x, _tan.z);
-
-let dy = targetY - group.rotation.y;
-if (dy >  Math.PI) dy -= Math.PI * 2;   // wrap to [-π, π]
-if (dy < -Math.PI) dy += Math.PI * 2;   // prevents spinning the long way at ±π
-group.rotation.y += dy * 0.08;           // proportional controller, gain = 0.08
-```
-
-The `±π` clamp prevents the character from spinning 350° instead of 10° at the discontinuity. The 0.08 gain produces lag that makes turns feel physical.
+Scroll locomotion (`Idle_Loop ↔ Jog_Fwd_Loop`) is gated on both `actionLock` and `crouching` state so inputs don't interrupt mid-animation.
 
 ### Game Bridge — Zero React State in the Hot Path
 
@@ -261,6 +344,21 @@ class Game {
 ```
 
 Progress state in `App.tsx` is additionally gated: sub-0.001 deltas never reach the reconciler, keeping React overhead near zero across the 60fps loop.
+
+---
+
+## HUD — Live Game State
+
+The `GameHud` overlay shows live character telemetry and fragment recovery progress:
+
+| Region | Content |
+|---|---|
+| Top-left | `POS X:NNN Z:NNNNN` — world-space coordinates, RAF-polled, throttled to actual changes |
+| Top-right | Memory tracker — 5 colored dots (one per fragment, matching NPC light color) + `N/5` count |
+| Bottom-left | WASD movement keys |
+| Bottom-right | Action buttons — JUMP / PUNCH / CROUCH / ROLL |
+
+Memory dots update via `memory.subscribe` — each unlock triggers a React state update only for that specific dot, no full HUD re-render.
 
 ---
 
@@ -325,15 +423,17 @@ Full cinematic stack composited in a single `EffectComposer` pass — one draw c
 
 Five HTML sections each occupy a scroll interval `[t₀, t₁]`. Opacity computed via cubic Hermite interpolation — zero first derivative at zone boundaries so overlays never pop.
 
-| Section | Scroll Range | District Name |
-|---|---|---|
-| Hero | 0.00 → 0.17 | `SPAWN_ZONE` |
-| About | 0.17 → 0.34 | `IDENTITY_CORE` |
-| Projects | 0.34 → 0.52 | `ARCHIVE_VAULT` |
-| Articles | 0.52 → 0.72 | `INTEL_NET` |
-| Contact | 0.72 → 1.00 | `COMM_TOWER` |
+| Section | Scroll Range |
+|---|---|
+| Hero | 0.00 → 0.17 |
+| About | 0.17 → 0.34 |
+| Projects | 0.34 → 0.52 |
+| Articles | 0.52 → 0.72 |
+| Contact | 0.72 → 1.00 |
 
 Overlays return `null` (unmount entirely) when `opacity < 0.01` — no invisible DOM nodes in the render tree.
+
+Game-layer overlays (`MemoryModal`, `GameComplete`) are event-driven — triggered by `memory.subscribe`, not by scroll position.
 
 ---
 
@@ -391,17 +491,23 @@ pnpm dev        # → http://localhost:5173/portfolio
 
 ```
 src/
-  components/         # One folder per component (tsx, types, utils, module.css, index.ts)
+  components/
     world/
       cyber/          # Player character — GLB, spline traversal, physics, animation FSM
-      npcs/           # NPC agents — path following, SkeletonUtils clone, sequencer, mixer
+      npcs/           # NPC agents — path following, SkeletonUtils clone, sequencer, death anim
       grid-floor/     # Custom GLSL two-tier anti-aliased grid shader
       effects/        # EffectComposer post-processing stack
     overlays/
-      game-hud/       # HUD overlay — reads game singleton, pub/sub input dispatch
-  constants/          # Profile, projects, articles, camera path, colors, animations
+      start-overlay/  # Mission briefing screen — corrupted operative dossier, locked objectives
+      game-hud/       # HUD — coordinates, memory tracker dots, action buttons
+      memory-modal/   # Fragment recovery popup — surfaces data on NPC punch
+      game-complete/  # Mission complete overlay — all 5 fragments recovered
+      hero-overlay/   # Scroll-driven section overlays (hero → contact)
+  constants/          # Profile, projects, articles, camera path, colors, animations, NPC fragments
+  game/
+    game.ts           # Singleton bridge — publishes world state, dispatches inputs
+    memory.ts         # Fragment unlock tracker — pub/sub, isAllUnlocked gate
   hooks/              # useCameraRig, useScrollProgress
-  game/               # game.ts — singleton bridge, publishes world state each frame
   types/              # Shared types (OverlayProps, section zones, NPC paths)
   utils/              # world-gen.ts (procedural world), random.ts
 ```
