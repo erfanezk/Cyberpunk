@@ -1,19 +1,175 @@
+/* ── Keyframes ────────────────────────────────────────────────────────────── */
+
 @keyframes flicker {
-  0%, 100% { opacity: 1; }
-  92%       { opacity: 1; }
-  93%       { opacity: 0.4; }
-  94%       { opacity: 1; }
-  96%       { opacity: 0.6; }
-  97%       { opacity: 1; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  93% {
+    opacity: 0.4;
+  }
+  94% {
+    opacity: 1;
+  }
+  96% {
+    opacity: 0.6;
+  }
+  97% {
+    opacity: 1;
+  }
 }
 
-@keyframes scanline {
-  0%   { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
+@keyframes scanBeamAnim {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
 }
 
 @keyframes fadeOut {
-  to { opacity: 0; pointer-events: none; }
+  to {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+@keyframes livePulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes corruptBlink {
+  0%,
+  78%,
+  100% {
+    opacity: 1;
+    color: #ff6600;
+  }
+  80% {
+    opacity: 0;
+  }
+  82% {
+    opacity: 1;
+    color: #ff0050;
+  }
+  85% {
+    opacity: 0.3;
+  }
+  87% {
+    opacity: 1;
+    color: #ff6600;
+  }
+}
+
+@keyframes photoShake {
+  0%,
+  82%,
+  100% {
+    transform: translateX(0);
+    clip-path: none;
+  }
+  84% {
+    transform: translateX(-5px);
+    clip-path: inset(15% 0 55% 0);
+  }
+  86% {
+    transform: translateX(5px);
+    clip-path: inset(60% 0 10% 0);
+  }
+  88% {
+    transform: translateX(-3px);
+    clip-path: inset(35% 0 30% 0);
+  }
+  90% {
+    transform: translateX(4px);
+    clip-path: none;
+  }
+  92% {
+    transform: translateX(0);
+    clip-path: none;
+  }
+}
+
+@keyframes glitch1 {
+  0%,
+  83%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  85% {
+    transform: translate(-8px, 3px);
+    opacity: 0.55;
+  }
+  88% {
+    transform: translate(5px, -2px);
+    opacity: 0.35;
+  }
+  91% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes glitch2 {
+  0%,
+  86%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  88% {
+    transform: translate(8px, -3px);
+    opacity: 0.45;
+  }
+  91% {
+    transform: translate(-4px, 4px);
+    opacity: 0.3;
+  }
+  94% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes photoBeamAnim {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(148px);
+  }
+}
+
+@keyframes objSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes barPulse {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.45;
+  }
 }
 
 /* ── Overlay shell ────────────────────────────────────────────────────────── */
@@ -24,21 +180,14 @@
   background: #000;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   z-index: 100;
   font-family: 'Courier New', monospace;
   overflow-y: auto;
-  padding: 3rem 1.5rem;
-}
-
-.overlay.hiding {
-  animation: fadeOut 0.6s ease forwards;
 }
 
 .overlay::after {
   content: '';
-  position: absolute;
+  position: fixed;
   inset: 0;
   background: repeating-linear-gradient(
     to bottom,
@@ -48,6 +197,23 @@
     rgba(0, 255, 245, 0.015) 4px
   );
   pointer-events: none;
+  z-index: 0;
+}
+
+.overlay.hiding {
+  animation: fadeOut 0.6s ease forwards;
+}
+
+/* ── Background ───────────────────────────────────────────────────────────── */
+
+.gridBg {
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(rgba(0, 255, 245, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 245, 0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .scanBeam {
@@ -56,10 +222,12 @@
   right: 0;
   height: 120px;
   background: linear-gradient(to bottom, transparent, rgba(0, 255, 245, 0.04), transparent);
-  animation: scanline 4s linear infinite;
+  animation: scanBeamAnim 4s linear infinite;
   pointer-events: none;
   z-index: 1;
 }
+
+/* ── Corner brackets ──────────────────────────────────────────────────────── */
 
 .corner {
   position: fixed;
@@ -68,24 +236,434 @@
   opacity: 0.5;
   z-index: 2;
 }
-.tl { top: 1.5rem; left: 1.5rem; border-top: 1px solid var(--cyan); border-left: 1px solid var(--cyan); }
-.tr { top: 1.5rem; right: 1.5rem; border-top: 1px solid var(--cyan); border-right: 1px solid var(--cyan); }
-.bl { bottom: 1.5rem; left: 1.5rem; border-bottom: 1px solid var(--cyan); border-left: 1px solid var(--cyan); }
-.br { bottom: 1.5rem; right: 1.5rem; border-bottom: 1px solid var(--cyan); border-right: 1px solid var(--cyan); }
+.tl {
+  top: 1.5rem;
+  left: 1.5rem;
+  border-top: 1px solid var(--cyan);
+  border-left: 1px solid var(--cyan);
+}
+.tr {
+  top: 1.5rem;
+  right: 1.5rem;
+  border-top: 1px solid var(--cyan);
+  border-right: 1px solid var(--cyan);
+}
+.bl {
+  bottom: 1.5rem;
+  left: 1.5rem;
+  border-bottom: 1px solid var(--cyan);
+  border-left: 1px solid var(--cyan);
+}
+.br {
+  bottom: 1.5rem;
+  right: 1.5rem;
+  border-bottom: 1px solid var(--cyan);
+  border-right: 1px solid var(--cyan);
+}
 
-/* ── Content shell ────────────────────────────────────────────────────────── */
+/* ── Broadcast banner ─────────────────────────────────────────────────────── */
+
+.broadcastBanner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.4rem 2rem;
+  background: rgba(255, 0, 80, 0.1);
+  border-bottom: 1px solid rgba(255, 0, 80, 0.35);
+  font-size: 0.55rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #ff0050;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 5;
+}
+
+.liveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ff0050;
+  box-shadow: 0 0 6px #ff0050;
+  animation: livePulse 1s step-end infinite;
+  flex-shrink: 0;
+}
+
+.bannerSep {
+  opacity: 0.35;
+}
+
+/* ── Main content ─────────────────────────────────────────────────────────── */
 
 .content {
+  position: relative;
+  z-index: 3;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  padding: 1.5rem 2rem 2.5rem;
+  max-width: 1200px;
   width: 100%;
-  max-width: 1300px;
-  animation: flicker 6s ease-in-out infinite;
-  position: relative;
-  z-index: 3;
+  margin: 0 auto;
+  animation: flicker 8s ease-in-out infinite;
 }
 
+/* ── Top row ──────────────────────────────────────────────────────────────── */
+
+.topRow {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+/* ── Operative section ────────────────────────────────────────────────────── */
+
+.operativeSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.fileHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.3rem 0.6rem;
+  background: rgba(0, 255, 245, 0.05);
+  border: 1px solid rgba(0, 255, 245, 0.15);
+  border-bottom: none;
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  color: rgba(0, 255, 245, 0.5);
+}
+
+.fileStatus {
+  color: #ff6600;
+}
+
+.operativeCard {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(0, 255, 245, 0.15);
+  background: rgba(0, 255, 245, 0.02);
+}
+
+/* ── Photo ────────────────────────────────────────────────────────────────── */
+
+.photoWrap {
+  position: relative;
+  width: 110px;
+  height: 148px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1px solid rgba(0, 255, 245, 0.2);
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(0.5) brightness(0.55) contrast(1.3);
+  animation: photoShake 4.5s ease-in-out infinite;
+}
+
+.photoScanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.28) 2px,
+    rgba(0, 0, 0, 0.28) 4px
+  );
+  pointer-events: none;
+}
+
+.photoCrt {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.6) 100%);
+  pointer-events: none;
+}
+
+.photoGlitch1 {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 0, 80, 0.25);
+  mix-blend-mode: screen;
+  animation: glitch1 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.photoGlitch2 {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 255, 245, 0.18);
+  mix-blend-mode: screen;
+  animation: glitch2 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.photoBeam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(0, 255, 245, 0.5);
+  animation: photoBeamAnim 2s linear infinite;
+  pointer-events: none;
+}
+
+.photoLabel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.2rem 0.3rem;
+  background: rgba(255, 0, 80, 0.8);
+  font-size: 0.42rem;
+  letter-spacing: 0.08em;
+  text-align: center;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+/* ── Identity ─────────────────────────────────────────────────────────────── */
+
+.identity {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 200px;
+}
+
+.idRow {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding-bottom: 0.2rem;
+}
+
+.idKey {
+  color: rgba(0, 255, 245, 0.4);
+  min-width: 115px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.idVal {
+  color: rgba(255, 255, 255, 0.75);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.corrupted {
+  color: #ff6600 !important;
+  animation: corruptBlink 3.5s ease-in-out infinite;
+}
+
+.statGrid {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid rgba(0, 255, 245, 0.15);
+  background: rgba(0, 0, 0, 0.3);
+  min-width: 44px;
+}
+
+.statKey {
+  font-size: 0.45rem;
+  color: rgba(0, 255, 245, 0.4);
+  letter-spacing: 0.12em;
+}
+
+.statVal {
+  font-size: 0.95rem;
+  color: #ff6600;
+  font-weight: 700;
+}
+
+/* ── Mission brief ────────────────────────────────────────────────────────── */
+
+.briefing {
+  border: 1px solid rgba(0, 255, 245, 0.15);
+  background: rgba(0, 255, 245, 0.015);
+  display: flex;
+  flex-direction: column;
+}
+
+.briefHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  background: rgba(0, 255, 245, 0.06);
+  border-bottom: 1px solid rgba(0, 255, 245, 0.12);
+  font-size: 0.55rem;
+  letter-spacing: 0.22em;
+  color: var(--cyan);
+  text-transform: uppercase;
+}
+
+.briefPriority {
+  color: #ff0050;
+  font-weight: 700;
+}
+
+.briefBody {
+  padding: 0.9rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  flex: 1;
+}
+
+.briefLine {
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.04em;
+  line-height: 1.65;
+  display: flex;
+  gap: 0.6rem;
+  margin: 0;
+}
+
+.prompt {
+  color: var(--cyan);
+  flex-shrink: 0;
+  font-weight: 700;
+}
+
+/* ── Objectives ───────────────────────────────────────────────────────────── */
+
+.objectives {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.objHeader {
+  font-size: 0.52rem;
+  letter-spacing: 0.22em;
+  color: rgba(0, 255, 245, 0.45);
+  text-transform: uppercase;
+}
+
+.objGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.objCard {
+  border: 1px solid rgba(0, 255, 245, 0.18);
+  background: rgba(0, 255, 245, 0.02);
+  padding: 0.8rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  animation: objSlideIn 0.5s ease both;
+  position: relative;
+  overflow: hidden;
+}
+
+.objCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(0, 255, 245, 0.5), transparent);
+}
+
+.objTop {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.objId {
+  font-size: 0.48rem;
+  color: rgba(0, 255, 245, 0.4);
+  letter-spacing: 0.15em;
+}
+
+.objIcon {
+  color: rgba(0, 255, 245, 0.6);
+  font-size: 0.7rem;
+}
+
+.objLock {
+  margin-left: auto;
+  font-size: 0.43rem;
+  letter-spacing: 0.15em;
+  color: #ff6600;
+  padding: 0.1rem 0.3rem;
+  border: 1px solid rgba(255, 102, 0, 0.4);
+  background: rgba(255, 102, 0, 0.07);
+}
+
+.objName {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.objExt {
+  color: rgba(0, 255, 245, 0.5);
+  font-weight: 400;
+}
+
+.objLabel {
+  font-size: 0.5rem;
+  letter-spacing: 0.25em;
+  color: var(--cyan);
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.objDesc {
+  font-size: 0.55rem;
+  color: rgba(255, 255, 255, 0.38);
+  line-height: 1.55;
+  letter-spacing: 0.03em;
+}
+
+.objBar {
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  margin-top: 0.3rem;
+  animation: barPulse 2.5s ease-in-out infinite;
+}
+
+.objBarFill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(to right, var(--cyan), rgba(0, 255, 245, 0.4));
+}
+
+.objPercent {
+  font-size: 0.43rem;
+  color: rgba(0, 255, 245, 0.3);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
 
 /* ── Actions ──────────────────────────────────────────────────────────────── */
 
@@ -93,7 +671,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
 }
 
 .startBtn {
@@ -107,7 +686,9 @@
   text-transform: uppercase;
   cursor: pointer;
   position: relative;
-  transition: background 0.2s, box-shadow 0.2s;
+  transition:
+    background 0.2s,
+    box-shadow 0.2s;
 }
 
 .startBtn::before,
@@ -119,12 +700,22 @@
   border-color: var(--magenta);
   border-style: solid;
 }
-.startBtn::before { top: -3px; left: -3px; border-width: 1px 0 0 1px; }
-.startBtn::after  { bottom: -3px; right: -3px; border-width: 0 1px 1px 0; }
+.startBtn::before {
+  top: -3px;
+  left: -3px;
+  border-width: 1px 0 0 1px;
+}
+.startBtn::after {
+  bottom: -3px;
+  right: -3px;
+  border-width: 0 1px 1px 0;
+}
 
 .startBtn:hover {
   background: rgba(0, 255, 245, 0.08);
-  box-shadow: 0 0 30px rgba(0, 255, 245, 0.35), inset 0 0 20px rgba(0, 255, 245, 0.05);
+  box-shadow:
+    0 0 30px rgba(0, 255, 245, 0.35),
+    inset 0 0 20px rgba(0, 255, 245, 0.05);
 }
 
 .hint {
@@ -138,10 +729,26 @@
 
 @media (max-width: 860px) {
   .topRow {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 
-  .briefCol {
-    min-width: 0;
+  .operativeCard {
+    max-width: 420px;
+  }
+
+  .objGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .content {
+    padding: 1rem;
+  }
+
+  .broadcastBanner {
+    padding: 0.35rem 1rem;
+    font-size: 0.48rem;
+    gap: 0.5rem;
   }
 }

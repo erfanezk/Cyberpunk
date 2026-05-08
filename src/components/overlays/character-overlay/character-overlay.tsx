@@ -135,7 +135,19 @@ function SkillRadar() {
   );
 }
 
-export function CharacterCard() {
+export function CharacterCard({ corrupted = false }: { corrupted?: boolean }) {
+  const name = corrupted ? '[CORRUPTED]' : PROFILE.name;
+  const title = corrupted ? '[UNKNOWN]' : PROFILE.title;
+  const bio = corrupted ? '[MEMORY CORRUPTED — RECOVERY IN PROGRESS...]' : PROFILE.bio;
+  const tagline = corrupted ? '???' : PROFILE.tagline;
+  const lvl = corrupted ? '??' : '07';
+  const xpVal = corrupted ? '? YRS' : '6 YRS';
+  const attrValues = corrupted ? ['??', '??', '??'] : ATTRS.map((a) => String(a.value));
+  const attrBars = corrupted ? [0, 0, 0] : ATTRS.map((a) => a.value);
+  const missionList = corrupted
+    ? MISSIONS.map((m) => ({ ...m, status: 'LOCKED' as const }))
+    : MISSIONS;
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.sectionHeader}>
@@ -163,28 +175,28 @@ export function CharacterCard() {
               <span className={styles.bracket} data-pos="tr" />
               <span className={styles.bracket} data-pos="bl" />
               <span className={styles.bracket} data-pos="br" />
-              <img src={PROFILE.photo} alt={PROFILE.name} className={styles.photo} />
+              <img src={PROFILE.photo} alt={name} className={styles.photo} />
               <div className={styles.photoGlitch} aria-hidden />
               <div className={styles.scanBeam} aria-hidden />
               <div className={styles.photoScanline} aria-hidden />
               <div className={styles.targetRing} aria-hidden />
               <div className={styles.levelBadge}>
                 <span className={styles.levelLabel}>LVL</span>
-                <span className={styles.levelNum}>07</span>
+                <span className={styles.levelNum}>{lvl}</span>
               </div>
             </div>
 
             <div className={styles.identityMeta}>
               <span className={styles.playerTag}>// OPERATOR</span>
-              <h3 className={styles.name}>{PROFILE.name}</h3>
-              <span className={styles.classBadge}>{PROFILE.title}</span>
+              <h3 className={styles.name}>{name}</h3>
+              <span className={styles.classBadge}>{title}</span>
               <span className={styles.rankBadge}>◈ SENIOR OPERATIVE</span>
             </div>
 
             <div className={styles.xpSection}>
               <div className={styles.xpLabelRow}>
                 <span className={styles.xpKey}>EXP</span>
-                <span className={styles.xpVal}>6 YRS</span>
+                <span className={styles.xpVal}>{xpVal}</span>
               </div>
               <div className={styles.xpTrack}>
                 <div className={styles.xpFill} />
@@ -195,20 +207,20 @@ export function CharacterCard() {
             </div>
 
             <div className={styles.attrList}>
-              {ATTRS.map((a) => (
+              {ATTRS.map((a, i) => (
                 <div
                   key={a.label}
                   className={styles.attrRow}
-                  style={{ animationDelay: `${0.5 + ATTRS.indexOf(a) * 0.1}s` }}
+                  style={{ animationDelay: `${0.5 + i * 0.1}s` }}
                 >
                   <span className={styles.attrLabel}>{a.label}</span>
                   <div className={styles.attrTrack}>
                     <div
                       className={styles.attrFill}
-                      style={{ '--val': `${a.value}%` } as React.CSSProperties}
+                      style={{ '--val': `${attrBars[i]}%` } as React.CSSProperties}
                     />
                   </div>
-                  <span className={styles.attrVal}>{a.value}</span>
+                  <span className={styles.attrVal}>{attrValues[i]}</span>
                 </div>
               ))}
             </div>
@@ -218,14 +230,18 @@ export function CharacterCard() {
           <div className={styles.infoCol}>
             <div className={styles.radarSection}>
               <span className={styles.sectionLabel}>// SKILL_TREE</span>
-              <SkillRadar />
+              {corrupted ? (
+                <div className={styles.corruptedBox}>// SKILL_TREE CORRUPTED</div>
+              ) : (
+                <SkillRadar />
+              )}
             </div>
             <div className={styles.divider} />
             <div className={styles.originSection}>
               <span className={styles.sectionLabel}>// ORIGIN_STORY</span>
               <span className={styles.transmitLine}>[INCOMING TRANSMISSION — SECTOR: IRAN]</span>
-              <p className={styles.bio}>{PROFILE.bio}</p>
-              <p className={styles.tagline}>&ldquo;{PROFILE.tagline}&rdquo;</p>
+              <p className={styles.bio}>{bio}</p>
+              <p className={styles.tagline}>&ldquo;{tagline}&rdquo;</p>
             </div>
           </div>
 
@@ -233,7 +249,7 @@ export function CharacterCard() {
           <div className={styles.missionCol}>
             <span className={styles.sectionLabel}>// MISSION_LOG</span>
             <div className={styles.missionList}>
-              {MISSIONS.map((m, i) => (
+              {missionList.map((m, i) => (
                 <div
                   key={m.id}
                   className={`${styles.missionEntry} ${m.status === 'ACTIVE' ? styles.missionActive : styles.missionLocked}`}

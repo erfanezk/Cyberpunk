@@ -34,27 +34,27 @@ function ArticlesOverlay({ progress }: OverlayProps) {
   if (opacity < 0.01) return null;
 
   return (
-      <div className="overlay-layer" style={{ opacity }}>
-        <div className={styles.wrapper}>
-          <div className={styles.sectionHeader}>
-            <span className={styles.missionTag}>MISSION_03</span>
-            <span className={styles.sectionTitle}>// INTEL_NET</span>
-            <span className={styles.freqTag}>FREQ: 435.6 MHz</span>
-          </div>
+    <div className="overlay-layer" style={{ opacity }}>
+      <div className={styles.wrapper}>
+        <div className={styles.sectionHeader}>
+          <span className={styles.missionTag}>MISSION_03</span>
+          <span className={styles.sectionTitle}>// INTEL_NET</span>
+          <span className={styles.freqTag}>FREQ: 435.6 MHz</span>
+        </div>
 
-          <div className={styles.list}>
-            {ARTICLES.map((article, i) => (
-              <ArticleCard
-                key={article.id}
-                article={article}
-                index={i}
-                signal={SIGNAL_LEVELS[i % SIGNAL_LEVELS.length]}
-                classification={CLASS_LABELS[i % CLASS_LABELS.length]}
-              />
-            ))}
-          </div>
+        <div className={styles.list}>
+          {ARTICLES.map((article, i) => (
+            <ArticleCard
+              key={article.id}
+              article={article}
+              index={i}
+              signal={SIGNAL_LEVELS[i % SIGNAL_LEVELS.length]}
+              classification={CLASS_LABELS[i % CLASS_LABELS.length]}
+            />
+          ))}
         </div>
       </div>
+    </div>
   );
 }
 

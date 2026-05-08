@@ -4,12 +4,17 @@ import { useCameraRig } from '@/hooks';
 import { WORLD_CONFIG } from '@/game';
 import { memo } from 'react';
 
-const OPTIONAL_LIGHTS: { position: [number, number, number]; color: string; intensity: number; distance: number }[] = [
-  { position: [ 20, 4,  55], color: '#e08030', intensity: 4, distance: 55 },
-  { position: [-18, 4,  10], color: '#e08030', intensity: 4, distance: 55 },
-  { position: [ 25, 4, -50], color: '#e08030', intensity: 4, distance: 55 },
+const OPTIONAL_LIGHTS: {
+  position: [number, number, number];
+  color: string;
+  intensity: number;
+  distance: number;
+}[] = [
+  { position: [20, 4, 55], color: '#e08030', intensity: 4, distance: 55 },
+  { position: [-18, 4, 10], color: '#e08030', intensity: 4, distance: 55 },
+  { position: [25, 4, -50], color: '#e08030', intensity: 4, distance: 55 },
   { position: [-22, 4, -110], color: '#e08030', intensity: 4, distance: 55 },
-  { position: [ 20, 4, -160], color: '#e08030', intensity: 4, distance: 55 },
+  { position: [20, 4, -160], color: '#e08030', intensity: 4, distance: 55 },
   { position: [-18, 4, -210], color: '#e08030', intensity: 4, distance: 55 },
 ];
 

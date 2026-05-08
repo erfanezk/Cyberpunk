@@ -1,0 +1,332 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.72);
+  z-index: 200;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal {
+  width: min(560px, 90vw);
+  max-height: 80vh;
+  overflow-y: auto;
+  background: rgba(0, 4, 12, 0.96);
+  border: 1px solid rgba(0, 255, 245, 0.35);
+  box-shadow:
+    0 0 40px rgba(0, 255, 245, 0.12),
+    inset 0 0 60px rgba(0, 255, 245, 0.03);
+  padding: 24px;
+  position: relative;
+  animation: glitchIn 0.4s ease;
+}
+
+@keyframes glitchIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-6px) skewX(-3deg);
+  }
+  25% {
+    opacity: 0.9;
+    transform: translateX(4px) skewX(1.5deg);
+  }
+  50% {
+    transform: translateX(-2px) skewX(-0.5deg);
+  }
+  75% {
+    transform: translateX(1px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) skewX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.hiding {
+  animation: fadeOut 0.5s ease forwards;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0, 255, 245, 0.18);
+}
+
+.tag {
+  font-family: "Courier New", monospace;
+  font-size: 9px;
+  color: rgba(0, 255, 245, 0.45);
+  letter-spacing: 0.8px;
+  flex-shrink: 0;
+}
+
+.title {
+  flex: 1;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  color: #00fff5;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+}
+
+.close {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.45);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 1;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+  flex-shrink: 0;
+}
+
+.close:hover {
+  border-color: #00fff5;
+  color: #00fff5;
+}
+
+.body {
+  min-height: 80px;
+}
+
+.footer {
+  margin-top: 16px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.hint {
+  font-family: "Courier New", monospace;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.22);
+  letter-spacing: 0.5px;
+}
+
+.fragBio {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fragName {
+  font-family: "Courier New", monospace;
+  font-size: 18px;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.fragTitle {
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  color: #00fff5;
+  letter-spacing: 1px;
+}
+
+.fragText {
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.68);
+  line-height: 1.7;
+}
+
+.fragTagline {
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  color: #ff9900;
+  font-style: italic;
+}
+
+.fragSkills {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skillRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.skillLabel {
+  font-family: "Courier New", monospace;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.8px;
+  width: 82px;
+  flex-shrink: 0;
+}
+
+.skillBar {
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.skillFill {
+  height: 100%;
+  background: #ff9900;
+  border-radius: 2px;
+  transform-origin: left;
+  animation: fillIn 0.9s ease forwards;
+}
+
+@keyframes fillIn {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.skillVal {
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  color: #ff9900;
+  font-weight: 700;
+  width: 28px;
+  text-align: right;
+}
+
+.fragProjects {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.projRow {
+  display: block;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-left: 2px solid var(--c, #00fff5);
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.projRow:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.projTitle {
+  display: block;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  color: var(--c, #00fff5);
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.projDesc {
+  display: block;
+  font-family: "Courier New", monospace;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.48);
+  line-height: 1.5;
+}
+
+.fragArticles {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.articleRow {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 14px;
+}
+
+.articleTitle {
+  display: block;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  color: #ff9900;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  margin-bottom: 4px;
+}
+
+.articleDate {
+  display: block;
+  font-family: "Courier New", monospace;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.28);
+  margin-bottom: 8px;
+}
+
+.articleDesc {
+  font-family: "Courier New", monospace;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.58);
+  line-height: 1.55;
+  margin-bottom: 8px;
+}
+
+.articleTags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-family: "Courier New", monospace;
+  font-size: 8px;
+  color: #00fff5;
+  border: 1px solid rgba(0, 255, 245, 0.28);
+  padding: 1px 5px;
+  letter-spacing: 0.5px;
+}
+
+.fragContact {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contactRow {
+  display: block;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  color: #28c840;
+  text-decoration: none;
+  letter-spacing: 0.4px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(40, 200, 64, 0.12);
+  transition: color 0.15s;
+}
+
+.contactRow:hover {
+  color: #fff;
+}

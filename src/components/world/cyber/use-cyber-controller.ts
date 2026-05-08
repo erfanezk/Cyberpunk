@@ -3,7 +3,8 @@ import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { clone as skeletonClone } from 'three/examples/jsm/utils/SkeletonUtils.js';
 import modelUrl from '@/assets/UAL1_Standard.glb?url';
-import { game, type ActionName } from '@/game';
+import { game, memory, type ActionName } from '@/game';
+import { MEMORY_FRAGMENT_MAP, NPC_INSTANCES } from '@/constants'; // NPC_INSTANCES used only for module-scope MEMORY_NPCS filter
 import {
   AnimationsName,
   CYBER_COLOR_BODY,
@@ -43,6 +44,11 @@ const INITIAL_POS = WALK_PATH.getPointAt(0);
 const INITIAL_ROT_Y = Math.atan2(_initTangent.x, _initTangent.z);
 
 const _forward = new THREE.Vector3();
+const PUNCH_HIT_RANGE = 6;
+const PUNCH_HIT_RANGE_SQ = PUNCH_HIT_RANGE * PUNCH_HIT_RANGE;
+const _toNpc = new THREE.Vector2();
+const _forward2 = new THREE.Vector2();
+const MEMORY_NPCS = NPC_INSTANCES.filter((n) => n.id in MEMORY_FRAGMENT_MAP);
 
 export function useCyberController() {
   const groupRef = useRef<THREE.Group>(null);
@@ -80,7 +86,9 @@ export function useCyberController() {
 
     const terminalCleanup: Partial<Record<AnimationsName, TerminalEntry>> = {
       [AnimationsName.Jump_Land]: {
-        onDone: () => { jump.current.phase = 'idle'; },
+        onDone: () => {
+          jump.current.phase = 'idle';
+        },
       },
       [AnimationsName.Roll]: {
         onDone: () => {
@@ -136,6 +144,24 @@ export function useCyberController() {
           punchCombo.current === 0 ? AnimationsName.Punch_Jab : AnimationsName.Punch_Cross;
         punchCombo.current = punchCombo.current === 0 ? 1 : 0;
         playOneShot(anim, currentAnim, actions, 0.1);
+
+        const px = charPos.current.x;
+        const pz = charPos.current.z;
+        _forward2.set(game.direction.x, game.direction.z);
+
+        for (const npc of MEMORY_NPCS) {
+          const info = MEMORY_FRAGMENT_MAP[npc.id]!;
+          if (memory.isUnlocked(info.fragment)) continue;
+          const [nx, , nz] = npc.position;
+          const dx = nx - px;
+          const dz = nz - pz;
+          if (dx * dx + dz * dz > PUNCH_HIT_RANGE_SQ) continue;
+          _toNpc.set(dx, dz).normalize();
+          if (_forward2.dot(_toNpc) > 0.5) {
+            memory.unlock(info.fragment);
+            break;
+          }
+        }
       },
       roll: () => {
         rolling.current = true;
@@ -193,11 +219,7 @@ export function useCyberController() {
     }
 
     // 2. Forward movement — roll always moves; keys blocked during actions
-    const speed = rolling.current
-      ? ROLL_SPEED
-      : crouching.current
-        ? CROUCH_SPEED
-        : RUN_SPEED;
+    const speed = rolling.current ? ROLL_SPEED : crouching.current ? CROUCH_SPEED : RUN_SPEED;
     const movingForward = rolling.current || (!locked && keys.forward);
     const movingBackward = !locked && keys.backward;
     if (movingForward || movingBackward) {

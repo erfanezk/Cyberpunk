@@ -18,7 +18,9 @@ class Memory {
 
   subscribe(fn: UnlockListener): () => void {
     this.listeners.add(fn);
-    return () => { this.listeners.delete(fn); };
+    return () => {
+      this.listeners.delete(fn);
+    };
   }
 
   reset(): void {

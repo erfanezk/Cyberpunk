@@ -1,6 +1,13 @@
 import { Canvas } from '@react-three/fiber';
 import { Suspense, useState } from 'react';
-import { GameHud, LoadingScreen, MusicPlayer, Scene, StartOverlay } from '@/components';
+import {
+  GameHud,
+  LoadingScreen,
+  MemoryModal,
+  MusicPlayer,
+  Scene,
+  StartOverlay,
+} from '@/components';
 import { COLORS } from '@/constants';
 import { game, WORLD_CONFIG } from '@/game';
 
@@ -32,6 +39,7 @@ export default function App() {
       </div>
       <LoadingScreen />
       {started && <GameHud />}
+      {started && <MemoryModal />}
       <MusicPlayer started={started} />
       {!started && <StartOverlay onStart={handleStart} />}
     </>

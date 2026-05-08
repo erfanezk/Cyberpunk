@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, memo } from 'react';
+import { useEffect, useMemo, useRef, useState, memo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import { clone as skeletonClone } from 'three/examples/jsm/utils/SkeletonUtils.js';
@@ -6,6 +6,8 @@ import * as THREE from 'three';
 import modelUrl from '@/assets/UAL1_Standard.glb?url';
 import { NPC_INSTANCES } from '@/constants';
 import type { AnimStep, NpcInstance, NpcPath, Vec3 } from '@/types';
+import { memory } from '@/game';
+import { MEMORY_FRAGMENT_MAP } from '@/constants';
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -103,6 +105,7 @@ function playStep(
 }
 
 function Npc({
+  id,
   position,
   rotationY,
   animation,
@@ -111,6 +114,10 @@ function Npc({
   loopOnce,
   sequence,
 }: NpcInstance) {
+  const fragmentInfo = MEMORY_FRAGMENT_MAP[id];
+  const [glowing, setGlowing] = useState(
+    fragmentInfo ? !memory.isUnlocked(fragmentInfo.fragment) : false,
+  );
   const groupRef = useRef<THREE.Group>(null);
   const pathState = useRef<PathState>({ t: pathOffset });
   const stepRef = useRef(0);
@@ -156,6 +163,13 @@ function Npc({
     };
   }, [mixer, clips, animation, loopOnce, sequence]);
 
+  useEffect(() => {
+    if (!fragmentInfo) return;
+    return memory.subscribe((unlocked) => {
+      if (unlocked === fragmentInfo.fragment) setGlowing(false);
+    });
+  }, [fragmentInfo]);
+
   useFrame((_, delta) => {
     if (!groupRef.current) return;
 
@@ -172,6 +186,9 @@ function Npc({
   return (
     <group ref={groupRef} position={position} rotation={[0, rotationY, 0]} scale={3}>
       <primitive object={cloned} />
+      {fragmentInfo && (
+        <pointLight color={fragmentInfo.color} intensity={glowing ? 12 : 0} distance={20} decay={1.5} />
+      )}
     </group>
   );
 }

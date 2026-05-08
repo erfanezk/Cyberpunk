@@ -458,8 +458,13 @@ function makeLoners(path: THREE.CatmullRomCurve3, occupied: Circ[]): NpcInstance
 
 // ── Memory carrier NPCs (5 fixed-ID NPCs along the walk path) ─────────────────
 
-const MEMORY_T = [0.15, 0.33, 0.50, 0.67, 0.85] as const;
+const MEMORY_NPC_PATH_OFFSET = 6;
+const MEMORY_T = [0.15, 0.33, 0.5, 0.67, 0.85] as const;
 const MEMORY_FRAG_NAMES = ['bio', 'skills', 'projects', 'articles', 'contact'] as const;
+// Compile-time guard: lengths must match
+type _LengthCheck = (typeof MEMORY_T)['length'] extends (typeof MEMORY_FRAG_NAMES)['length']
+  ? true
+  : never;
 
 function makeMemoryNpcs(path: THREE.CatmullRomCurve3): NpcInstance[] {
   return MEMORY_FRAG_NAMES.map((frag, i) => {
@@ -468,8 +473,8 @@ function makeMemoryNpcs(path: THREE.CatmullRomCurve3): NpcInstance[] {
     const tan = path.getTangentAt(t).normalize();
     const perp = new THREE.Vector3(tan.z, 0, -tan.x);
     const side = i % 2 === 0 ? 1 : -1;
-    const x = +(pt.x + perp.x * 6 * side).toFixed(1);
-    const z = +(pt.z + perp.z * 6 * side).toFixed(1);
+    const x = +(pt.x + perp.x * MEMORY_NPC_PATH_OFFSET * side).toFixed(1);
+    const z = +(pt.z + perp.z * MEMORY_NPC_PATH_OFFSET * side).toFixed(1);
     return {
       id: `memory-${frag}`,
       position: [x, 0, z] as Vec3,
