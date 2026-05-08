@@ -4,7 +4,7 @@
 
 ### A real-time 3D game engine. Running in your browser tab.
 
-**[🌐 Live Demo → erfanezk.github.io/Cyberpunk](https://erfanezk.github.io/Cyberpunk)**
+**[Live Demo → erfanezk.github.io/Cyberpunk](https://erfanezk.github.io/Cyberpunk)**
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)
 ![Three.js](https://img.shields.io/badge/Three.js-r184-000000?style=flat-square&logo=threedotjs)
@@ -18,17 +18,32 @@
 
 ## What This Is
 
-Not a portfolio page. A **scroll-driven semi-open world** with an embedded game loop — a fully procedurally generated cyberpunk city that rebuilds itself on every page load. The visitor plays as an investigator dispatched to recover a corrupted operative's fragmented identity. Five memory-carrier NPCs are scattered across the sector. Punch them. Watch them fall. Recover the data.
+Not a portfolio page. A **semi-open world game** — a fully procedurally generated cyberpunk city that rebuilds itself on every page load. The visitor plays as an investigator dispatched to recover a corrupted operative's fragmented identity. Walk freely through the sector. Five memory-carrier NPCs are scattered across the world. Find them. Punch them. Recover the data.
 
-Live NPCs with autonomous pathfinding and scripted scene choreography, a playable character on a parametric spline with physics-based jump simulation, custom GLSL shaders, and a cinematic post-processing pipeline. All of it running at **60fps inside a React app**, with zero game engine dependencies.
+Live NPCs with autonomous pathfinding and scripted scene choreography, a playable character with WASD free-roam movement and physics-based jump simulation, a third-person follow camera, custom GLSL shaders, and a cinematic post-processing pipeline. All of it running at **60fps inside a React app**, with zero game engine dependencies.
 
 No Unity. No Unreal. No canvas 2D. Pure **Three.js + WebGL + math**.
 
 ---
 
-## Game Loop
+## Controls
 
-The portfolio content is gated behind an in-world retrieval mechanic:
+| Key | Action |
+|---|---|
+| `W / ↑` | Move forward |
+| `S / ↓` | Move backward |
+| `A / ↓` | Turn left |
+| `D / →` | Turn right |
+| `Space` | Jump |
+| `F` | Punch |
+| `C` | Crouch / Stand |
+| `R` | Roll |
+
+On-screen buttons mirror all actions for mobile/touch.
+
+---
+
+## Game Loop
 
 ```
 START SCREEN — Mission briefing
@@ -37,11 +52,11 @@ START SCREEN — Mission briefing
 
         ↓  ACCEPT MISSION
 
-TRAVERSE THE WORLD
-  Scroll to move through the cyberpunk sector
-  5 glowing memory-carrier NPCs placed along the walk path
+ROAM THE WORLD FREELY
+  WASD to move through the procedurally generated cyberpunk sector
+  5 glowing memory-carrier NPCs placed along the main corridor
 
-        ↓  PUNCH (F key) memory NPCs in range
+        ↓  PUNCH (F key) memory NPCs when in range
 
 FRAGMENT RECOVERED
   NPC plays Death01 animation and collapses
@@ -61,14 +76,19 @@ MISSION COMPLETE
 ## System Architecture
 
 ```
-Browser scroll offset  t ∈ [0,1]
+Player input (WASD / buttons)
          │
-         ├──► CatmullRomCurve3.getPointAt(t)   →  Camera position in ℝ³
-         ├──► updateTransform(group, t)          →  Character world transform
-         ├──► advancePath(state, path, delta)    →  NPC position (constant world-speed)
-         ├──► smoothstep(t₀, t₁, t)             →  Section overlay opacity
-         ├──► EMA(Δoffset/Δframe)                →  Animation crossfade trigger
-         └──► scroll-reactive uniforms           →  Particle density, shader FX
+         ├──► charRotY += TURN_SPEED * delta           →  Character heading
+         ├──► charPos  += forward * RUN_SPEED * delta  →  Free-roam position
+         ├──► jump.vy  -= JUMP_GRAVITY * delta         →  Ballistic Y offset
+         └──► game.publishState(group, pos)            →  Shared world state
+
+Camera (third-person follow, runs in useFrame)
+         │
+         ├──► targetPos = charPos - forward * BEHIND   →  Camera position
+         ├──► lookAt    = charPos + forward * 3        →  Focus point
+         ├──► smoothPos.lerp(targetPos, 0.06)          →  Lag smoothing
+         └──► breatheY = sin(time * 1.4) * 0.12       →  Idle breathing
 
 Module load
          │
@@ -77,8 +97,6 @@ Module load
                                     memory NPC placements (path-perpendicular) +
                                     NPC scene instances (collision-checked)
 ```
-
-One scalar drives the entire runtime. The city layout is decided once at module load — deterministic per session, unique across refreshes.
 
 ---
 
@@ -151,7 +169,7 @@ The entire city spawns in `world-gen.ts` at module load time before the first re
 
 ### Step 1 — Walk Path Topology
 
-The character's route is a `CatmullRomCurve3` sampled from one of three randomly selected shape templates:
+The world's main corridor is a `CatmullRomCurve3` sampled from one of three randomly selected shape templates:
 
 | Template | Geometry |
 |---|---|
@@ -207,7 +225,7 @@ Every NPC is driven by the same loop: `advancePath → samplePath → mixer.upda
 
 ### Path Following — Constant World-Space Speed
 
-Naïve `t += speed * delta` causes NPCs to sprint through short segments and crawl through long ones. Fix: normalize by segment length each frame.
+Naive `t += speed * delta` causes NPCs to sprint through short segments and crawl through long ones. Fix: normalize by segment length each frame.
 
 ```ts
 function advancePath(state: PathState, path: NpcPath, delta: number): void {
@@ -273,9 +291,9 @@ Eight distinct scene types are scattered throughout the world:
 
 ---
 
-## Player Character — Playable, Physics Simulated, Scroll Driven
+## Player Character — Free-Roam, Physics Simulated
 
-The player isn't just visual. The HUD exposes four actions triggered by keyboard or on-screen buttons:
+The player moves freely through the world with full directional control. The HUD exposes four actions triggered by keyboard or on-screen buttons:
 
 | Key | Action |
 |---|---|
@@ -284,13 +302,29 @@ The player isn't just visual. The HUD exposes four actions triggered by keyboard
 | `C` | Crouch / Stand |
 | `R` | Roll |
 
+### Movement
+
+Character position and rotation are accumulated each frame from key state:
+
+```ts
+// Rotation (A/D)
+if (keys.left)  charRotY.current += TURN_SPEED * delta;
+if (keys.right) charRotY.current -= TURN_SPEED * delta;
+
+// Translation (W/S)
+_forward.set(Math.sin(charRotY.current), 0, Math.cos(charRotY.current));
+charPos.current.addScaledVector(_forward, dir * speed * delta);
+```
+
+Speed varies by state: `RUN_SPEED` (24 u/s), `CROUCH_SPEED` (8 u/s), `ROLL_SPEED` (23 u/s).
+
 ### Jump Physics — Euler Integration
 
 Jump uses explicit Euler integration of ballistic motion each frame — not a pre-baked animation offset:
 
 ```ts
-const JUMP_INITIAL_VY = 9;   // m/s upward
-const JUMP_GRAVITY    = 22;  // m/s²
+const JUMP_INITIAL_VY = 10;   // m/s upward
+const JUMP_GRAVITY    = 20;   // m/s²
 
 // Per frame in useFrame:
 j.y  += j.vy * delta;
@@ -303,29 +337,15 @@ if (j.y <= 0 && j.vy < 0) {
 }
 ```
 
-The character lifts off the spline, follows a true parabolic arc, lands exactly when `y` crosses zero on the downswing.
+The character follows a true parabolic arc, landing exactly when `y` crosses zero on the downswing.
 
 ### Animation State Machine
 
-Four phases: `idle → ascend → loop → land`. The `mixer 'finished'` event chains `Jump_Start → Jump_Loop` automatically. An `actionLock` ref prevents competing inputs mid-clip:
-
-```ts
-const onFinished = (event) => {
-  const clip = event.action.getClip().name;
-  if (clip === 'Jump_Start') {
-    crossfadeTo('Jump_Loop', currentAnim, actions);
-    jump.current.phase = 'loop';
-  }
-  if (clip === 'Jump_Land') jump.current.phase = 'idle';
-  actionLock.current = false;
-};
-```
-
-Scroll locomotion (`Idle_Loop ↔ Jog_Fwd_Loop`) is gated on both `actionLock` and `crouching` state so inputs don't interrupt mid-animation.
+Four phases: `idle → ascend → loop → land`. The `mixer 'finished'` event chains `Jump_Start → Jump_Loop` automatically. An `actionLock` ref prevents competing inputs mid-clip.
 
 ### Game Bridge — Zero React State in the Hot Path
 
-The hardest architectural problem: React's reconciler runs on the main thread triggered by state changes; the WebGL loop runs at 60fps in `useFrame`. Naïve use of `useState` would trigger **60 full reconciler cycles per second**.
+The hardest architectural problem: React's reconciler runs on the main thread triggered by state changes; the WebGL loop runs at 60fps in `useFrame`. Naive use of `useState` would trigger **60 full reconciler cycles per second**.
 
 Solution: a **singleton `Game` class**. The character publishes world position and forward vector each frame. The HUD reads it directly, zero React involvement:
 
@@ -343,7 +363,28 @@ class Game {
 }
 ```
 
-Progress state in `App.tsx` is additionally gated: sub-0.001 deltas never reach the reconciler, keeping React overhead near zero across the 60fps loop.
+---
+
+## Camera — Third-Person Follow with Breathing
+
+Camera trails the character from behind, frame-rate-independently smoothed via exponential lerp:
+
+```ts
+const BEHIND      = 6;    // units behind character
+const CAM_HEIGHT  = 5;    // units above character
+const CHEST_HEIGHT = 2.5; // look-at height offset
+
+targetPos = charPos - forward * BEHIND + up * CAM_HEIGHT
+lookAt    = charPos + forward * 3 + up * CHEST_HEIGHT
+
+smoothPos.lerp(targetPos, 0.06)   // positional lag — camera floats into place
+smoothLook.lerp(lookAt, 0.08)     // look-at lag — slight head delay
+
+breatheY = sin(time * 1.4) * 0.12  // vertical idle breathing
+breatheX = cos(time * 1.1) * 0.06  // horizontal sway
+```
+
+The breathing offsets are additive on top of smooth position — they survive rapid turns because they operate in world space, not local camera space.
 
 ---
 
@@ -359,21 +400,6 @@ The `GameHud` overlay shows live character telemetry and fragment recovery progr
 | Bottom-right | Action buttons — JUMP / PUNCH / CROUCH / ROLL |
 
 Memory dots update via `memory.subscribe` — each unlock triggers a React state update only for that specific dot, no full HUD re-render.
-
----
-
-## Camera — Spline Kinematics with Arc-Length Parameterization
-
-Camera follows a `CatmullRomCurve3` with 14 control points spanning the full vertical descent from `y=130` (aerial) to `y=6` (street level).
-
-`getPointAt(t)` uses **arc-length parameterization** — `t=0.5` maps to the halfway point of total path length, not the midpoint of the control-point array. Without this, camera speed varies wildly near densely-packed knots.
-
-```ts
-const pos     = CAMERA_PATH.getPointAt(t);      // arc-length parameterized
-const tangent = CAMERA_PATH.getTangentAt(t);    // C¹ continuous forward direction
-```
-
-Smooth lerp via exponential decay — frame-rate independent, physically correct smoothing.
 
 ---
 
@@ -419,24 +445,6 @@ Full cinematic stack composited in a single `EffectComposer` pass — one draw c
 
 ---
 
-## Overlay System — Piecewise Smoothstep Zones
-
-Five HTML sections each occupy a scroll interval `[t₀, t₁]`. Opacity computed via cubic Hermite interpolation — zero first derivative at zone boundaries so overlays never pop.
-
-| Section | Scroll Range |
-|---|---|
-| Hero | 0.00 → 0.17 |
-| About | 0.17 → 0.34 |
-| Projects | 0.34 → 0.52 |
-| Articles | 0.52 → 0.72 |
-| Contact | 0.72 → 1.00 |
-
-Overlays return `null` (unmount entirely) when `opacity < 0.01` — no invisible DOM nodes in the render tree.
-
-Game-layer overlays (`MemoryModal`, `GameComplete`) are event-driven — triggered by `memory.subscribe`, not by scroll position.
-
----
-
 ## Atmosphere Systems
 
 | System | Detail |
@@ -447,7 +455,7 @@ Game-layer overlays (`MemoryModal`, `GameComplete`) are event-driven — trigger
 | **Holographic Billboards** | Band-limited noise GLSL for glitch displacement |
 | **Neon Towers** | Wireframe boxes with emissive bloom glow, placed via path corridors |
 | **Floating Shapes** | Rotating wireframe primitives |
-| **Particles** | 1,500 ambient points, scroll-reactive |
+| **Particles** | 1,500 ambient points |
 | **NPCs** | Autonomous crowd, procedurally placed, independently animated |
 
 All systems run inside `useFrame` hooks — zero React involvement.
@@ -493,7 +501,7 @@ pnpm dev        # → http://localhost:5173/Cyberpunk
 src/
   components/
     world/
-      cyber/          # Player character — GLB, spline traversal, physics, animation FSM
+      cyber/          # Player character — GLB, free-roam controller, physics, animation FSM
       npcs/           # NPC agents — path following, SkeletonUtils clone, sequencer, death anim
       grid-floor/     # Custom GLSL two-tier anti-aliased grid shader
       effects/        # EffectComposer post-processing stack
@@ -502,13 +510,12 @@ src/
       game-hud/       # HUD — coordinates, memory tracker dots, action buttons
       memory-modal/   # Fragment recovery popup — surfaces data on NPC punch
       game-complete/  # Mission complete overlay — all 5 fragments recovered
-      hero-overlay/   # Scroll-driven section overlays (hero → contact)
   constants/          # Profile, projects, articles, camera path, colors, animations, NPC fragments
   game/
     game.ts           # Singleton bridge — publishes world state, dispatches inputs
     memory.ts         # Fragment unlock tracker — pub/sub, isAllUnlocked gate
-  hooks/              # useCameraRig, useScrollProgress
-  types/              # Shared types (OverlayProps, section zones, NPC paths)
+  hooks/              # useCameraRig (third-person follow)
+  types/              # Shared types (NPC paths, world config)
   utils/              # world-gen.ts (procedural world), random.ts
 ```
 
