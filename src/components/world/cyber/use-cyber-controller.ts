@@ -8,11 +8,12 @@ import {
   JUMP_GRAVITY,
   JUMP_INITIAL_VY,
   ROLL_SPEED,
+  RUN_SPEED,
+  TURN_SPEED,
   WALK_PATH,
   type JumpPhase,
 } from './cyber.constants';
-import type { CyberProps } from './cyber.types';
-import { crossfadeTo, playOneShot, updateTransform } from './cyber.utils';
+import { crossfadeTo, playOneShot } from './cyber.utils';
 
 type JumpState = { phase: JumpPhase; y: number; vy: number };
 
@@ -23,18 +24,21 @@ type ChainEntry = {
 };
 
 const CHAIN_MAP: Partial<Record<AnimationsName, ChainEntry>> = {
-  [AnimationsName.Sitting_Enter]: {
-    next: AnimationsName.Sitting_Idle_Loop,
-    releaseLock: true,
-  },
   [AnimationsName.Jump_Start]: {
     next: AnimationsName.Jump_Loop,
-    onChain: undefined,
     releaseLock: false,
   },
 };
 
-export function useCyberController(scroll: CyberProps['scroll']) {
+// Character starts at the beginning of the world path
+const _initTangent = new THREE.Vector3();
+WALK_PATH.getTangentAt(0, _initTangent).normalize();
+const INITIAL_POS = WALK_PATH.getPointAt(0);
+const INITIAL_ROT_Y = Math.atan2(_initTangent.x, _initTangent.z);
+
+const _forward = new THREE.Vector3();
+
+export function useCyberController() {
   const groupRef = useRef<THREE.Group>(null);
   const { scene, animations } = useGLTF(modelUrl);
   const { actions, mixer } = useAnimations(animations, scene);
@@ -46,8 +50,9 @@ export function useCyberController(scroll: CyberProps['scroll']) {
   const punchCombo = useRef<0 | 1>(0);
   const rolling = useRef(false);
 
-  const prevOffset = useRef(scroll.offset);
-  const smoothSpeed = useRef(0);
+  const charPos = useRef(INITIAL_POS.clone());
+  const charRotY = useRef(INITIAL_ROT_Y);
+  const keysDown = useRef({ forward: false, backward: false, left: false, right: false });
 
   // Mixer 'finished' — chain clips or clean up terminal clips
   useEffect(() => {
@@ -57,7 +62,6 @@ export function useCyberController(scroll: CyberProps['scroll']) {
       },
       [AnimationsName.Roll]: () => {
         rolling.current = false;
-        smoothSpeed.current = 0;
       },
     };
 
@@ -118,6 +122,27 @@ export function useCyberController(scroll: CyberProps['scroll']) {
     return game.subscribe(handle);
   }, [actions]);
 
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'KeyW' || e.code === 'ArrowUp') keysDown.current.forward = true;
+      if (e.code === 'KeyS' || e.code === 'ArrowDown') keysDown.current.backward = true;
+      if (e.code === 'KeyA' || e.code === 'ArrowLeft') keysDown.current.left = true;
+      if (e.code === 'KeyD' || e.code === 'ArrowRight') keysDown.current.right = true;
+    };
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (e.code === 'KeyW' || e.code === 'ArrowUp') keysDown.current.forward = false;
+      if (e.code === 'KeyS' || e.code === 'ArrowDown') keysDown.current.backward = false;
+      if (e.code === 'KeyA' || e.code === 'ArrowLeft') keysDown.current.left = false;
+      if (e.code === 'KeyD' || e.code === 'ArrowRight') keysDown.current.right = false;
+    };
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('keyup', onKeyUp);
+    };
+  }, []);
+
   const updateFrame = (delta: number) => {
     const group = groupRef.current;
     if (!group) {
@@ -125,19 +150,26 @@ export function useCyberController(scroll: CyberProps['scroll']) {
       return;
     }
 
-    // 1. Walk path transform
-    const t = THREE.MathUtils.clamp(scroll.offset, 0, 1);
-    const pos = updateTransform(group, t);
+    const keys = keysDown.current;
 
-    // Roll: advance scroll along path
-    if (rolling.current && scroll.el) {
-      const scrollable = scroll.el.scrollHeight - scroll.el.clientHeight;
-      scroll.el.scrollTop += ((ROLL_SPEED * delta) / WALK_PATH.getLength()) * scrollable;
+    // 1. Rotation (A/D)
+    if (keys.left) charRotY.current += TURN_SPEED * delta;
+    if (keys.right) charRotY.current -= TURN_SPEED * delta;
+
+    // 2. Forward movement (W/S) — roll also moves forward
+    const speed = rolling.current ? ROLL_SPEED : RUN_SPEED;
+    const movingForward = keys.forward || rolling.current;
+    if (movingForward || keys.backward) {
+      _forward.set(Math.sin(charRotY.current), 0, Math.cos(charRotY.current));
+      const dir = movingForward ? 1 : -1;
+      charPos.current.addScaledVector(_forward, dir * speed * delta);
     }
 
-    game.publishState(group, pos);
+    // 3. Apply to group
+    group.position.copy(charPos.current);
+    group.rotation.y = charRotY.current;
 
-    // 2. Jump physics
+    // 4. Jump physics (Y offset on top of free position)
     const j = jump.current;
     if (j.phase === 'ascend' || j.phase === 'loop') {
       j.y += j.vy * delta;
@@ -151,20 +183,16 @@ export function useCyberController(scroll: CyberProps['scroll']) {
     }
     if (j.phase !== 'idle') group.position.y += Math.max(0, j.y);
 
-    // 3. Scroll-driven locomotion (Idle/Jog)
-    const moved = Math.abs(scroll.offset - prevOffset.current) > 0.0003;
-    prevOffset.current = scroll.offset;
-    smoothSpeed.current = moved ? 1 : THREE.MathUtils.lerp(smoothSpeed.current, 0, 0.2);
+    game.publishState(group, charPos.current);
 
+    // 5. Locomotion animation
     if (!actionLock.current) {
+      const moving = keys.forward || keys.backward || rolling.current;
       let next: AnimationsName;
       if (crouching.current) {
-        next =
-          smoothSpeed.current > 0.1
-            ? AnimationsName.Crouch_Fwd_Loop
-            : AnimationsName.Crouch_Idle_Loop;
+        next = moving ? AnimationsName.Crouch_Fwd_Loop : AnimationsName.Crouch_Idle_Loop;
       } else {
-        next = smoothSpeed.current > 0.1 ? AnimationsName.Jog_Fwd_Loop : AnimationsName.Idle_Loop;
+        next = moving ? AnimationsName.Jog_Fwd_Loop : AnimationsName.Idle_Loop;
       }
       crossfadeTo(next, currentAnim, actions);
     }

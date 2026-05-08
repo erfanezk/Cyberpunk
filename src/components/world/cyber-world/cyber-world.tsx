@@ -9,12 +9,11 @@ import NeonTowers from '@/components/world/neon-towers';
 import NPCs from '@/components/world/npcs';
 import Particles from '@/components/world/particles';
 import Rain from '@/components/world/rain';
-import type { CyberWorldProps } from './cyber-world.types';
 
-function CyberWorld({ scroll }: CyberWorldProps) {
+function CyberWorld() {
   return (
     <>
-      <Cyber scroll={scroll} />
+      <Cyber />
       <GridFloor />
       <NeonTowers />
       <Particles />

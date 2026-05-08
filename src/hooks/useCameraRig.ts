@@ -11,7 +11,7 @@ const CAM_FOV = 72;
 const _targetPos = new THREE.Vector3();
 const _lookAt = new THREE.Vector3();
 
-export function useCameraRig(_scroll: { offset: number }) {
+export function useCameraRig() {
   const smoothPos = useRef(new THREE.Vector3(0, CAM_HEIGHT, BEHIND));
   const smoothLook = useRef(new THREE.Vector3(0, CHEST_HEIGHT, 0));
   const initialized = useRef(false);

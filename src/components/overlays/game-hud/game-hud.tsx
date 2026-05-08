@@ -1,14 +1,26 @@
-import { useEffect, memo } from 'react';
-import { WALK_PATH } from '@/components/world/cyber/cyber.constants';
-import { game, type ActionName } from '@/game';
-import { ACTIONS, currentDistrict, DISTRICTS } from './game-hud.constants';
-import type { OverlayProps } from '@/types';
+import { useEffect, useRef, useState, memo } from 'react';
+import { game } from '@/game';
+import { ACTIONS } from './game-hud.constants';
 import styles from './game-hud.module.css';
 
-function GameHud({ progress }: OverlayProps) {
-  const pos = WALK_PATH.getPointAt(Math.max(0, Math.min(1, progress)));
-  const district = currentDistrict(progress);
-  const pct = Math.round(progress * 100);
+function GameHud() {
+  const [pos, setPos] = useState({ x: 0, z: 0 });
+  const posRef = useRef({ x: 0, z: 0 });
+  const rafRef = useRef(0);
+
+  useEffect(() => {
+    const tick = () => {
+      const nx = Math.round(game.position.x);
+      const nz = Math.round(game.position.z);
+      if (nx !== posRef.current.x || nz !== posRef.current.z) {
+        posRef.current = { x: nx, z: nz };
+        setPos({ x: nx, z: nz });
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -47,14 +59,23 @@ function GameHud({ progress }: OverlayProps) {
         <span className={styles.label}>POS</span>
         <span className={styles.coordValue}>
           X<span className={styles.sep}>:</span>
-          {pos.x.toFixed(0).padStart(4, ' ')} Z<span className={styles.sep}>:</span>
-          {pos.z.toFixed(0).padStart(5, ' ')}
+          {String(pos.x).padStart(4, ' ')} Z<span className={styles.sep}>:</span>
+          {String(pos.z).padStart(5, ' ')}
         </span>
       </div>
 
-      <div className={styles.district}>
-        <span className={styles.label}>DISTRICT {district.id} / 05</span>
-        <span className={styles.districtName}>{district.label}</span>
+      <div className={styles.movement}>
+        <span className={styles.label}>MOVE</span>
+        <div className={styles.moveRow}>
+          <span className={`${styles.moveKey} ${styles.empty}`} />
+          <span className={styles.moveKey}>W</span>
+          <span className={`${styles.moveKey} ${styles.empty}`} />
+        </div>
+        <div className={styles.moveRow}>
+          <span className={styles.moveKey}>A</span>
+          <span className={styles.moveKey}>S</span>
+          <span className={styles.moveKey}>D</span>
+        </div>
       </div>
 
       <div className={styles.actions}>
@@ -69,21 +90,6 @@ function GameHud({ progress }: OverlayProps) {
             <span className={styles.actionLabel}>{a.label}</span>
           </button>
         ))}
-      </div>
-
-      <div className={styles.traverse}>
-        <span className={styles.label}>TRAVERSE</span>
-        <div className={styles.track}>
-          <div className={styles.fill} style={{ width: `${pct}%` }} />
-          {DISTRICTS.map((d) => (
-            <div
-              key={d.id}
-              className={styles.mark}
-              style={{ left: `${Math.max(0, d.fadeIn) * 100}%` }}
-            />
-          ))}
-        </div>
-        <span className={styles.pct}>{pct}%</span>
       </div>
     </div>
   );

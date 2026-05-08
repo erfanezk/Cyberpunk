@@ -1,3 +1,1 @@
-export interface CyberProps {
-  scroll: { offset: number; el: HTMLElement | null };
-}
+export type CyberProps = Record<never, never>;

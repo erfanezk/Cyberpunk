@@ -153,6 +153,42 @@
   text-align: right;
 }
 
+/* ── Movement keys ── */
+.movement {
+  position: absolute;
+  left: 2.5rem;
+  bottom: 5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.moveRow {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.moveKey {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 12, 20, 0.55);
+  border: 1px solid rgba(0, 255, 245, 0.35);
+  color: var(--cyan);
+  font-family: inherit;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  backdrop-filter: blur(4px);
+}
+
+.moveKey.empty {
+  background: transparent;
+  border-color: transparent;
+}
+
 /* ── Action buttons ── */
 .actions {
   position: absolute;

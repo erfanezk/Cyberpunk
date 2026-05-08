@@ -2,13 +2,12 @@ import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { memo } from 'react';
 import modelUrl from '@/assets/UAL1_Standard.glb?url';
-import type { CyberProps } from './cyber.types';
 import { useCyberController } from './use-cyber-controller';
 
 useGLTF.preload(modelUrl);
 
-function Cyber({ scroll }: CyberProps) {
-  const { scene, groupRef, updateFrame } = useCyberController(scroll);
+function Cyber() {
+  const { scene, groupRef, updateFrame } = useCyberController();
 
   useFrame((_, delta) => updateFrame(delta));
 

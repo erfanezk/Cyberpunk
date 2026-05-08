@@ -1,3 +1,1 @@
-export interface EffectsProps {
-  scroll: { offset: number };
-}
+export type EffectsProps = Record<never, never>;

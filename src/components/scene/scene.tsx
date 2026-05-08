@@ -1,54 +1,11 @@
-import { useScroll } from '@react-three/drei';
 import CyberWorld from '@/components/world/cyber-world';
 import Effects from '@/components/world/effects';
-import { useCameraRig, useScrollProgress } from '@/hooks';
+import { useCameraRig } from '@/hooks';
 import { WORLD_CONFIG } from '@/game';
-import { useEffect, memo } from 'react';
+import { memo } from 'react';
 
-interface SceneProps {
-  onProgress?: (value: number) => void;
-  scrollToTopRef?: React.MutableRefObject<() => void>;
-}
-
-const OPTIONAL_LIGHTS = [
-  {
-    position: [65, 8, -5] as [number, number, number],
-    color: '#0066ff',
-    intensity: 4,
-    distance: 70,
-  },
-  {
-    position: [5, 10, -105] as [number, number, number],
-    color: '#00fff5',
-    intensity: 4,
-    distance: 85,
-  },
-  {
-    position: [-45, 18, -25] as [number, number, number],
-    color: '#ff9900',
-    intensity: 3,
-    distance: 65,
-  },
-  {
-    position: [20, 12, 40] as [number, number, number],
-    color: '#ff00ff',
-    intensity: 3,
-    distance: 60,
-  },
-];
-
-function Scene({ onProgress, scrollToTopRef }: SceneProps) {
-  const scroll = useScroll();
-  useCameraRig(scroll);
-  useScrollProgress(onProgress);
-
-  useEffect(() => {
-    if (scrollToTopRef) {
-      scrollToTopRef.current = () => {
-        scroll.el?.scrollTo({ top: 0, behavior: 'smooth' });
-      };
-    }
-  }, [scroll, scrollToTopRef]);
+function Scene() {
+  useCameraRig();
 
   return (
     <>
@@ -58,9 +15,14 @@ function Scene({ onProgress, scrollToTopRef }: SceneProps) {
       <pointLight position={[35, 6, -45]} color="#00fff5" intensity={5} distance={90} />
       <pointLight position={[-28, 5, -70]} color="#ff00ff" intensity={4} distance={80} />
 
-      {OPTIONAL_LIGHTS.slice(0, WORLD_CONFIG.extraPointLights).map((light, i) => (
+      {[
+        { position: [65, 8, -5] as [number, number, number], color: '#0066ff', intensity: 4, distance: 70 },
+        { position: [5, 10, -105] as [number, number, number], color: '#00fff5', intensity: 4, distance: 85 },
+        { position: [-45, 18, -25] as [number, number, number], color: '#ff9900', intensity: 3, distance: 65 },
+        { position: [20, 12, 40] as [number, number, number], color: '#ff00ff', intensity: 3, distance: 60 },
+      ].slice(0, WORLD_CONFIG.extraPointLights).map((light) => (
         <pointLight
-          key={i}
+          key={light.color}
           position={light.position}
           color={light.color}
           intensity={light.intensity}
@@ -68,8 +30,8 @@ function Scene({ onProgress, scrollToTopRef }: SceneProps) {
         />
       ))}
 
-      <CyberWorld scroll={scroll} />
-      <Effects scroll={scroll} />
+      <CyberWorld />
+      <Effects />
     </>
   );
 }
