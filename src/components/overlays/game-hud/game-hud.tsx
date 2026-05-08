@@ -39,7 +39,7 @@ function GameHud() {
         case 'KeyC':
           game.trigger('crouch');
           break;
-        case 'KeyB':
+        case 'KeyR':
           game.trigger('roll');
           break;
       }

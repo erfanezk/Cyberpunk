@@ -42,8 +42,8 @@ export function useCameraRig() {
     smoothPos.current.lerp(_targetPos, 0.06);
     smoothLook.current.lerp(_lookAt, 0.08);
 
-    const breatheY = Math.sin(time * 0.4) * 0.04;
-    const breatheX = Math.cos(time * 0.3) * 0.03;
+    const breatheY = Math.sin(time * 1.4) * 0.12;
+    const breatheX = Math.cos(time * 1.1) * 0.06;
 
     camera.position.copy(smoothPos.current);
     camera.position.y += breatheY;
