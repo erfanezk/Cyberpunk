@@ -7,6 +7,7 @@ import {
   AnimationsName,
   JUMP_GRAVITY,
   JUMP_INITIAL_VY,
+  CROUCH_SPEED,
   ROLL_SPEED,
   RUN_SPEED,
   TURN_SPEED,
@@ -56,12 +57,17 @@ export function useCyberController() {
 
   // Mixer 'finished' — chain clips or clean up terminal clips
   useEffect(() => {
-    const terminalCleanup: Partial<Record<AnimationsName, () => void>> = {
-      [AnimationsName.Jump_Land]: () => {
-        jump.current.phase = 'idle';
+    type TerminalEntry = { onDone: () => void; releaseLock?: boolean };
+
+    const terminalCleanup: Partial<Record<AnimationsName, TerminalEntry>> = {
+      [AnimationsName.Jump_Land]: {
+        onDone: () => { jump.current.phase = 'idle'; },
       },
-      [AnimationsName.Roll]: () => {
-        rolling.current = false;
+      [AnimationsName.Roll]: {
+        onDone: () => {
+          rolling.current = false;
+          crossfadeTo(AnimationsName.Jog_Fwd_Loop, currentAnim, actions);
+        },
       },
     };
 
@@ -77,7 +83,13 @@ export function useCyberController() {
         return;
       }
 
-      terminalCleanup[clip]?.();
+      const terminal = terminalCleanup[clip];
+      if (terminal) {
+        terminal.onDone();
+        if (terminal.releaseLock !== false) actionLock.current = false;
+        return;
+      }
+
       actionLock.current = false;
     };
 
@@ -151,15 +163,24 @@ export function useCyberController() {
     }
 
     const keys = keysDown.current;
+    // locked: during actions (jump/punch) AND during/after roll stand-up
+    const locked = actionLock.current;
 
-    // 1. Rotation (A/D)
-    if (keys.left) charRotY.current += TURN_SPEED * delta;
-    if (keys.right) charRotY.current -= TURN_SPEED * delta;
+    // 1. Rotation (A/D) — blocked during actions (punch, jump) but not during roll
+    if (!locked) {
+      if (keys.left) charRotY.current += TURN_SPEED * delta;
+      if (keys.right) charRotY.current -= TURN_SPEED * delta;
+    }
 
-    // 2. Forward movement (W/S) — roll also moves forward
-    const speed = rolling.current ? ROLL_SPEED : RUN_SPEED;
-    const movingForward = keys.forward || rolling.current;
-    if (movingForward || keys.backward) {
+    // 2. Forward movement — roll always moves; keys blocked during actions
+    const speed = rolling.current
+      ? ROLL_SPEED
+      : crouching.current
+        ? CROUCH_SPEED
+        : RUN_SPEED;
+    const movingForward = rolling.current || (!locked && keys.forward);
+    const movingBackward = !locked && keys.backward;
+    if (movingForward || movingBackward) {
       _forward.set(Math.sin(charRotY.current), 0, Math.cos(charRotY.current));
       const dir = movingForward ? 1 : -1;
       charPos.current.addScaledVector(_forward, dir * speed * delta);
@@ -187,7 +208,7 @@ export function useCyberController() {
 
     // 5. Locomotion animation
     if (!actionLock.current) {
-      const moving = keys.forward || keys.backward || rolling.current;
+      const moving = movingForward || movingBackward;
       let next: AnimationsName;
       if (crouching.current) {
         next = moving ? AnimationsName.Crouch_Fwd_Loop : AnimationsName.Crouch_Idle_Loop;
