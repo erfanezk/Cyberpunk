@@ -90,6 +90,68 @@
   color: rgba(0, 255, 245, 0.4);
 }
 
+/* ── Top-right: memory tracker ── */
+
+@keyframes fragGlow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.65; }
+}
+
+@keyframes fragPop {
+  0%   { transform: scale(0.4); opacity: 0; }
+  60%  { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+.memoryTracker {
+  position: absolute;
+  top: 1.4rem;
+  right: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+}
+
+.fragDots {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+.fragDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.fragDotOn {
+  background: var(--fc);
+  border-color: var(--fc);
+  box-shadow: 0 0 8px var(--fc), 0 0 16px color-mix(in srgb, var(--fc) 50%, transparent);
+  animation: fragGlow 2s ease-in-out infinite, fragPop 0.4s ease forwards;
+}
+
+.fragCount {
+  font-size: 0.68rem;
+  color: rgba(0, 255, 245, 0.55);
+  letter-spacing: 0.12em;
+}
+
+.fragCountNum {
+  color: var(--cyan);
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(0, 255, 245, 0.6);
+}
+
+.fragCountSep {
+  color: rgba(0, 255, 245, 0.3);
+  margin: 0 2px;
+}
+
 /* ── Top-right: district ── */
 .district {
   position: absolute;

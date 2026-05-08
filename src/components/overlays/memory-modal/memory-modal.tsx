@@ -107,6 +107,13 @@ function MemoryModal() {
     return memory.subscribe((id) => {
       setHiding(false);
       setActive(id);
+      if (memory.isAllUnlocked()) {
+        // auto-dismiss so GameComplete can appear without overlap
+        setTimeout(() => {
+          setHiding(true);
+          setTimeout(() => setActive(null), 500);
+        }, 2200);
+      }
     });
   }, []);
 

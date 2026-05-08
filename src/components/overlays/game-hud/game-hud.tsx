@@ -1,12 +1,23 @@
 import { useEffect, useRef, useState, memo } from 'react';
-import { game } from '@/game';
+import { game, memory, type FragmentId } from '@/game';
 import { ACTIONS } from './game-hud.constants';
 import styles from './game-hud.module.css';
+
+const MEMORY_FRAGS: { id: FragmentId; color: string; label: string }[] = [
+  { id: 'bio',      color: '#00fff5', label: 'BIO'  },
+  { id: 'skills',   color: '#ff00ff', label: 'SKL'  },
+  { id: 'projects', color: '#0066ff', label: 'PRJ'  },
+  { id: 'articles', color: '#ff9900', label: 'ART'  },
+  { id: 'contact',  color: '#28c840', label: 'CON'  },
+];
 
 function GameHud() {
   const [pos, setPos] = useState({ x: 0, z: 0 });
   const posRef = useRef({ x: 0, z: 0 });
   const rafRef = useRef(0);
+  const [unlocked, setUnlocked] = useState<Set<FragmentId>>(
+    () => new Set(MEMORY_FRAGS.map((f) => f.id).filter((id) => memory.isUnlocked(id))),
+  );
 
   useEffect(() => {
     const tick = () => {
@@ -20,6 +31,12 @@ function GameHud() {
     };
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
+  }, []);
+
+  useEffect(() => {
+    return memory.subscribe((id) => {
+      setUnlocked((prev) => new Set([...prev, id]));
+    });
   }, []);
 
   useEffect(() => {
@@ -54,6 +71,24 @@ function GameHud() {
       <span className={`${styles.corner} ${styles.tr}`} />
       <span className={`${styles.corner} ${styles.bl}`} />
       <span className={`${styles.corner} ${styles.br}`} />
+
+      <div className={styles.memoryTracker}>
+        <span className={styles.label}>// MEMORY</span>
+        <div className={styles.fragDots}>
+          {MEMORY_FRAGS.map((f) => (
+            <span
+              key={f.id}
+              className={`${styles.fragDot} ${unlocked.has(f.id) ? styles.fragDotOn : ''}`}
+              style={{ '--fc': f.color } as React.CSSProperties}
+              title={f.label}
+            />
+          ))}
+        </div>
+        <span className={styles.fragCount}>
+          <span className={styles.fragCountNum}>{unlocked.size}</span>
+          <span className={styles.fragCountSep}>/</span>5
+        </span>
+      </div>
 
       <div className={styles.coords}>
         <span className={styles.label}>POS</span>

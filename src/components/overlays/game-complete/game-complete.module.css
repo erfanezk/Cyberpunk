@@ -1,0 +1,363 @@
+/* ── Keyframes ────────────────────────────────────────────────────────────── */
+
+@keyframes overlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes panelIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-12px) skewX(-1.5deg);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(4px) skewX(0.5deg);
+  }
+  60% {
+    transform: translateY(-2px) skewX(-0.3deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) skewX(0);
+  }
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes scanBeam {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes glitchTitle {
+  0%,
+  88%,
+  100% {
+    text-shadow:
+      0 0 20px rgba(0, 255, 245, 0.6),
+      0 0 40px rgba(0, 255, 245, 0.3);
+    clip-path: none;
+  }
+  90% {
+    text-shadow:
+      -3px 0 #ff0050,
+      3px 0 #00fff5,
+      0 0 20px rgba(0, 255, 245, 0.6);
+    clip-path: inset(20% 0 50% 0);
+  }
+  92% {
+    text-shadow:
+      3px 0 #ff0050,
+      -3px 0 #00fff5;
+    clip-path: inset(60% 0 10% 0);
+  }
+  94% {
+    text-shadow: 0 0 20px rgba(0, 255, 245, 0.6);
+    clip-path: none;
+  }
+}
+
+@keyframes fragSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes checkPulse {
+  0%,
+  100% {
+    color: #28c840;
+    text-shadow: 0 0 6px #28c840;
+  }
+  50% {
+    color: #5fffaa;
+    text-shadow: 0 0 12px #28c840;
+  }
+}
+
+/* ── Overlay backdrop ─────────────────────────────────────────────────────── */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 300;
+  animation: overlayIn 0.3s ease;
+}
+
+.overlay.hiding {
+  animation: fadeOut 0.5s ease forwards;
+}
+
+/* ── Panel ────────────────────────────────────────────────────────────────── */
+
+.panel {
+  position: relative;
+  width: min(520px, 92vw);
+  background: rgba(0, 4, 12, 0.97);
+  border: 1px solid rgba(0, 255, 245, 0.4);
+  box-shadow:
+    0 0 60px rgba(0, 255, 245, 0.15),
+    0 0 120px rgba(0, 255, 245, 0.06),
+    inset 0 0 40px rgba(0, 255, 245, 0.03);
+  padding: 24px;
+  font-family: 'Courier New', monospace;
+  overflow: hidden;
+  animation: panelIn 0.5s ease;
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(0, 255, 245, 0.8), transparent);
+}
+
+.panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    rgba(0, 255, 245, 0.012) 3px,
+    rgba(0, 255, 245, 0.012) 4px
+  );
+  pointer-events: none;
+}
+
+/* ── Scan beam ────────────────────────────────────────────────────────────── */
+
+.scanBeam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(to bottom, transparent, rgba(0, 255, 245, 0.04), transparent);
+  animation: scanBeam 3s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Top bar ──────────────────────────────────────────────────────────────── */
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.topTag {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--cyan);
+  text-transform: uppercase;
+}
+
+.topStatus {
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  color: #28c840;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border: 1px solid rgba(40, 200, 64, 0.35);
+  background: rgba(40, 200, 64, 0.07);
+}
+
+/* ── Title ────────────────────────────────────────────────────────────────── */
+
+.titleWrap {
+  text-align: center;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.glitchTitle {
+  font-size: clamp(22px, 5vw, 32px);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--cyan);
+  text-transform: uppercase;
+  animation: glitchTitle 4s ease-in-out infinite;
+  text-shadow:
+    0 0 20px rgba(0, 255, 245, 0.6),
+    0 0 40px rgba(0, 255, 245, 0.3);
+}
+
+.titleSub {
+  margin-top: 6px;
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  color: rgba(255, 255, 255, 0.35);
+  text-transform: uppercase;
+}
+
+/* ── Separator ────────────────────────────────────────────────────────────── */
+
+.separator {
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(0, 255, 245, 0.2), transparent);
+  margin: 16px 0;
+  position: relative;
+  z-index: 2;
+}
+
+/* ── Operative rows ───────────────────────────────────────────────────────── */
+
+.operativeRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  position: relative;
+  z-index: 2;
+}
+
+.opKey {
+  color: rgba(0, 255, 245, 0.4);
+  text-transform: uppercase;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+}
+
+.opVal {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+/* ── Fragment list ────────────────────────────────────────────────────────── */
+
+.fragmentList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  z-index: 2;
+}
+
+.fragmentRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 8px;
+  background: rgba(40, 200, 64, 0.04);
+  border: 1px solid rgba(40, 200, 64, 0.15);
+  animation: fragSlideIn 0.4s ease both;
+}
+
+.fragCheck {
+  font-size: 11px;
+  animation: checkPulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.fragName {
+  flex: 1;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.fragStatus {
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  color: #28c840;
+  text-transform: uppercase;
+}
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  z-index: 2;
+}
+
+.closeBtn {
+  padding: 8px 28px;
+  background: transparent;
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    box-shadow 0.2s;
+  position: relative;
+}
+
+.closeBtn::before,
+.closeBtn::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-color: var(--magenta);
+  border-style: solid;
+}
+.closeBtn::before {
+  top: -2px;
+  left: -2px;
+  border-width: 1px 0 0 1px;
+}
+.closeBtn::after {
+  bottom: -2px;
+  right: -2px;
+  border-width: 0 1px 1px 0;
+}
+
+.closeBtn:hover {
+  background: rgba(0, 255, 245, 0.08);
+  box-shadow:
+    0 0 20px rgba(0, 255, 245, 0.3),
+    inset 0 0 12px rgba(0, 255, 245, 0.04);
+}
+
+.hint {
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.2);
+  text-transform: uppercase;
+}

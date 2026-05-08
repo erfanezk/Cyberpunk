@@ -1,6 +1,7 @@
 import { Canvas } from '@react-three/fiber';
 import { Suspense, useState } from 'react';
 import {
+  GameComplete,
   GameHud,
   LoadingScreen,
   MemoryModal,
@@ -40,6 +41,7 @@ export default function App() {
       <LoadingScreen />
       {started && <GameHud />}
       {started && <MemoryModal />}
+      {started && <GameComplete />}
       <MusicPlayer started={started} />
       {!started && <StartOverlay onStart={handleStart} />}
     </>

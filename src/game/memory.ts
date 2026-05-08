@@ -1,5 +1,7 @@
 export type FragmentId = 'bio' | 'skills' | 'projects' | 'articles' | 'contact';
 
+const ALL_FRAGMENTS: FragmentId[] = ['bio', 'skills', 'projects', 'articles', 'contact'];
+
 type UnlockListener = (id: FragmentId) => void;
 
 class Memory {
@@ -14,6 +16,10 @@ class Memory {
 
   isUnlocked(id: FragmentId): boolean {
     return this.unlocked.has(id);
+  }
+
+  isAllUnlocked(): boolean {
+    return ALL_FRAGMENTS.every((f) => this.unlocked.has(f));
   }
 
   subscribe(fn: UnlockListener): () => void {
