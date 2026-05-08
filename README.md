@@ -4,7 +4,7 @@
 
 ### A real-time 3D game engine. Running in your browser tab.
 
-**[🌐 Live Demo → erfanezk.github.io/portfolio](https://erfanezk.github.io/portfolio)**
+**[🌐 Live Demo → erfanezk.github.io/Cyberpunk](https://erfanezk.github.io/Cyberpunk)**
 
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)
 ![Three.js](https://img.shields.io/badge/Three.js-r184-000000?style=flat-square&logo=threedotjs)
@@ -464,7 +464,7 @@ All systems run inside `useFrame` hooks — zero React involvement.
 | Post-processing | @react-three/postprocessing — Bloom, Glitch, ChromaticAberration, Noise, Vignette |
 | Build | Vite 8 |
 | Linting/Format | Biome |
-| Deploy | GitHub Pages (`/portfolio` base path) |
+| Deploy | GitHub Pages (`/Cyberpunk` base path) |
 
 ---
 
@@ -472,7 +472,7 @@ All systems run inside `useFrame` hooks — zero React involvement.
 
 ```bash
 pnpm install
-pnpm dev        # → http://localhost:5173/portfolio
+pnpm dev        # → http://localhost:5173/Cyberpunk
 ```
 
 | Command | Purpose |
