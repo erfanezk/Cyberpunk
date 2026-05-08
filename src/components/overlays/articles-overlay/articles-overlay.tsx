@@ -5,7 +5,6 @@ import type { OverlayProps } from '@/types';
 import type { Article } from '@/types';
 import { smoothstep } from './articles-overlay.utils';
 import styles from './articles-overlay.module.css';
-import SplashWrapper from '@/components/overlays/splash-wrapper';
 
 const SIGNAL_LEVELS = [5, 4, 5, 3, 4];
 const CLASS_LABELS = ['CLASSIFIED', 'RESTRICTED', 'CONFIDENTIAL', 'CLASSIFIED'];
@@ -35,11 +34,6 @@ function ArticlesOverlay({ progress }: OverlayProps) {
   if (opacity < 0.01) return null;
 
   return (
-    <SplashWrapper
-      progress={progress}
-      fadeIn={SECTION_ZONES.articles.fadeIn}
-      color="rgba(255,200,0,0.15)"
-    >
       <div className="overlay-layer" style={{ opacity }}>
         <div className={styles.wrapper}>
           <div className={styles.sectionHeader}>
@@ -61,7 +55,6 @@ function ArticlesOverlay({ progress }: OverlayProps) {
           </div>
         </div>
       </div>
-    </SplashWrapper>
   );
 }
 

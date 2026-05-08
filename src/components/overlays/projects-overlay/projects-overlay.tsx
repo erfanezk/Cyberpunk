@@ -4,7 +4,6 @@ import { SECTION_ZONES } from '@/types';
 import type { OverlayProps, Project } from '@/types';
 import { smoothstep } from './projects-overlay.utils';
 import styles from './projects-overlay.module.css';
-import SplashWrapper from '@/components/overlays/splash-wrapper';
 
 const PRIORITY = ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW'];
 const PRIORITY_COL = ['#ff3366', '#ff9900', '#00fff5', '#00ff88'];
@@ -20,29 +19,23 @@ function ProjectsOverlay({ progress }: OverlayProps) {
   if (opacity < 0.01) return null;
 
   return (
-    <SplashWrapper
-      progress={progress}
-      fadeIn={SECTION_ZONES.projects.fadeIn}
-      color="rgba(255,0,128,0.15)"
-    >
-      <div className="overlay-layer" style={{ opacity }}>
-        <div className={styles.wrapper}>
-          <div className={styles.sectionHeader}>
-            <span className={styles.missionTag}>MISSION_02</span>
-            <span className={styles.sectionTitle}>// ARCHIVE_VAULT</span>
-            <span className={styles.countTag}>{PROJECTS.length}_ENTRIES</span>
-          </div>
-
-          <div className={styles.grid}>
-            {PROJECTS.map((project, i) => (
-              <ProjectCard key={project.id} project={project} index={i} />
-            ))}
-          </div>
-
-          <span className={styles.scrollHint}>&#8592;&nbsp;SWIPE TO EXPLORE&nbsp;&#8594;</span>
+    <div className="overlay-layer" style={{ opacity }}>
+      <div className={styles.wrapper}>
+        <div className={styles.sectionHeader}>
+          <span className={styles.missionTag}>MISSION_02</span>
+          <span className={styles.sectionTitle}>// ARCHIVE_VAULT</span>
+          <span className={styles.countTag}>{PROJECTS.length}_ENTRIES</span>
         </div>
+
+        <div className={styles.grid}>
+          {PROJECTS.map((project, i) => (
+            <ProjectCard key={project.id} project={project} index={i} />
+          ))}
+        </div>
+
+        <span className={styles.scrollHint}>&#8592;&nbsp;SWIPE TO EXPLORE&nbsp;&#8594;</span>
       </div>
-    </SplashWrapper>
+    </div>
   );
 }
 

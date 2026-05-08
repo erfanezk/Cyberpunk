@@ -4,7 +4,6 @@ import { SECTION_ZONES } from '@/types';
 import type { OverlayProps } from '@/types';
 import { smoothstep } from './hero-overlay.utils';
 import styles from './hero-overlay.module.css';
-import SplashWrapper from '@/components/overlays/splash-wrapper';
 
 function HeroOverlay({ progress }: OverlayProps) {
   const { fadeIn, fadeOut } = SECTION_ZONES.hero;
@@ -17,11 +16,6 @@ function HeroOverlay({ progress }: OverlayProps) {
   if (opacity < 0.01) return null;
 
   return (
-    <SplashWrapper
-      progress={progress}
-      fadeIn={SECTION_ZONES.hero.fadeIn}
-      color="rgba(0,255,245,0.15)"
-    >
       <div className="overlay-layer" style={{ opacity }}>
         <div className={styles.container}>
           <span className={`${styles.corner} ${styles.cornerTL}`} />
@@ -56,7 +50,6 @@ function HeroOverlay({ progress }: OverlayProps) {
           </div>
         </div>
       </div>
-    </SplashWrapper>
   );
 }
 

@@ -6,4 +6,3 @@ export { default as GameHud } from './game-hud';
 export { default as LoadingScreen } from './loading-screen';
 export { default as MusicPlayer } from './music-player';
 export { default as StartOverlay } from './start-overlay';
-export { default as SplashWrapper } from './splash-wrapper';

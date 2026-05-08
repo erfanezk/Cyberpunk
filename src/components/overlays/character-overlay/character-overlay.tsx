@@ -4,23 +4,22 @@ import { SECTION_ZONES } from '@/types';
 import type { OverlayProps } from '@/types';
 import { smoothstep } from './character-overlay.utils';
 import styles from './character-overlay.module.css';
-import SplashWrapper from '@/components/overlays/splash-wrapper';
 
 const SKILLS = [
   { label: 'PROB SOLVE', value: 92 },
-  { label: 'ADAPTABLE',  value: 85 },
-  { label: 'CURIOSITY',  value: 90 },
-  { label: 'OWNERSHIP',  value: 88 },
-  { label: 'COMMS',      value: 78 },
+  { label: 'ADAPTABLE', value: 85 },
+  { label: 'CURIOSITY', value: 90 },
+  { label: 'OWNERSHIP', value: 88 },
+  { label: 'COMMS', value: 78 },
   { label: 'CREATIVITY', value: 83 },
 ];
 
 const MISSIONS = [
-  { id: 'M01', label: 'HERO',     desc: 'Enter the sector',     status: 'ACTIVE'  as const },
-  { id: 'M02', label: 'IDENTITY', desc: 'Scan the operative',   status: 'LOCKED'  as const },
-  { id: 'M03', label: 'PROJECTS', desc: 'Access project vault', status: 'LOCKED'  as const },
-  { id: 'M04', label: 'ARTICLES', desc: 'Read intel feed',      status: 'LOCKED'  as const },
-  { id: 'M05', label: 'CONTACT',  desc: 'Establish uplink',     status: 'LOCKED'  as const },
+  { id: 'M01', label: 'HERO', desc: 'Enter the sector', status: 'ACTIVE' as const },
+  { id: 'M02', label: 'IDENTITY', desc: 'Scan the operative', status: 'LOCKED' as const },
+  { id: 'M03', label: 'PROJECTS', desc: 'Access project vault', status: 'LOCKED' as const },
+  { id: 'M04', label: 'ARTICLES', desc: 'Read intel feed', status: 'LOCKED' as const },
+  { id: 'M05', label: 'CONTACT', desc: 'Establish uplink', status: 'LOCKED' as const },
 ];
 
 const ATTRS = [
@@ -53,8 +52,15 @@ function SkillRadar() {
       {ANGLES.map((a) => {
         const o = pt(a, MAX_R);
         return (
-          <line key={a} x1={CX} y1={CY} x2={o.x} y2={o.y}
-            stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+          <line
+            key={a}
+            x1={CX}
+            y1={CY}
+            x2={o.x}
+            y2={o.y}
+            stroke="rgba(255,255,255,0.07)"
+            strokeWidth="1"
+          />
         );
       })}
       {gridLevels.map((lvl) => {
@@ -63,15 +69,27 @@ function SkillRadar() {
           return `${p.x},${p.y}`;
         }).join(' ');
         return (
-          <polygon key={lvl} points={pts} fill="none"
-            stroke="rgba(255,255,255,0.08)" strokeWidth="0.75" />
+          <polygon
+            key={lvl}
+            points={pts}
+            fill="none"
+            stroke="rgba(255,255,255,0.08)"
+            strokeWidth="0.75"
+          />
         );
       })}
-      <polygon points={dataPath} fill="rgba(255,153,0,0.18)"
-        stroke="#ff9900" strokeWidth="2" strokeLinejoin="round" />
+      <polygon
+        points={dataPath}
+        fill="rgba(255,153,0,0.18)"
+        stroke="#ff9900"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
       {SKILLS.map((s, i) => {
         const p = pt(ANGLES[i], MAX_R * (s.value / 100));
-        return <circle key={s.label} cx={p.x} cy={p.y} r="3.5" fill="#ff9900" filter="url(#glow)" />;
+        return (
+          <circle key={s.label} cx={p.x} cy={p.y} r="3.5" fill="#ff9900" filter="url(#glow)" />
+        );
       })}
       <defs>
         <filter id="glow">
@@ -88,12 +106,26 @@ function SkillRadar() {
         const baseY = p.y < CY - 8 ? p.y - 2 : p.y > CY + 8 ? p.y + 2 : p.y;
         return (
           <g key={s.label + '-lbl'}>
-            <text x={p.x} y={baseY} textAnchor={anchor} fill="rgba(255,255,255,0.4)"
-              fontSize="8.5" letterSpacing="0.8" fontFamily="'Courier New',monospace">
+            <text
+              x={p.x}
+              y={baseY}
+              textAnchor={anchor}
+              fill="rgba(255,255,255,0.4)"
+              fontSize="8.5"
+              letterSpacing="0.8"
+              fontFamily="'Courier New',monospace"
+            >
               {s.label}
             </text>
-            <text x={p.x} y={baseY + 12} textAnchor={anchor} fill="#ff9900"
-              fontSize="11" fontWeight="700" fontFamily="'Courier New',monospace">
+            <text
+              x={p.x}
+              y={baseY + 12}
+              textAnchor={anchor}
+              fill="#ff9900"
+              fontSize="11"
+              fontWeight="700"
+              fontFamily="'Courier New',monospace"
+            >
               {s.value}
             </text>
           </g>
@@ -124,7 +156,6 @@ export function CharacterCard() {
         </div>
 
         <div className={styles.body}>
-
           {/* ── Col 1: Portrait ── */}
           <div className={styles.portraitCol}>
             <div className={styles.photoFrame}>
@@ -157,7 +188,7 @@ export function CharacterCard() {
               </div>
               <div className={styles.xpTrack}>
                 <div className={styles.xpFill} />
-                {[10,20,30,40,50,60,70,80,90].map((pct) => (
+                {[10, 20, 30, 40, 50, 60, 70, 80, 90].map((pct) => (
                   <span key={pct} className={styles.xpTick} style={{ left: `${pct}%` }} />
                 ))}
               </div>
@@ -165,7 +196,11 @@ export function CharacterCard() {
 
             <div className={styles.attrList}>
               {ATTRS.map((a) => (
-                <div key={a.label} className={styles.attrRow} style={{ animationDelay: `${0.5 + ATTRS.indexOf(a) * 0.1}s` }}>
+                <div
+                  key={a.label}
+                  className={styles.attrRow}
+                  style={{ animationDelay: `${0.5 + ATTRS.indexOf(a) * 0.1}s` }}
+                >
                   <span className={styles.attrLabel}>{a.label}</span>
                   <div className={styles.attrTrack}>
                     <div
@@ -207,17 +242,20 @@ export function CharacterCard() {
                   <div className={styles.missionEntryTop}>
                     <span className={styles.missionId}>{m.id}</span>
                     <span className={styles.missionName}>{m.label}</span>
-                    <span className={`${styles.missionDot} ${m.status === 'ACTIVE' ? styles.missionDotActive : ''}`} />
+                    <span
+                      className={`${styles.missionDot} ${m.status === 'ACTIVE' ? styles.missionDotActive : ''}`}
+                    />
                   </div>
                   <span className={styles.missionDesc}>{m.desc}</span>
-                  <span className={`${styles.missionStatusTag} ${m.status === 'ACTIVE' ? styles.missionStatusActive : ''}`}>
+                  <span
+                    className={`${styles.missionStatusTag} ${m.status === 'ACTIVE' ? styles.missionStatusActive : ''}`}
+                  >
                     {m.status}
                   </span>
                 </div>
               ))}
             </div>
           </div>
-
         </div>
 
         {/* ── Footer ── */}
@@ -254,15 +292,9 @@ function CharacterOverlay({ progress }: OverlayProps) {
   if (opacity < 0.01) return null;
 
   return (
-    <SplashWrapper
-      progress={progress}
-      fadeIn={SECTION_ZONES.about.fadeIn}
-      color="rgba(168,85,247,0.15)"
-    >
-      <div className="overlay-layer" style={{ opacity }}>
-        <CharacterCard />
-      </div>
-    </SplashWrapper>
+    <div className="overlay-layer" style={{ opacity }}>
+      <CharacterCard />
+    </div>
   );
 }
 
