@@ -41,7 +41,7 @@ export function useCyberController(scroll: CyberProps['scroll']) {
 
   const currentAnim = useRef<AnimationsName | null>(null);
   const actionLock = useRef(false);
-  const sitting = useRef(false);
+  const crouching = useRef(false);
   const jump = useRef<JumpState>({ phase: 'idle', y: 0, vy: 0 });
   const punchCombo = useRef<0 | 1>(0);
   const rolling = useRef(false);
@@ -52,9 +52,6 @@ export function useCyberController(scroll: CyberProps['scroll']) {
   // Mixer 'finished' — chain clips or clean up terminal clips
   useEffect(() => {
     const terminalCleanup: Partial<Record<AnimationsName, () => void>> = {
-      [AnimationsName.Sitting_Exit]: () => {
-        sitting.current = false;
-      },
       [AnimationsName.Jump_Land]: () => {
         jump.current.phase = 'idle';
       },
@@ -91,13 +88,10 @@ export function useCyberController(scroll: CyberProps['scroll']) {
       playOneShot(AnimationsName.Jump_Start, currentAnim, actions);
     };
 
-    const toggleSit = () => {
-      if (sitting.current) {
-        playOneShot(AnimationsName.Sitting_Exit, currentAnim, actions);
-      } else {
-        sitting.current = true;
-        playOneShot(AnimationsName.Sitting_Enter, currentAnim, actions);
-      }
+    const toggleCrouch = () => {
+      crouching.current = !crouching.current;
+      crossfadeTo(AnimationsName.Crouch_Idle_Loop, currentAnim, actions);
+      actionLock.current = false;
     };
 
     const actionHandlers: Record<ActionName, () => void> = {
@@ -112,7 +106,7 @@ export function useCyberController(scroll: CyberProps['scroll']) {
         rolling.current = true;
         playOneShot(AnimationsName.Roll, currentAnim, actions, 0.1);
       },
-      sit: toggleSit,
+      crouch: toggleCrouch,
     };
 
     const handle = (action: ActionName) => {
@@ -162,9 +156,16 @@ export function useCyberController(scroll: CyberProps['scroll']) {
     prevOffset.current = scroll.offset;
     smoothSpeed.current = moved ? 1 : THREE.MathUtils.lerp(smoothSpeed.current, 0, 0.2);
 
-    if (!actionLock.current && !sitting.current) {
-      const next =
-        smoothSpeed.current > 0.1 ? AnimationsName.Jog_Fwd_Loop : AnimationsName.Idle_Loop;
+    if (!actionLock.current) {
+      let next: AnimationsName;
+      if (crouching.current) {
+        next =
+          smoothSpeed.current > 0.1
+            ? AnimationsName.Crouch_Fwd_Loop
+            : AnimationsName.Crouch_Idle_Loop;
+      } else {
+        next = smoothSpeed.current > 0.1 ? AnimationsName.Jog_Fwd_Loop : AnimationsName.Idle_Loop;
+      }
       crossfadeTo(next, currentAnim, actions);
     }
 

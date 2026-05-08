@@ -25,7 +25,7 @@ function GameHud({ progress }: OverlayProps) {
           game.trigger('punch');
           break;
         case 'KeyC':
-          game.trigger('sit');
+          game.trigger('crouch');
           break;
         case 'KeyB':
           game.trigger('roll');
