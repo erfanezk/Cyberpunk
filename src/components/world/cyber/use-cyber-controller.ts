@@ -1,13 +1,18 @@
 import { useAnimations, useGLTF } from '@react-three/drei';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
+import { clone as skeletonClone } from 'three/examples/jsm/utils/SkeletonUtils.js';
 import modelUrl from '@/assets/UAL1_Standard.glb?url';
 import { game, type ActionName } from '@/game';
 import {
   AnimationsName,
+  CYBER_COLOR_BODY,
+  CYBER_COLOR_JOINTS,
+  CYBER_METALNESS,
+  CYBER_ROUGHNESS,
+  CROUCH_SPEED,
   JUMP_GRAVITY,
   JUMP_INITIAL_VY,
-  CROUCH_SPEED,
   ROLL_SPEED,
   RUN_SPEED,
   TURN_SPEED,
@@ -41,8 +46,22 @@ const _forward = new THREE.Vector3();
 
 export function useCyberController() {
   const groupRef = useRef<THREE.Group>(null);
-  const { scene, animations } = useGLTF(modelUrl);
+  const { scene: source, animations } = useGLTF(modelUrl);
+  const scene = useMemo(() => skeletonClone(source), [source]);
   const { actions, mixer } = useAnimations(animations, scene);
+
+  useEffect(() => {
+    scene.traverse((obj) => {
+      if (obj instanceof THREE.Mesh && obj.material instanceof THREE.MeshStandardMaterial) {
+        const mat = obj.material.clone();
+        mat.color.set(obj.material.name === 'M_Joints' ? CYBER_COLOR_JOINTS : CYBER_COLOR_BODY);
+        mat.roughness = CYBER_ROUGHNESS;
+        mat.metalness = CYBER_METALNESS;
+        mat.needsUpdate = true;
+        obj.material = mat;
+      }
+    });
+  }, [scene]);
 
   const currentAnim = useRef<AnimationsName | null>(null);
   const actionLock = useRef(false);
@@ -136,6 +155,7 @@ export function useCyberController() {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
+      if (!game.started) return;
       if (e.code === 'KeyW' || e.code === 'ArrowUp') keysDown.current.forward = true;
       if (e.code === 'KeyS' || e.code === 'ArrowDown') keysDown.current.backward = true;
       if (e.code === 'KeyA' || e.code === 'ArrowLeft') keysDown.current.left = true;

@@ -5,6 +5,7 @@ export type ActionName = 'jump' | 'punch' | 'crouch' | 'roll';
 type ActionListener = (action: ActionName) => void;
 
 class Game {
+  started = false;
   readonly position = new THREE.Vector3(0, 0, 0);
   readonly direction = new THREE.Vector3(0, 0, -1);
   private listeners = new Set<ActionListener>();

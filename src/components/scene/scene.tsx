@@ -4,29 +4,41 @@ import { useCameraRig } from '@/hooks';
 import { WORLD_CONFIG } from '@/game';
 import { memo } from 'react';
 
+const OPTIONAL_LIGHTS: { position: [number, number, number]; color: string; intensity: number; distance: number }[] = [
+  { position: [ 20, 4,  55], color: '#e08030', intensity: 4, distance: 55 },
+  { position: [-18, 4,  10], color: '#e08030', intensity: 4, distance: 55 },
+  { position: [ 25, 4, -50], color: '#e08030', intensity: 4, distance: 55 },
+  { position: [-22, 4, -110], color: '#e08030', intensity: 4, distance: 55 },
+  { position: [ 20, 4, -160], color: '#e08030', intensity: 4, distance: 55 },
+  { position: [-18, 4, -210], color: '#e08030', intensity: 4, distance: 55 },
+];
+
 function Scene() {
   useCameraRig();
 
   return (
     <>
-      <fog attach="fog" args={['#0a0a0f', 60, 260]} />
-      <ambientLight intensity={0.12} color="#0a0a1a" />
+      <fog attach="fog" args={['#080812', 20, 220]} />
 
-      <pointLight position={[35, 6, -45]} color="#00fff5" intensity={5} distance={90} />
-      <pointLight position={[-28, 5, -70]} color="#ff00ff" intensity={4} distance={80} />
+      {/* Sky/ground fill */}
+      <ambientLight intensity={0.2} color="#1a2035" />
+      <hemisphereLight args={['#1a2a5a', '#0a080e', 0.55]} />
 
-      {[
-        { position: [65, 8, -5] as [number, number, number], color: '#0066ff', intensity: 4, distance: 70 },
-        { position: [5, 10, -105] as [number, number, number], color: '#00fff5', intensity: 4, distance: 85 },
-        { position: [-45, 18, -25] as [number, number, number], color: '#ff9900', intensity: 3, distance: 65 },
-        { position: [20, 12, 40] as [number, number, number], color: '#ff00ff', intensity: 3, distance: 60 },
-      ].slice(0, WORLD_CONFIG.extraPointLights).map((light) => (
+      {/* Dominant overhead key — cool moonlight from front-right */}
+      <directionalLight position={[15, 40, 30]} intensity={1.8} color="#c0cce8" />
+
+      {/* Subtle back-fill so rear of character isn't fully black */}
+      <directionalLight position={[-8, 10, -20]} intensity={0.4} color="#8090c0" />
+
+      {/* Street-lamp warmth along path, gated by quality tier */}
+      {OPTIONAL_LIGHTS.slice(0, WORLD_CONFIG.extraPointLights).map((l) => (
         <pointLight
-          key={light.color}
-          position={light.position}
-          color={light.color}
-          intensity={light.intensity}
-          distance={light.distance}
+          key={`${l.position[2]}`}
+          position={l.position}
+          color={l.color}
+          intensity={l.intensity}
+          distance={l.distance}
+          decay={2}
         />
       ))}
 

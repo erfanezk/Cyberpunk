@@ -1,10 +1,6 @@
-import { useMemo, memo } from 'react';
+import { useState, memo } from 'react';
 import { PROFILE } from '@/constants';
-import { SECTION_ZONES } from '@/types';
-import type { OverlayProps } from '@/types';
-import { smoothstep } from './about-overlay.utils';
-import styles from './about-overlay.module.css';
-import SplashWrapper from '@/components/overlays/splash-wrapper';
+import styles from './start-overlay.module.css';
 
 const STATS = [
   { label: 'PROBLEM SOLVING', pct: 92, color: '#00fff5' },
@@ -13,23 +9,27 @@ const STATS = [
   { label: 'ATTENTION TO DETAIL', pct: 88, color: '#00ff88' },
 ];
 
-function AboutOverlay({ progress }: OverlayProps) {
-  const { fadeIn, fadeOut } = SECTION_ZONES.about;
-  const opacity = useMemo(() => {
-    const fadeInOp = smoothstep(fadeIn, fadeIn + 0.06, progress);
-    const fadeOutOp = 1 - smoothstep(fadeOut - 0.08, fadeOut, progress);
-    return fadeInOp * fadeOutOp;
-  }, [progress, fadeIn, fadeOut]);
+interface StartOverlayProps {
+  onStart: () => void;
+}
 
-  if (opacity < 0.01) return null;
+function StartOverlay({ onStart }: StartOverlayProps) {
+  const [hiding, setHiding] = useState(false);
+
+  const handleStart = () => {
+    setHiding(true);
+    setTimeout(onStart, 580);
+  };
 
   return (
-    <SplashWrapper
-      progress={progress}
-      fadeIn={SECTION_ZONES.about.fadeIn}
-      color="rgba(168,85,247,0.15)"
-    >
-      <div className="overlay-layer" style={{ opacity }}>
+    <div className={`${styles.overlay} ${hiding ? styles.hiding : ''}`}>
+      <div className={styles.scanBeam} />
+      <span className={`${styles.corner} ${styles.tl}`} />
+      <span className={`${styles.corner} ${styles.tr}`} />
+      <span className={`${styles.corner} ${styles.bl}`} />
+      <span className={`${styles.corner} ${styles.br}`} />
+
+      <div className={styles.content}>
         <div className={styles.wrapper}>
           <div className={styles.sectionHeader}>
             <span className={styles.missionTag}>MISSION_01</span>
@@ -52,7 +52,6 @@ function AboutOverlay({ progress }: OverlayProps) {
             </div>
 
             <div className={styles.body}>
-              {/* Left: photo + identity */}
               <div className={styles.identity}>
                 <div className={styles.photoFrame}>
                   <span className={styles.bracket} data-pos="tl" />
@@ -60,13 +59,13 @@ function AboutOverlay({ progress }: OverlayProps) {
                   <span className={styles.bracket} data-pos="bl" />
                   <span className={styles.bracket} data-pos="br" />
                   <img src={PROFILE.photo} alt={PROFILE.name} className={styles.photo} />
-                  <div className={styles.scanBeam} aria-hidden />
+                  <div className={styles.photoScanBeam} aria-hidden />
                   <div className={styles.photoScanline} aria-hidden />
                   <div className={styles.targetRing} aria-hidden />
                 </div>
                 <div className={styles.identityMeta}>
                   <span className={styles.metaLabel}>// SUBJECT</span>
-                  <h3 className={styles.name}>{PROFILE.name}</h3>
+                  <h3 className={styles.identityName}>{PROFILE.name}</h3>
                   <span className={styles.role}>{PROFILE.title}</span>
                   <div className={styles.lvlBadge}>
                     <span className={styles.lvlLabel}>LVL</span>
@@ -78,8 +77,7 @@ function AboutOverlay({ progress }: OverlayProps) {
 
               <div className={styles.divider} />
 
-              {/* Right: bio + stats */}
-              <div className={styles.content}>
+              <div className={styles.cardContent}>
                 <div className={styles.bioBlock}>
                   <span className={styles.sectionLabel}>// BIO</span>
                   <p className={styles.bio}>{PROFILE.bio}</p>
@@ -106,7 +104,7 @@ function AboutOverlay({ progress }: OverlayProps) {
               </div>
             </div>
 
-            <div className={styles.footer}>
+            <div className={styles.cardFooter}>
               <span>
                 <span className={styles.kvKey}>LOC</span>
                 <span className={styles.kvArrow}> &gt; </span>IRAN
@@ -125,9 +123,15 @@ function AboutOverlay({ progress }: OverlayProps) {
             </div>
           </div>
         </div>
+
+        <button type="button" className={styles.startBtn} onClick={handleStart}>
+          Start
+        </button>
+
+        <span className={styles.hint}>Click to initialize system</span>
       </div>
-    </SplashWrapper>
+    </div>
   );
 }
 
-export default memo(AboutOverlay);
+export default memo(StartOverlay);

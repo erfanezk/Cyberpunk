@@ -1,10 +1,22 @@
-import { useRef, useState, memo } from 'react';
+import { useRef, useState, useEffect, memo } from 'react';
 import musicFile from '@/assets/1-02 Extraction Action.mp3';
 import styles from './music-player.module.css';
 
-function MusicPlayer() {
+interface MusicPlayerProps {
+  started: boolean;
+}
+
+function MusicPlayer({ started }: MusicPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    if (!started || !audioRef.current) return;
+    audioRef.current
+      .play()
+      .then(() => setIsPlaying(true))
+      .catch(() => {});
+  }, [started]);
 
   const toggle = () => {
     if (!audioRef.current) return;
@@ -19,7 +31,7 @@ function MusicPlayer() {
 
   return (
     <>
-      <audio ref={audioRef} src={musicFile} autoPlay loop preload="auto" />
+      <audio ref={audioRef} src={musicFile} loop preload="auto" />
       <button
         type="button"
         onClick={toggle}

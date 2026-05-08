@@ -13,7 +13,10 @@ function Cyber() {
 
   return (
     <>
-      <directionalLight position={[0, 10, 5]} intensity={3} />
+      {/* Key — matches scene moonlight direction */}
+      <directionalLight position={[15, 40, 30]} intensity={3} color="#c0cce8" />
+      {/* Fill — soft from left so shadows aren't pure black */}
+      <directionalLight position={[-8, 10, 10]} intensity={0.8} color="#8090c0" />
       <group ref={groupRef} scale={3}>
         <primitive object={scene} />
       </group>

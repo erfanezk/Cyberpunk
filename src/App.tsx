@@ -1,10 +1,17 @@
 import { Canvas } from '@react-three/fiber';
-import { Suspense } from 'react';
-import { GameHud, LoadingScreen, MusicPlayer, Scene } from '@/components';
+import { Suspense, useState } from 'react';
+import { GameHud, LoadingScreen, MusicPlayer, Scene, StartOverlay } from '@/components';
 import { COLORS } from '@/constants';
-import { WORLD_CONFIG } from '@/game';
+import { game, WORLD_CONFIG } from '@/game';
 
 export default function App() {
+  const [started, setStarted] = useState(false);
+
+  const handleStart = () => {
+    game.started = true;
+    setStarted(true);
+  };
+
   return (
     <>
       <div className="canvas-wrapper">
@@ -24,8 +31,9 @@ export default function App() {
         </Canvas>
       </div>
       <LoadingScreen />
-      <GameHud />
-      <MusicPlayer />
+      {started && <GameHud />}
+      <MusicPlayer started={started} />
+      {!started && <StartOverlay onStart={handleStart} />}
     </>
   );
 }
